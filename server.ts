@@ -1,0 +1,80 @@
+import express from "express";
+import path from "path";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import { createServer } from "http";
+import { Server as SocketIOServer } from "socket.io";
+import { createServer as createViteServer } from "vite";
+import fs from "fs-extra";
+import jwt from "jsonwebtoken";
+
+const app = express();
+const httpServer = createServer(app);
+export const io = new SocketIOServer(httpServer, {
+  cors: { origin: "*" },
+});
+
+io.use((socket, next) => {
+  const token = socket.handshake.auth.token;
+  if (!token) return next(new Error("Authentication error"));
+  try {
+    const verified = jwt.verify(token, process.env.JWT_SECRET || "jtg-panel-super-secret");
+    (socket as any).user = verified;
+    next();
+  } catch (err) {
+    next(new Error("Authentication error"));
+  }
+});
+
+io.on("connection", (socket) => {
+  socket.on("joinServer", (serverId) => {
+    socket.join(`server_${serverId}`);
+  });
+  socket.on("leaveServer", (serverId) => {
+    socket.leave(`server_${serverId}`);
+  });
+});
+
+const PORT = process.env.PORT || 3000;
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+
+// Initialize data folders
+const DATA_DIR = path.join(process.cwd(), "data");
+const SERVERS_DIR = path.join(DATA_DIR, "servers");
+const BACKUPS_DIR = path.join(process.cwd(), "backups");
+
+fs.ensureDirSync(DATA_DIR);
+fs.ensureDirSync(SERVERS_DIR);
+fs.ensureDirSync(BACKUPS_DIR);
+
+if (!fs.existsSync(path.join(DATA_DIR, "users.json"))) fs.writeFileSync(path.join(DATA_DIR, "users.json"), "[]");
+if (!fs.existsSync(path.join(DATA_DIR, "servers.json"))) fs.writeFileSync(path.join(DATA_DIR, "servers.json"), "[]");
+if (!fs.existsSync(path.join(DATA_DIR, "settings.json"))) fs.writeFileSync(path.join(DATA_DIR, "settings.json"), "{}");
+
+import apiRoutes from "./src/server/routes/api.js";
+app.use("/api", apiRoutes);
+
+async function startServer() {
+  if (process.env.NODE_ENV !== "production") {
+    const vite = await createViteServer({
+      server: { middlewareMode: true },
+      appType: "spa",
+    });
+    app.use(vite.middlewares);
+  } else {
+    const distPath = path.join(process.cwd(), "dist");
+    app.use(express.static(distPath));
+    app.get("*", (req, res) => {
+      res.sendFile(path.join(distPath, "index.html"));
+    });
+  }
+
+  httpServer.listen(PORT, () => {
+    console.log(`JTG Panel running on port ${PORT}`);
+  });
+}
+
+startServer();
