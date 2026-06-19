@@ -50,7 +50,7 @@ export default function SettingsPage() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
-      className="p-10 max-w-7xl mx-auto"
+      className="p-4 md:p-10 max-w-7xl mx-auto"
     >
       <h1 className="text-3xl font-bold tracking-tight mb-8">Settings</h1>
 

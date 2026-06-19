@@ -2,10 +2,13 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Server, Activity, HardDrive, Cpu, MemoryStick } from "lucide-react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function Dashboard() {
   const [stats, setStats] = useState<any>(null);
   const [servers, setServers] = useState<any[]>([]);
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,15 +56,19 @@ export default function Dashboard() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
-      className="p-10 max-w-7xl mx-auto"
+      className="p-4 md:p-10 max-w-7xl mx-auto"
     >
       <h1 className="text-3xl font-bold tracking-tight mb-8">System Overview</h1>
       
-      <motion.div variants={container} initial="hidden" animate="show" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+      <motion.div variants={container} initial="hidden" animate="show" className={`grid grid-cols-1 md:grid-cols-2 ${user?.role === 'admin' ? 'lg:grid-cols-4' : 'lg:grid-cols-2 lg:max-w-3xl'} gap-6 mb-10`}>
         <StatCard title="Total Servers" value={servers.length.toString()} icon={<Server size={24} className="text-blue-400" />} />
         <StatCard title="Running Servers" value={runningServers.toString()} icon={<Activity size={24} className="text-green-400" />} />
-        <StatCard title="CPU Usage" value={`${stats.cpuUsage}%`} icon={<Cpu size={24} className="text-purple-400" />} />
-        <StatCard title="RAM Usage" value={`${stats.ramUsage}%`} icon={<MemoryStick size={24} className="text-orange-400" />} />
+        {user?.role === "admin" && (
+          <>
+            <StatCard title="VPS CPU Usage" value={`${stats.cpuUsage}%`} icon={<Cpu size={24} className="text-purple-400" />} />
+            <StatCard title="VPS RAM Usage" value={`${stats.ramUsage}%`} icon={<MemoryStick size={24} className="text-orange-400" />} />
+          </>
+        )}
       </motion.div>
 
       <motion.h2 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="text-xl font-bold tracking-tight mb-6 mt-12">Recent Activity</motion.h2>
@@ -71,15 +78,15 @@ export default function Dashboard() {
         ) : (
           <div className="space-y-4">
             {servers.slice(0, 5).map(server => (
-              <div key={server.id} className="flex items-center justify-between p-4 bg-gray-900 rounded-xl border border-gray-800/50">
+              <Link to={`/servers/${server.id}`} key={server.id} className="flex items-center justify-between p-4 bg-gray-900 rounded-xl border border-gray-800/50 hover:border-gray-700 transition-colors block">
                 <div>
-                  <h3 className="font-medium text-white">{server.name}</h3>
+                  <h3 className="font-medium text-white group-hover:text-blue-400 transition-colors">{server.name}</h3>
                   <p className="text-xs text-gray-500 mt-1">Status: <span className={server.status === 'online' ? 'text-green-400' : 'text-gray-400'}>{server.status}</span></p>
                 </div>
                 <div className="text-xs text-gray-500">
                   {new Date(server.createdAt).toLocaleDateString()}
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}

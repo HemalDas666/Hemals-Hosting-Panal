@@ -4,9 +4,10 @@ import { io, Socket } from "socket.io-client";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 
-export default function ServerConsole({ serverId, theme }: { serverId: string, theme?: string }) {
+export default function ServerConsole({ serverId }: { serverId: string }) {
   const [logs, setLogs] = useState<string[]>([]);
   const [command, setCommand] = useState("");
+  const [stats, setStats] = useState({ cpu: 0, ram: 0, disk: 0 });
   const endRef = useRef<HTMLDivElement>(null);
   const { token } = useAuth();
 
@@ -21,11 +22,10 @@ export default function ServerConsole({ serverId, theme }: { serverId: string, t
     });
 
     socket.on("log", (data: string) => {
-      // Split stream data by newlines if necessary, or just append as log string
       const lines = data.split(/\r?\n/).filter(line => line.trim() !== "");
       setLogs(prev => {
         const newLogs = [...prev, ...lines];
-        return newLogs.slice(-200); // Keep last 200 lines to prevent unmounting issues
+        return newLogs.slice(-200);
       });
     });
 
@@ -38,6 +38,18 @@ export default function ServerConsole({ serverId, theme }: { serverId: string, t
       socket.disconnect();
     };
   }, [serverId, token]);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await axios.get(`/api/servers/${serverId}/stats`);
+        setStats(res.data);
+      } catch (err) {}
+    };
+    fetchStats();
+    const interval = setInterval(fetchStats, 5000);
+    return () => clearInterval(interval);
+  }, [serverId]);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -55,53 +67,44 @@ export default function ServerConsole({ serverId, theme }: { serverId: string, t
     }
   };
 
-  let bgClass = "bg-gray-900";
-  let textClass = "text-gray-300";
-  let borderClass = "border-gray-800";
-  let inputBgClass = "bg-gray-950";
-  let inputTextClass = "text-white";
-
-  if (theme === "hacker") {
-    bgClass = "bg-[#050505]";
-    textClass = "text-green-500 shadow-green-500/20";
-    borderClass = "border-green-900/50";
-    inputBgClass = "bg-black";
-    inputTextClass = "text-green-400";
-  } else if (theme === "midnight") {
-    bgClass = "bg-slate-900";
-    textClass = "text-blue-200";
-    borderClass = "border-blue-900/50";
-    inputBgClass = "bg-slate-950";
-    inputTextClass = "text-blue-100";
-  } else if (theme === "light") {
-    bgClass = "bg-white";
-    textClass = "text-gray-800";
-    borderClass = "border-gray-200";
-    inputBgClass = "bg-gray-50";
-    inputTextClass = "text-gray-900";
-  }
-
   return (
-    <div className={`flex flex-col h-[calc(100vh-200px)] min-h-[400px] ${bgClass} rounded-2xl border ${borderClass} overflow-hidden shadow-lg transition-colors duration-500`}>
-      <div className={`flex-1 overflow-y-auto p-4 font-mono text-sm custom-scrollbar whitespace-pre-wrap break-words ${textClass}`}>
-        <div className="mb-4 text-xs opacity-50 flex items-center"><XTerm size={14} className="mr-2" /> Initializing terminal stream...</div>
-        {logs.map((log, i) => (
-          <div key={i} className={`${log.startsWith('>') ? 'opacity-80 font-semibold' : ''}`}>{log}</div>
-        ))}
-        <div ref={endRef} />
+    <div className="flex flex-col h-full bg-gray-950">
+      <div className="flex flex-col flex-1 bg-gray-900 rounded-2xl border border-gray-800 overflow-hidden shadow-lg h-[calc(100vh-320px)] md:h-[calc(100vh-280px)] min-h-[300px]">
+        <div className="flex-1 overflow-y-auto p-4 font-mono text-sm custom-scrollbar whitespace-pre-wrap break-words text-gray-300">
+          <div className="mb-4 text-xs opacity-50 flex items-center"><XTerm size={14} className="mr-2" /> Initializing terminal stream...</div>
+          {logs.map((log, i) => (
+            <div key={i} className={`${log.startsWith('>') ? 'opacity-80 font-semibold text-blue-400' : ''}`}>{log}</div>
+          ))}
+          <div ref={endRef} />
+        </div>
+        <form onSubmit={sendCommand} className="border-t border-gray-800 p-2 md:p-4 bg-gray-950 flex space-x-2 md:space-x-4">
+          <input 
+            type="text" 
+            value={command} 
+            onChange={e => setCommand(e.target.value)}
+            className="flex-1 bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-500 font-mono text-sm"
+            placeholder="Type a command..."
+          />
+          <button type="submit" className="px-4 md:px-6 py-2 bg-blue-600 hover:bg-blue-500 font-medium text-white rounded-lg transition-colors text-sm">
+            Send
+          </button>
+        </form>
       </div>
-      <form onSubmit={sendCommand} className={`border-t ${borderClass} p-4 ${inputBgClass} flex space-x-4`}>
-        <input 
-          type="text" 
-          value={command} 
-          onChange={e => setCommand(e.target.value)}
-          className={`flex-1 ${bgClass} border ${borderClass} rounded-lg px-4 py-2 ${inputTextClass} focus:outline-none focus:border-blue-500 font-mono text-sm`}
-          placeholder="Type a command... (e.g. op Steve)"
-        />
-        <button type="submit" className="px-6 py-2 bg-blue-600 hover:bg-blue-500 font-medium text-white rounded-lg transition-colors text-sm">
-          Send
-        </button>
-      </form>
+
+      <div className="grid grid-cols-3 gap-4 mt-4">
+        <div className="bg-gray-900 border border-gray-800 rounded-xl p-4 flex flex-col items-center justify-center">
+          <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1">CPU Usage</p>
+          <div className="text-xl font-bold text-white">{stats.cpu.toFixed(1)}%</div>
+        </div>
+        <div className="bg-gray-900 border border-gray-800 rounded-xl p-4 flex flex-col items-center justify-center">
+          <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1">RAM Usage</p>
+          <div className="text-xl font-bold text-white">{Math.floor(stats.ram)} MB</div>
+        </div>
+        <div className="bg-gray-900 border border-gray-800 rounded-xl p-4 flex flex-col items-center justify-center">
+          <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1">Disk Usage</p>
+          <div className="text-xl font-bold text-white">{stats.disk.toFixed(1)} GB</div>
+        </div>
+      </div>
     </div>
   );
 }

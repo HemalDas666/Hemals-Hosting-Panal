@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { readJSON, writeJSON } from "../services/db.js";
-import { createServerContainer, startContainer, stopContainer, restartContainer, deleteContainer, getContainerStatus, sendContainerCommand, attachContainerSocket } from "../services/docker.js";
+import { createServerContainer, startContainer, stopContainer, restartContainer, deleteContainer, getContainerStatus, sendContainerCommand, attachContainerSocket, getContainerStats } from "../services/docker.js";
 import { v4 as uuidv4 } from "uuid";
 import fs from "fs-extra";
 import path from "path";
@@ -40,6 +40,27 @@ export const getServer = async (req: Request, res: Response) => {
   const status = await getContainerStatus(server.containerId);
   server.status = status?.State?.Running ? "online" : "offline";
   res.json(server);
+};
+
+export const getServerStats = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const user = (req as any).user;
+  const servers = await readJSON("servers.json") || [];
+  const server = servers.find((s: any) => s.id === id);
+  if (!server) {
+    res.status(404).json({ error: "Server not found" });
+    return;
+  }
+  if (user.role !== "admin" && server.owner !== user.id) {
+    return res.status(403).json({ error: "Forbidden" });
+  }
+
+  if (server.containerId) {
+    const stats = await getContainerStats(server.containerId);
+    res.json(stats);
+  } else {
+    res.json({ cpu: 0, ram: 0, disk: 0 });
+  }
 };
 
 export const createServer = async (req: Request, res: Response) => {
@@ -85,27 +106,41 @@ export const createServer = async (req: Request, res: Response) => {
 };
 
 export const deleteServer = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const user = (req as any).user;
-  if (user.role !== "admin") {
-    return res.status(403).json({ error: "Only admins can delete servers" });
-  }
+  try {
+    const { id } = req.params;
+    const user = (req as any).user;
+    
+    let servers = await readJSON("servers.json") || [];
+    const server = servers.find((s: any) => s.id === id);
+    
+    if (!server) {
+      return res.status(404).json({ error: "Server not found" });
+    }
 
-  let servers = await readJSON("servers.json") || [];
-  const server = servers.find((s: any) => s.id === id);
-  
-  if (server) {
+    if (user.role !== "admin" && server.owner !== user.id) {
+      return res.status(403).json({ error: "Only admins or owners can delete servers" });
+    }
+
     if (server.containerId) {
       await deleteContainer(server.containerId);
     }
+    
     servers = servers.filter((s: any) => s.id !== id);
     await writeJSON("servers.json", servers);
+    
     // Remove files
     const serverDir = path.join(process.cwd(), "data", "servers", id);
-    await fs.remove(serverDir);
+    try {
+      await fs.remove(serverDir);
+    } catch (e) {
+      console.error("Failed to remove server directory", e);
+    }
+    
+    res.json({ success: true });
+  } catch (err: any) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
   }
-  
-  res.json({ success: true });
 };
 
 export const startServer = async (req: Request, res: Response) => {

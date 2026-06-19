@@ -30,8 +30,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
         
         {/* Main Content */}
-        <main className="flex-1 overflow-x-hidden overflow-y-auto">
-          {children}
+        <main className="flex-1 overflow-hidden relative">
+          <div className="absolute inset-0 overflow-y-auto">
+            {children}
+          </div>
         </main>
       </div>
     </div>

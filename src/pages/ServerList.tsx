@@ -7,6 +7,7 @@ import { useAuth } from "../context/AuthContext";
 
 export default function ServerList() {
   const [servers, setServers] = useState<any[]>([]);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const { user } = useAuth();
 
   const fetchServers = async () => {
@@ -29,13 +30,16 @@ export default function ServerList() {
     } catch(e) {}
   };
 
-  const handleDelete = async (id: string) => {
-    if(confirm("Are you sure you want to delete this server?")) {
-      try {
-        await axios.delete(`/api/servers/${id}`);
-        fetchServers();
-      } catch(e) {}
+  const handleDelete = async (id: string, confirmed = false) => {
+    if (!confirmed) {
+      setDeletingId(id);
+      return;
     }
+    try {
+      await axios.delete(`/api/servers/${id}`);
+      setDeletingId(null);
+      fetchServers();
+    } catch(e) {}
   };
 
   const container = {
@@ -58,7 +62,7 @@ export default function ServerList() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
-      className="p-10 max-w-7xl mx-auto"
+      className="p-4 md:p-10 max-w-7xl mx-auto"
     >
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-bold tracking-tight">Your Servers</h1>
@@ -71,36 +75,38 @@ export default function ServerList() {
 
       <motion.div variants={container} initial="hidden" animate="show" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {servers.map(server => (
-          <motion.div variants={item} key={server.id} className="bg-gray-950 rounded-2xl border border-gray-800 p-6 flex flex-col">
-            <div className="flex justify-between items-start mb-4">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-gray-900 rounded-lg border border-gray-800/50">
-                  <Server className="w-5 h-5 text-gray-400" />
-                </div>
-                <div>
-                  <h2 className="font-semibold text-lg leading-tight">{server.name}</h2>
-                  <div className="flex items-center mt-1 space-x-2">
-                    <span className={`w-2 h-2 rounded-full ${server.status === 'online' ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-gray-500'}`}></span>
-                    <span className="text-xs text-gray-400 capitalize">{server.status}</span>
+          <motion.div variants={item} key={server.id} className="bg-gray-950 rounded-2xl border border-gray-800 p-6 flex flex-col hover:border-gray-700 transition-colors">
+            <Link to={`/servers/${server.id}`} className="block flex-1 group">
+              <div className="flex justify-between items-start mb-4">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 bg-gray-900 rounded-lg border border-gray-800/50 group-hover:bg-gray-800 transition-colors">
+                    <Server className="w-5 h-5 text-gray-400 group-hover:text-blue-400 transition-colors" />
+                  </div>
+                  <div>
+                    <h2 className="font-semibold text-lg leading-tight group-hover:text-blue-400 transition-colors">{server.name}</h2>
+                    <div className="flex items-center mt-1 space-x-2">
+                      <span className={`w-2 h-2 rounded-full ${server.status === 'online' ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-gray-500'}`}></span>
+                      <span className="text-xs text-gray-400 capitalize">{server.status}</span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-4 py-4 border-y border-gray-800/50 my-4 text-sm mt-auto">
-              <div>
-                <p className="text-gray-500 text-xs mb-1">Port</p>
-                <p className="font-mono text-gray-200">{server.port}</p>
+              
+              <div className="grid grid-cols-2 gap-4 py-4 border-y border-gray-800/50 my-4 text-sm mt-auto">
+                <div>
+                  <p className="text-gray-500 text-xs mb-1">Port</p>
+                  <p className="font-mono text-gray-200">{server.port}</p>
+                </div>
+                <div>
+                  <p className="text-gray-500 text-xs mb-1">RAM</p>
+                  <p className="font-mono text-gray-200">{server.ram} GB</p>
+                </div>
+                <div>
+                  <p className="text-gray-500 text-xs mb-1">Version</p>
+                  <p className="text-gray-200">{server.version}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-gray-500 text-xs mb-1">RAM</p>
-                <p className="font-mono text-gray-200">{server.ram} GB</p>
-              </div>
-              <div>
-                <p className="text-gray-500 text-xs mb-1">Version</p>
-                <p className="text-gray-200">{server.version}</p>
-              </div>
-            </div>
+            </Link>
 
             <div className="flex space-x-2">
               <Link to={`/servers/${server.id}`} className="flex-1 flex justify-center items-center py-2 bg-gray-900 hover:bg-gray-800 text-gray-300 rounded-lg text-sm transition-colors border border-gray-800/50">
@@ -118,10 +124,21 @@ export default function ServerList() {
               <button onClick={() => handleAction(server.id, 'restart')} className="p-2 bg-orange-500/10 hover:bg-orange-500/20 text-orange-500 rounded-lg transition-colors border border-orange-500/20">
                 <RefreshCw className="w-5 h-5" />
               </button>
-              {user?.role === "admin" && (
-                <button onClick={() => handleDelete(server.id)} className="p-2 bg-gray-900 hover:bg-red-500/20 hover:text-red-500 hover:border-red-500/20 rounded-lg transition-colors text-gray-400 border border-gray-800/50">
-                  <Trash2 className="w-5 h-5" />
-                </button>
+              {(user?.role === "admin" || server.owner === user?.id) && (
+                deletingId === server.id ? (
+                  <div className="flex space-x-1">
+                    <button onClick={() => handleDelete(server.id, true)} className="px-3 bg-red-600 hover:bg-red-500 text-white rounded-lg transition-colors text-xs font-bold">
+                      Confirm
+                    </button>
+                    <button onClick={() => setDeletingId(null)} className="px-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg transition-colors text-xs font-bold">
+                      Cancel
+                    </button>
+                  </div>
+                ) : (
+                  <button onClick={() => handleDelete(server.id)} className="p-2 bg-gray-900 hover:bg-red-500/20 hover:text-red-500 hover:border-red-500/20 rounded-lg transition-colors text-gray-400 border border-gray-800/50">
+                    <Trash2 className="w-5 h-5" />
+                  </button>
+                )
               )}
             </div>
           </motion.div>

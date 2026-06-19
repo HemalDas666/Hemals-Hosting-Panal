@@ -4,10 +4,9 @@ import { useNavigate } from "react-router-dom";
 
 export default function CreateServer() {
   const [name, setName] = useState("");
-  const [ram, setRam] = useState(2);
-  const [port, setPort] = useState(25565);
+  const [ram, setRam] = useState<string>("2");
+  const [port, setPort] = useState<string>("25565");
   const [version, setVersion] = useState("1.21.1");
-  const [theme, setTheme] = useState("default");
   const [versions, setVersions] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -23,7 +22,7 @@ export default function CreateServer() {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post("/api/servers", { name, ram, port, version, theme });
+      await axios.post("/api/servers", { name, ram: Number(ram), port: Number(port), version });
       navigate("/servers");
     } catch (e) {
       alert("Error creating server");
@@ -32,10 +31,10 @@ export default function CreateServer() {
   };
 
   return (
-    <div className="p-10 max-w-2xl mx-auto">
+    <div className="p-4 md:p-10 max-w-2xl mx-auto">
       <h1 className="text-3xl font-bold tracking-tight mb-8">Create Minecraft Server</h1>
       
-      <form onSubmit={handleSubmit} className="bg-gray-950 p-8 rounded-2xl border border-gray-800 space-y-6">
+      <form onSubmit={handleSubmit} className="bg-gray-950 p-6 md:p-8 rounded-2xl border border-gray-800 space-y-6">
         <div>
           <label className="block text-sm font-medium text-gray-400 mb-2">Server Name</label>
           <input 
@@ -56,7 +55,7 @@ export default function CreateServer() {
               required 
               min={1}
               value={ram} 
-              onChange={e => setRam(Number(e.target.value))} 
+              onChange={e => setRam(e.target.value)} 
               className="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
             />
           </div>
@@ -66,7 +65,7 @@ export default function CreateServer() {
               type="number" 
               required 
               value={port} 
-              onChange={e => setPort(Number(e.target.value))} 
+              onChange={e => setPort(e.target.value)} 
               className="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
             />
           </div>
@@ -80,20 +79,6 @@ export default function CreateServer() {
             className="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
           >
             {versions.map(v => <option key={v} value={v}>{v}</option>)}
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-400 mb-2">Console Theme (Admin Set)</label>
-          <select 
-            value={theme} 
-            onChange={e => setTheme(e.target.value)}
-            className="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-          >
-            <option value="default">Default Dark</option>
-            <option value="hacker">Hacker (Green on Black)</option>
-            <option value="midnight">Midnight (Blue tint)</option>
-            <option value="light">Light Mode</option>
           </select>
         </div>
 

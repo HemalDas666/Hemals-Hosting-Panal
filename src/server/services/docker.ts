@@ -56,11 +56,15 @@ export const createServerContainer = async (serverData: any) => {
       `EULA=TRUE`,
       `TYPE=PAPER`,
       `VERSION=${serverData.version}`,
-      `MEMORY=${serverData.ram}G`
+      `MEMORY=${serverData.ram}G`,
+      `SERVER_PORT=${serverData.port}`
     ],
+    ExposedPorts: {
+      [`${serverData.port}/tcp`]: {}
+    },
     HostConfig: {
       PortBindings: {
-        "25565/tcp": [
+        [`${serverData.port}/tcp`]: [
           {
             HostPort: `${serverData.port}`
           }
@@ -118,7 +122,7 @@ export const deleteContainer = async (containerId: string) => {
     if (info.State.Running) {
       await container.stop();
     }
-    await container.remove();
+    await container.remove({ force: true });
   } catch (err) {
     console.error("Error deleting container", err);
   }
@@ -136,6 +140,56 @@ export const getContainerStatus = async (containerId: string) => {
     return info;
   } catch (e) {
     return null;
+  }
+};
+
+export const getContainerStats = async (containerId: string) => {
+  if (isSandbox) {
+    const id = containerId.replace("mock-container-id-", "");
+    if (!mockState[id]) return { cpu: 0, ram: 0, disk: 0 };
+    
+    // Stable pseudo-random mock stats based on time so it fluctuates realistically
+    const timeSec = Math.floor(Date.now() / 5000);
+    const floatPseudo = (Math.sin(timeSec + id.charCodeAt(0)) + 1) / 2; // 0 to 1
+    
+    return {
+      cpu: floatPseudo * 10 + 2, // 2% to 12%
+      ram: 1024 + (floatPseudo * 50 - 25), // ~1024 MB
+      disk: 2.1
+    };
+  }
+  try {
+    const container = docker.getContainer(containerId);
+    const info = await container.inspect();
+    if (!info.State.Running) {
+      return { cpu: 0, ram: 0, disk: 0 };
+    }
+    const statsResult = await container.stats({ stream: false });
+    
+    let cpuPercent = 0.0;
+    try {
+      const cpuDelta = statsResult.cpu_stats.cpu_usage.total_usage - statsResult.precpu_stats.cpu_usage.total_usage;
+      const systemDelta = statsResult.cpu_stats.system_cpu_usage - statsResult.precpu_stats.system_cpu_usage;
+      if (systemDelta > 0.0 && cpuDelta > 0.0) {
+        const cpus = statsResult.cpu_stats.online_cpus || statsResult.cpu_stats.cpu_usage.percpu_usage?.length || 1;
+        cpuPercent = (cpuDelta / systemDelta) * cpus * 100.0;
+      }
+    } catch(e) {}
+
+    let ramMB = 0.0;
+    try {
+      const usedMemory = statsResult.memory_stats.usage - (statsResult.memory_stats.stats?.cache || 0);
+      ramMB = usedMemory / 1024 / 1024;
+    } catch(e) {}
+
+    // Roughly calculate disk size from the volume directory if possible, or provide a default for now.
+    return {
+      cpu: cpuPercent,
+      ram: ramMB,
+      disk: 2.1
+    };
+  } catch (e) {
+    return { cpu: 0, ram: 0, disk: 0 };
   }
 };
 
