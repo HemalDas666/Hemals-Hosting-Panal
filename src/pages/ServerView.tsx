@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, Link, Routes, Route, useLocation } from "react-router-dom";
 import axios from "axios";
 import { Terminal, Folder, Play, Square, RefreshCw, ArrowLeft } from "lucide-react";
@@ -104,10 +104,12 @@ export default function ServerView() {
 
       <div className="flex-1 overflow-hidden p-6 custom-scrollbar relative">
         <AnimatePresence mode="popLayout">
-          <Routes location={location} key={location.pathname}>
-            <Route path="/" element={<motion.div initial={{opacity:0,x:-10}} animate={{opacity:1,x:0}} exit={{opacity:0,x:10}} className="h-full"><ServerConsole serverId={id!} /></motion.div>} />
-            <Route path="/files" element={<motion.div initial={{opacity:0,x:-10}} animate={{opacity:1,x:0}} exit={{opacity:0,x:10}} className="h-full"><FileManager serverId={id!} /></motion.div>} />
-          </Routes>
+          <div key={location.pathname}>
+            <Routes location={location}>
+              <Route path="/" element={<motion.div initial={{opacity:0,x:-10}} animate={{opacity:1,x:0}} exit={{opacity:0,x:10}} className="h-full"><ServerConsole serverId={id!} theme={server.theme} /></motion.div>} />
+              <Route path="/files" element={<motion.div initial={{opacity:0,x:-10}} animate={{opacity:1,x:0}} exit={{opacity:0,x:10}} className="h-full"><FileManager serverId={id!} /></motion.div>} />
+            </Routes>
+          </div>
         </AnimatePresence>
       </div>
     </motion.div>

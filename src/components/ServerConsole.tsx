@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Terminal as XTerm } from "lucide-react";
 import { io, Socket } from "socket.io-client";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 
-export default function ServerConsole({ serverId }: { serverId: string }) {
+export default function ServerConsole({ serverId, theme }: { serverId: string, theme?: string }) {
   const [logs, setLogs] = useState<string[]>([]);
   const [command, setCommand] = useState("");
   const endRef = useRef<HTMLDivElement>(null);
@@ -55,20 +55,47 @@ export default function ServerConsole({ serverId }: { serverId: string }) {
     }
   };
 
+  let bgClass = "bg-gray-900";
+  let textClass = "text-gray-300";
+  let borderClass = "border-gray-800";
+  let inputBgClass = "bg-gray-950";
+  let inputTextClass = "text-white";
+
+  if (theme === "hacker") {
+    bgClass = "bg-[#050505]";
+    textClass = "text-green-500 shadow-green-500/20";
+    borderClass = "border-green-900/50";
+    inputBgClass = "bg-black";
+    inputTextClass = "text-green-400";
+  } else if (theme === "midnight") {
+    bgClass = "bg-slate-900";
+    textClass = "text-blue-200";
+    borderClass = "border-blue-900/50";
+    inputBgClass = "bg-slate-950";
+    inputTextClass = "text-blue-100";
+  } else if (theme === "light") {
+    bgClass = "bg-white";
+    textClass = "text-gray-800";
+    borderClass = "border-gray-200";
+    inputBgClass = "bg-gray-50";
+    inputTextClass = "text-gray-900";
+  }
+
   return (
-    <div className="flex flex-col h-[calc(100vh-200px)] min-h-[400px] bg-gray-900 rounded-2xl border border-gray-800 overflow-hidden">
-      <div className="flex-1 overflow-y-auto p-4 font-mono text-sm custom-scrollbar whitespace-pre-wrap break-words text-gray-300">
+    <div className={`flex flex-col h-[calc(100vh-200px)] min-h-[400px] ${bgClass} rounded-2xl border ${borderClass} overflow-hidden shadow-lg transition-colors duration-500`}>
+      <div className={`flex-1 overflow-y-auto p-4 font-mono text-sm custom-scrollbar whitespace-pre-wrap break-words ${textClass}`}>
+        <div className="mb-4 text-xs opacity-50 flex items-center"><XTerm size={14} className="mr-2" /> Initializing terminal stream...</div>
         {logs.map((log, i) => (
-          <div key={i} className={`${log.startsWith('>') ? 'text-blue-400 font-semibold' : ''}`}>{log}</div>
+          <div key={i} className={`${log.startsWith('>') ? 'opacity-80 font-semibold' : ''}`}>{log}</div>
         ))}
         <div ref={endRef} />
       </div>
-      <form onSubmit={sendCommand} className="border-t border-gray-800 p-4 bg-gray-950 flex space-x-4">
+      <form onSubmit={sendCommand} className={`border-t ${borderClass} p-4 ${inputBgClass} flex space-x-4`}>
         <input 
           type="text" 
           value={command} 
           onChange={e => setCommand(e.target.value)}
-          className="flex-1 bg-gray-900 border border-gray-800 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500 font-mono text-sm"
+          className={`flex-1 ${bgClass} border ${borderClass} rounded-lg px-4 py-2 ${inputTextClass} focus:outline-none focus:border-blue-500 font-mono text-sm`}
           placeholder="Type a command... (e.g. op Steve)"
         />
         <button type="submit" className="px-6 py-2 bg-blue-600 hover:bg-blue-500 font-medium text-white rounded-lg transition-colors text-sm">

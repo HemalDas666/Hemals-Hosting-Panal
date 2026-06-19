@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import Login from "./pages/Login";
@@ -34,14 +35,16 @@ const AnimatedRoutes = () => {
   const location = useLocation();
   return (
     <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname.split("/")[1]}>
-        <Route path="/login" element={<Login />} />
-        <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-        <Route path="/servers" element={<ProtectedRoute><ServerList /></ProtectedRoute>} />
-        <Route path="/servers/create" element={<ProtectedRoute><CreateServer /></ProtectedRoute>} />
-        <Route path="/servers/:id/*" element={<ProtectedRoute><ServerView /></ProtectedRoute>} />
-        <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
-      </Routes>
+      <div key={location.pathname.split("/")[1]}>
+        <Routes location={location}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/servers" element={<ProtectedRoute><ServerList /></ProtectedRoute>} />
+          <Route path="/servers/create" element={<ProtectedRoute><CreateServer /></ProtectedRoute>} />
+          <Route path="/servers/:id/*" element={<ProtectedRoute><ServerView /></ProtectedRoute>} />
+          <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+        </Routes>
+      </div>
     </AnimatePresence>
   );
 };

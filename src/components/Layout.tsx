@@ -1,5 +1,5 @@
+import React, { useState } from "react";
 import { Sidebar } from "./Sidebar";
-import { useState } from "react";
 import { Menu, X } from "lucide-react";
 
 export default function Layout({ children }: { children: React.ReactNode }) {

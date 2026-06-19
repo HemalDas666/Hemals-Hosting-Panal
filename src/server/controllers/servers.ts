@@ -48,7 +48,7 @@ export const createServer = async (req: Request, res: Response) => {
     return res.status(403).json({ error: "Only admins can create servers" });
   }
 
-  const { name, ram, port, version } = req.body;
+  const { name, ram, port, version, theme } = req.body;
   if (!name || !ram || !port || !version) {
     res.status(400).json({ error: "Missing required fields" });
     return;
@@ -62,6 +62,7 @@ export const createServer = async (req: Request, res: Response) => {
     ram,
     port,
     version,
+    theme: theme || "default",
     status: "installing",
     createdAt: new Date().toISOString(),
     containerId: null,

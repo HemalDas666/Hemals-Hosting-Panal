@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -7,6 +7,7 @@ export default function CreateServer() {
   const [ram, setRam] = useState(2);
   const [port, setPort] = useState(25565);
   const [version, setVersion] = useState("1.21.1");
+  const [theme, setTheme] = useState("default");
   const [versions, setVersions] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ export default function CreateServer() {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post("/api/servers", { name, ram, port, version });
+      await axios.post("/api/servers", { name, ram, port, version, theme });
       navigate("/servers");
     } catch (e) {
       alert("Error creating server");
@@ -79,6 +80,20 @@ export default function CreateServer() {
             className="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
           >
             {versions.map(v => <option key={v} value={v}>{v}</option>)}
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-400 mb-2">Console Theme (Admin Set)</label>
+          <select 
+            value={theme} 
+            onChange={e => setTheme(e.target.value)}
+            className="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+          >
+            <option value="default">Default Dark</option>
+            <option value="hacker">Hacker (Green on Black)</option>
+            <option value="midnight">Midnight (Blue tint)</option>
+            <option value="light">Light Mode</option>
           </select>
         </div>
 

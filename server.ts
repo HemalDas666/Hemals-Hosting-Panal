@@ -1,7 +1,6 @@
 import express from "express";
 import path from "path";
 import cors from "cors";
-import cookieParser from "cookie-parser";
 import { createServer } from "http";
 import { Server as SocketIOServer } from "socket.io";
 import { createServer as createViteServer } from "vite";

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Server, Activity, HardDrive, Cpu, MemoryStick } from "lucide-react";
 import { motion } from "framer-motion";
