@@ -6,7 +6,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="flex h-screen bg-gray-950 text-gray-100 font-sans">
+    <div className="flex h-[100dvh] w-full bg-gray-950 text-gray-100 font-sans overflow-hidden">
       {/* Mobile Sidebar Overlay */}
       {mobileOpen && (
         <div 
@@ -16,13 +16,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       )}
       
       {/* Sidebar Container */}
-      <div className={`fixed inset-y-0 left-0 z-50 transform ${mobileOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 ease-in-out`}>
+      <div className={`fixed inset-y-0 left-0 z-50 transform flex-shrink-0 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 ease-in-out`}>
         <Sidebar onClose={() => setMobileOpen(false)} />
       </div>
 
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
         {/* Mobile Header */}
-        <div className="md:hidden flex items-center justify-between p-4 bg-gray-900 border-b border-gray-800">
+        <div className="md:hidden flex items-center justify-between p-4 bg-gray-900 border-b border-gray-800 flex-shrink-0">
           <h1 className="text-xl font-bold tracking-tight text-white">JTG Panel</h1>
           <button onClick={() => setMobileOpen(true)} className="p-2 text-gray-400 hover:text-white bg-gray-800 rounded-lg">
             <Menu size={24} />
@@ -30,10 +30,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
         
         {/* Main Content */}
-        <main className="flex-1 overflow-hidden relative">
-          <div className="absolute inset-0 overflow-y-auto">
-            {children}
-          </div>
+        <main className="flex-1 overflow-x-hidden overflow-y-auto w-full h-full pb-safe">
+          {children}
         </main>
       </div>
     </div>

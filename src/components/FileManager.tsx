@@ -101,7 +101,7 @@ export default function FileManager({ serverId }: { serverId: string }) {
   };
 
   return (
-    <div className="bg-gray-900 rounded-2xl border border-gray-800 flex-1 flex flex-col overflow-hidden relative min-h-0">
+    <div className="bg-gray-900 rounded-2xl border border-gray-800 flex-1 flex flex-col overflow-hidden relative min-h-0 h-full">
       <div className="p-4 border-b border-gray-800 flex items-center justify-between bg-gray-950 shrink-0">
         <div className="flex items-center space-x-4">
           <button onClick={goUp} disabled={path === "/" && !editingFile} className="p-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-gray-400 disabled:opacity-50">

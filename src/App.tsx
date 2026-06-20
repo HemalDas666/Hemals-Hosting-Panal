@@ -19,7 +19,7 @@ import { useLocation } from "react-router-dom";
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
   if (loading) return (
-    <div className="h-screen w-screen flex items-center justify-center bg-gray-950 text-white">
+    <div className="h-[100dvh] w-full flex items-center justify-center bg-gray-950 text-white">
       <motion.div
         animate={{ scale: [1, 1.2, 1], rotate: [0, 180, 360] }}
         transition={{ duration: 2, repeat: Infinity }}
@@ -35,7 +35,7 @@ const AnimatedRoutes = () => {
   const location = useLocation();
   return (
     <AnimatePresence mode="wait">
-      <div key={location.pathname.split("/")[1]} className="h-full">
+      <div key={location.pathname.split("/")[1]} className="h-full w-full flex flex-col">
         <Routes location={location}>
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />

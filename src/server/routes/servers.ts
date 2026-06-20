@@ -26,9 +26,4 @@ router.post("/:id/files/rename", renameFile);
 router.post("/:id/files/save", saveFileContent);
 router.delete("/:id/files", deleteFile);
 
-// Playit endpoints
-import { startPlayit, getPlayitStatus } from "../controllers/servers.js";
-router.post("/:id/playit/start", startPlayit);
-router.get("/:id/playit", getPlayitStatus);
-
 export default router;

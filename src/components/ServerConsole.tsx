@@ -68,25 +68,33 @@ export default function ServerConsole({ serverId }: { serverId: string }) {
   };
 
   return (
-    <div className="flex flex-col flex-1 bg-gray-950 pb-4 min-h-0">
-      <div className="flex flex-col flex-1 bg-gray-900 rounded-2xl border border-gray-800 overflow-hidden shadow-lg min-h-0">
-        <div className="flex-1 overflow-y-auto p-4 font-mono text-sm custom-scrollbar whitespace-pre-wrap break-words text-gray-300">
-          <div className="mb-4 text-xs opacity-50 flex items-center"><XTerm size={14} className="mr-2" /> Initializing terminal stream...</div>
+    <div className="flex flex-col flex-1 bg-gray-950 pb-4 h-full min-h-0">
+      <div className="flex flex-col flex-1 bg-[#0a0a0a] rounded-2xl border border-gray-800/60 overflow-hidden shadow-2xl min-h-0 ring-1 ring-white/5">
+        <div className="flex-1 overflow-y-auto p-5 font-mono text-xs md:text-sm custom-scrollbar whitespace-pre-wrap break-words text-gray-300">
+          <div className="mb-4 text-xs text-gray-500 flex items-center uppercase tracking-widest"><XTerm size={14} className="mr-2" /> Session started</div>
           {logs.map((log, i) => (
-            <div key={i} className={`${log.startsWith('>') ? 'opacity-80 font-semibold text-blue-400' : ''}`}>{log}</div>
+            <div key={i} className={`py-[1px] ${log.startsWith('>') ? 'font-semibold text-blue-400' : log.includes('Error') || log.includes('Exception') ? 'text-red-400' : 'text-gray-300 hover:text-white transition-colors'}`}>
+               <span className="opacity-30 mr-3 select-none">{String(i).padStart(4, '0')}</span> 
+               {log}
+            </div>
           ))}
           <div ref={endRef} />
         </div>
-        <form onSubmit={sendCommand} className="border-t border-gray-800 p-2 md:p-4 bg-gray-950 flex space-x-2 md:space-x-4 shrink-0">
-          <input 
-            type="text" 
-            value={command} 
-            onChange={e => setCommand(e.target.value)}
-            className="flex-1 bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-500 font-mono text-sm"
-            placeholder="Type a command..."
-          />
-          <button type="submit" className="px-4 md:px-6 py-2 bg-blue-600 hover:bg-blue-500 font-medium text-white rounded-lg transition-colors text-sm">
-            Send
+        <form onSubmit={sendCommand} className="p-3 bg-[#0f0f0f] flex space-x-2 shrink-0 border-t border-gray-800/60">
+          <div className="flex-1 flex items-center bg-[#1a1a1a] rounded-lg px-3 border border-gray-800/80 focus-within:border-blue-500/50 focus-within:ring-1 focus-within:ring-blue-500/20 transition-all">
+            <span className="text-blue-500 font-mono mr-2 select-none">❯</span>
+            <input 
+              type="text" 
+              value={command} 
+              onChange={e => setCommand(e.target.value)}
+              className="flex-1 bg-transparent py-2.5 text-gray-200 focus:outline-none font-mono text-sm"
+              placeholder="Send remote command..."
+              spellCheck={false}
+              autoComplete="off"
+            />
+          </div>
+          <button type="submit" disabled={!command.trim()} className="px-5 py-2.5 bg-white text-black hover:bg-gray-200 font-medium rounded-lg transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed">
+            Execute
           </button>
         </form>
       </div>

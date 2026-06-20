@@ -6,7 +6,6 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import ServerConsole from "../components/ServerConsole";
 import FileManager from "../components/FileManager";
-import PlayitGate from "../components/PlayitGate";
 
 export default function ServerView() {
   const { id } = useParams();
@@ -46,7 +45,6 @@ export default function ServerView() {
   const tabs = [
     { name: "Console", path: `/servers/${id}`, exactPath: "", icon: <Terminal size={18} /> },
     { name: "Files", path: `/servers/${id}/files`, exactPath: "files", icon: <Folder size={18} /> },
-    { name: "IP Gate", path: `/servers/${id}/ip-gate`, exactPath: "ip-gate", icon: <Play size={18} /> },
   ];
 
   return (
@@ -108,7 +106,6 @@ export default function ServerView() {
         <Routes>
           <Route path="/" element={<ServerConsole serverId={id!} />} />
           <Route path="/files" element={<FileManager serverId={id!} />} />
-          <Route path="/ip-gate" element={<PlayitGate serverId={id!} />} />
         </Routes>
       </div>
     </motion.div>
