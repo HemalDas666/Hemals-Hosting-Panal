@@ -70,17 +70,17 @@ export default function ServerView() {
           </div>
         </div>
         
-        <div className="flex items-center space-x-2 md:space-x-3 w-full md:w-auto">
+        <div className="flex items-center space-x-2 md:space-x-3 w-auto self-end md:self-auto">
           {server.status !== 'online' ? (
-            <button onClick={() => handleAction('start')} className="flex-1 md:flex-none justify-center px-3 py-2 md:px-4 bg-green-500/10 hover:bg-green-500/20 text-green-500 font-medium rounded-lg transition-colors border border-green-500/20 flex items-center text-sm whitespace-nowrap">
+            <button onClick={() => handleAction('start')} className="px-3 py-1.5 md:px-4 md:py-2 bg-green-500/10 hover:bg-green-500/20 text-green-500 font-medium rounded-lg transition-colors border border-green-500/20 flex items-center text-sm whitespace-nowrap">
               <Play className="w-4 h-4 mr-1.5 md:mr-2" /> Start
             </button>
           ) : (
-            <button onClick={() => handleAction('stop')} className="flex-1 md:flex-none justify-center px-3 py-2 md:px-4 bg-red-500/10 hover:bg-red-500/20 text-red-500 font-medium rounded-lg transition-colors border border-red-500/20 flex items-center text-sm whitespace-nowrap">
+            <button onClick={() => handleAction('stop')} className="px-3 py-1.5 md:px-4 md:py-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 font-medium rounded-lg transition-colors border border-red-500/20 flex items-center text-sm whitespace-nowrap">
               <Square className="w-4 h-4 mr-1.5 md:mr-2" /> Stop
             </button>
           )}
-          <button onClick={() => handleAction('restart')} className="flex-1 md:flex-none justify-center px-3 py-2 md:px-4 bg-orange-500/10 hover:bg-orange-500/20 text-orange-500 font-medium rounded-lg transition-colors border border-orange-500/20 flex items-center text-sm whitespace-nowrap">
+          <button onClick={() => handleAction('restart')} className="px-3 py-1.5 md:px-4 md:py-2 bg-orange-500/10 hover:bg-orange-500/20 text-orange-500 font-medium rounded-lg transition-colors border border-orange-500/20 flex items-center text-sm whitespace-nowrap">
             <RefreshCw className="w-4 h-4 mr-1.5 md:mr-2 text-orange-500" /> Restart
           </button>
         </div>

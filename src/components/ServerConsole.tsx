@@ -70,12 +70,12 @@ export default function ServerConsole({ serverId }: { serverId: string }) {
   return (
     <div className="flex flex-col flex-1 bg-gray-950 pb-2 md:pb-4 h-full min-h-0">
       <div className="flex flex-col flex-1 bg-[#111] rounded-xl border border-gray-800 overflow-hidden min-h-0 shadow-inner">
-        <div className="flex-1 overflow-y-auto p-3 md:p-4 font-mono text-[11px] md:text-xs custom-scrollbar">
-          <div className="mb-3 text-[10px] text-gray-500 flex items-center uppercase tracking-widest"><XTerm size={12} className="mr-2" /> Session started</div>
+        <div className="flex-1 overflow-y-auto p-3 md:p-4 font-mono text-xs md:text-sm custom-scrollbar">
+          <div className="mb-3 text-xs text-gray-500 flex items-center uppercase tracking-widest"><XTerm size={14} className="mr-2" /> Session started</div>
           {logs.map((log, i) => (
-            <div key={i} className={`flex leading-[1.4] md:leading-snug mb-0.5 ${log.startsWith('>') ? 'font-semibold text-blue-400' : log.includes('Error') || log.includes('Exception') ? 'text-red-400' : 'text-gray-300 hover:bg-white/5'}`}>
+            <div key={i} className={`flex py-0.5 ${log.startsWith('>') ? 'font-semibold text-blue-400' : log.includes('Error') || log.includes('Exception') ? 'text-red-400' : 'text-gray-300 hover:bg-white/5'}`}>
                <span className="text-gray-600 mr-2 md:mr-3 select-none shrink-0 w-8 md:w-10 text-right pr-2 border-r border-gray-800">{String(i).padStart(4, '0')}</span> 
-               <span className="break-all md:break-words flex-1 font-mono tracking-tight">{log}</span>
+               <span className="break-words whitespace-pre-wrap flex-1">{log}</span>
             </div>
           ))}
           <div ref={endRef} />
