@@ -319,15 +319,17 @@ export const startPlayit = async (req: Request, res: Response) => {
   try {
     const container = docker.getContainer(server.containerId);
     
-    const cmd = `wget -qO playit-linux-amd64 https://github.com/playit-cloud/playit-agent/releases/download/v0.16.3/playit-linux-amd64 && chmod +x playit-linux-amd64 && nohup stdbuf -oL -eL ./playit-linux-amd64 --secret_path /data/playit_secret > /data/playit.log 2>&1 &`;
+    // Wrap everything to capture all logs including wget
+    const cmd = `( cd /data && (curl -sLo playit https://github.com/playit-cloud/playit-agent/releases/download/v0.16.3/playit-linux-amd64 || wget -qO playit https://github.com/playit-cloud/playit-agent/releases/download/v0.16.3/playit-linux-amd64) && chmod +x playit && ./playit --secret_path /data/playit_secret ) > /data/playit.log 2>&1`;
     
     const exec = await container.exec({
       Cmd: ['sh', '-c', cmd],
       AttachStdout: false,
       AttachStderr: false,
+      Tty: true,
     });
     
-    await exec.start({});
+    await exec.start({ Detach: true });
     res.json({ success: true });
   } catch(e: any) {
     res.status(500).json({ error: e.message });

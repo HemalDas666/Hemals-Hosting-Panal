@@ -54,7 +54,7 @@ export default function ServerView() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
-      className="flex flex-col min-h-full bg-gray-950"
+      className="flex flex-col h-full bg-gray-950"
     >
       <div className="bg-gray-900 border-b border-gray-800 p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shrink-0">
         <div className="flex items-center space-x-4">

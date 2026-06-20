@@ -51,8 +51,8 @@ export default function PlayitGate({ serverId }: { serverId: string }) {
   };
 
   return (
-    <div className="flex flex-col flex-1 bg-gray-950 pb-4 h-full">
-      <div className="bg-gray-900 rounded-2xl border border-gray-800 p-8 flex flex-col items-center justify-center text-center shadow-lg min-h-[400px]">
+    <div className="flex flex-col flex-1 bg-gray-950 pb-4 min-h-0">
+      <div className="bg-gray-900 rounded-2xl border border-gray-800 p-8 flex flex-col items-center justify-center text-center shadow-lg flex-1 min-h-0 overflow-y-auto">
         <div className="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center mb-6 border border-blue-500/20">
           <Play className="w-8 h-8 text-blue-500" />
         </div>
