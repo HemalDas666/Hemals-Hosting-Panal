@@ -136,7 +136,7 @@ export const deleteServer = async (req: Request, res: Response) => {
     await writeJSON("servers.json", servers);
     
     // Remove files
-    const serverDir = path.join(process.cwd(), "data", "servers", id);
+    const serverDir = path.join(process.cwd(), ".data", "servers", id);
     try {
       await fs.remove(serverDir);
     } catch (e) {
@@ -221,9 +221,9 @@ export const sendCommand = async (req: Request, res: Response) => {
 export const getFiles = async (req: Request, res: Response) => {
   const { id } = req.params;
   const dirPath = req.query.path ? String(req.query.path) : "/";
-  const targetPath = path.join(process.cwd(), "data", "servers", id, dirPath);
+  const targetPath = path.join(process.cwd(), ".data", "servers", id, dirPath);
   
-  if (!targetPath.startsWith(path.join(process.cwd(), "data", "servers", id))) {
+  if (!targetPath.startsWith(path.join(process.cwd(), ".data", "servers", id))) {
     return res.status(403).json({ error: "Invalid path" });
   }
 
@@ -251,7 +251,7 @@ export const getFiles = async (req: Request, res: Response) => {
 export const uploadFile = async (req: Request, res: Response) => {
   const { id } = req.params;
   const dirPath = req.body.path || "/";
-  const targetPath = path.join(process.cwd(), "data", "servers", id, dirPath);
+  const targetPath = path.join(process.cwd(), ".data", "servers", id, dirPath);
   
   if (req.file) {
     await fs.ensureDir(targetPath);
@@ -263,9 +263,9 @@ export const uploadFile = async (req: Request, res: Response) => {
 export const deleteFile = async (req: Request, res: Response) => {
   const { id } = req.params;
   const filePath = req.body.path;
-  const targetPath = path.join(process.cwd(), "data", "servers", id, filePath);
+  const targetPath = path.join(process.cwd(), ".data", "servers", id, filePath);
   
-  if (!targetPath.startsWith(path.join(process.cwd(), "data", "servers", id))) {
+  if (!targetPath.startsWith(path.join(process.cwd(), ".data", "servers", id))) {
     return res.status(403).json({ error: "Invalid path" });
   }
 
@@ -281,11 +281,11 @@ export const renameFile = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { oldPath, newPath } = req.body;
 
-  const targetOldPath = path.join(process.cwd(), "data", "servers", id, oldPath);
-  const targetNewPath = path.join(process.cwd(), "data", "servers", id, newPath);
+  const targetOldPath = path.join(process.cwd(), ".data", "servers", id, oldPath);
+  const targetNewPath = path.join(process.cwd(), ".data", "servers", id, newPath);
 
-  if (!targetOldPath.startsWith(path.join(process.cwd(), "data", "servers", id)) ||
-      !targetNewPath.startsWith(path.join(process.cwd(), "data", "servers", id))) {
+  if (!targetOldPath.startsWith(path.join(process.cwd(), ".data", "servers", id)) ||
+      !targetNewPath.startsWith(path.join(process.cwd(), ".data", "servers", id))) {
     return res.status(403).json({ error: "Invalid path" });
   }
 
@@ -301,9 +301,9 @@ export const saveFileContent = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { filePath, content } = req.body;
 
-  const targetPath = path.join(process.cwd(), "data", "servers", id, filePath);
+  const targetPath = path.join(process.cwd(), ".data", "servers", id, filePath);
 
-  if (!targetPath.startsWith(path.join(process.cwd(), "data", "servers", id))) {
+  if (!targetPath.startsWith(path.join(process.cwd(), ".data", "servers", id))) {
     return res.status(403).json({ error: "Invalid path" });
   }
 

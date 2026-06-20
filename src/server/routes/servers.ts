@@ -4,7 +4,7 @@ import { getServers, createServer, getServer, deleteServer, startServer, stopSer
 import multer from "multer";
 
 const router = express.Router();
-const upload = multer({ dest: "data/temp/" });
+const upload = multer({ dest: ".data/temp/" });
 
 router.use(requireAuth);
 

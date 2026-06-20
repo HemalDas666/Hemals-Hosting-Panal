@@ -43,7 +43,7 @@ export const createServerContainer = async (serverData: any) => {
     });
   });
 
-  const serverDir = path.join(process.cwd(), "data", "servers", serverData.id);
+  const serverDir = path.join(process.cwd(), ".data", "servers", serverData.id);
   await fs.ensureDir(serverDir);
 
   const container = await docker.createContainer({

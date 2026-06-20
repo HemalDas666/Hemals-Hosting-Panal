@@ -1,7 +1,7 @@
 import fs from "fs-extra";
 import path from "path";
 
-const DATA_DIR = path.join(process.cwd(), "data");
+const DATA_DIR = path.join(process.cwd(), ".data");
 
 export const readJSON = async (filename: string) => {
   const filePath = path.join(DATA_DIR, filename);

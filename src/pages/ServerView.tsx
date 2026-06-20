@@ -54,7 +54,7 @@ export default function ServerView() {
       exit={{ opacity: 0, y: -10 }}
       className="flex flex-col h-full bg-gray-950"
     >
-      <div className="bg-gray-900 border-b border-gray-800 p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shrink-0">
+      <div className="bg-gray-900 border-b border-gray-800 p-4 md:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shrink-0">
         <div className="flex items-center space-x-4">
           <Link to="/servers" className="p-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-gray-300 transition-colors">
             <ArrowLeft size={20} />
@@ -70,18 +70,18 @@ export default function ServerView() {
           </div>
         </div>
         
-        <div className="flex flex-wrap space-y-2 md:space-y-0 space-x-0 md:space-x-3 w-full md:w-auto">
+        <div className="flex items-center space-x-2 md:space-x-3 w-full md:w-auto">
           {server.status !== 'online' ? (
-            <button onClick={() => handleAction('start')} className="w-full md:w-auto justify-center px-4 py-2 bg-green-500/10 hover:bg-green-500/20 text-green-500 font-medium rounded-lg transition-colors border border-green-500/20 flex items-center">
-              <Play className="w-4 h-4 mr-2" /> Start
+            <button onClick={() => handleAction('start')} className="flex-1 md:flex-none justify-center px-3 py-2 md:px-4 bg-green-500/10 hover:bg-green-500/20 text-green-500 font-medium rounded-lg transition-colors border border-green-500/20 flex items-center text-sm whitespace-nowrap">
+              <Play className="w-4 h-4 mr-1.5 md:mr-2" /> Start
             </button>
           ) : (
-            <button onClick={() => handleAction('stop')} className="w-full md:w-auto justify-center px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 font-medium rounded-lg transition-colors border border-red-500/20 flex items-center">
-              <Square className="w-4 h-4 mr-2" /> Stop
+            <button onClick={() => handleAction('stop')} className="flex-1 md:flex-none justify-center px-3 py-2 md:px-4 bg-red-500/10 hover:bg-red-500/20 text-red-500 font-medium rounded-lg transition-colors border border-red-500/20 flex items-center text-sm whitespace-nowrap">
+              <Square className="w-4 h-4 mr-1.5 md:mr-2" /> Stop
             </button>
           )}
-          <button onClick={() => handleAction('restart')} className="w-full md:w-auto justify-center px-4 py-2 bg-orange-500/10 hover:bg-orange-500/20 text-orange-500 font-medium rounded-lg transition-colors border border-orange-500/20 flex items-center">
-            <RefreshCw className="w-4 h-4 mr-2 text-orange-500" /> Restart
+          <button onClick={() => handleAction('restart')} className="flex-1 md:flex-none justify-center px-3 py-2 md:px-4 bg-orange-500/10 hover:bg-orange-500/20 text-orange-500 font-medium rounded-lg transition-colors border border-orange-500/20 flex items-center text-sm whitespace-nowrap">
+            <RefreshCw className="w-4 h-4 mr-1.5 md:mr-2 text-orange-500" /> Restart
           </button>
         </div>
       </div>

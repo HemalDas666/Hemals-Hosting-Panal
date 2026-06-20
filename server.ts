@@ -14,7 +14,7 @@ export const io = new SocketIOServer(httpServer, {
 });
 
 // Initialize data folders
-const DATA_DIR = path.join(process.cwd(), "data");
+const DATA_DIR = path.join(process.cwd(), ".data");
 const SERVERS_DIR = path.join(DATA_DIR, "servers");
 const BACKUPS_DIR = path.join(process.cwd(), "backups");
 
