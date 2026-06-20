@@ -3,7 +3,7 @@ import fs from "fs-extra";
 import path from "path";
 import { io } from "../../../server.js"; // Import socket for logs
 
-const isSandbox = !fs.existsSync("/var/run/docker.sock") && process.platform !== "win32";
+export const isSandbox = !fs.existsSync("/var/run/docker.sock") && process.platform !== "win32";
 
 export const docker = new Docker({ socketPath: process.platform === 'win32' ? '//./pipe/docker_engine' : '/var/run/docker.sock' });
 

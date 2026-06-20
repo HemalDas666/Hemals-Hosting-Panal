@@ -35,7 +35,7 @@ const AnimatedRoutes = () => {
   const location = useLocation();
   return (
     <AnimatePresence mode="wait">
-      <div key={location.pathname.split("/")[1]} className="min-h-full">
+      <div key={location.pathname.split("/")[1]} className="h-full">
         <Routes location={location}>
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />

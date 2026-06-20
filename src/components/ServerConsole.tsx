@@ -69,7 +69,7 @@ export default function ServerConsole({ serverId }: { serverId: string }) {
 
   return (
     <div className="flex flex-col flex-1 bg-gray-950 pb-4">
-      <div className="flex flex-col bg-gray-900 rounded-2xl border border-gray-800 overflow-hidden shadow-lg h-[50vh] min-h-[300px] max-h-[500px]">
+      <div className="flex flex-col bg-gray-900 rounded-2xl border border-gray-800 overflow-hidden shadow-lg h-[65vh] min-h-[400px]">
         <div className="flex-1 overflow-y-auto p-4 font-mono text-sm custom-scrollbar whitespace-pre-wrap break-words text-gray-300">
           <div className="mb-4 text-xs opacity-50 flex items-center"><XTerm size={14} className="mr-2" /> Initializing terminal stream...</div>
           {logs.map((log, i) => (
