@@ -42,7 +42,7 @@ router.post("/key", requireAdmin, async (req, res) => {
         try {
             const ai = new GoogleGenAI({ apiKey });
             await ai.models.generateContent({
-                model: "gemini-2.5-flash",
+                model: "gemini-2.0-flash",
                 contents: "ping",
             });
         } catch (error: any) {
@@ -90,7 +90,7 @@ router.post("/execute", requireAdmin, async (req, res) => {
     }
 
     const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
+        model: "gemini-2.0-flash",
         contents: prompt || "Analyze system",
         config: {
             systemInstruction,
