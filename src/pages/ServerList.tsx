@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { Server, Settings, Play, Square, RefreshCw, Trash2 } from "lucide-react";
+import { Server, Plus } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
 
 export default function ServerList() {
   const [servers, setServers] = useState<any[]>([]);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
   const { user } = useAuth();
 
   const fetchServers = async () => {
@@ -23,130 +22,100 @@ export default function ServerList() {
     return () => clearInterval(interval);
   }, []);
 
-  const handleAction = async (id: string, action: string) => {
-    try {
-       await axios.post(`/api/servers/${id}/${action}`);
-       fetchServers();
-    } catch(e) {}
-  };
-
-  const handleDelete = async (id: string, confirmed = false) => {
-    if (!confirmed) {
-      setDeletingId(id);
-      return;
-    }
-    try {
-      await axios.delete(`/api/servers/${id}`);
-      setDeletingId(null);
-      fetchServers();
-    } catch(e) {}
-  };
-
   const container = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
+      transition: { staggerChildren: 0.05 }
     }
   };
 
-  const item = {
+  const itemAnim = {
     hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0 }
+    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
   };
 
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
-      className="p-4 md:p-10 max-w-7xl mx-auto"
+      exit={{ opacity: 0, y: -15 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      className="p-5 md:p-10 max-w-7xl mx-auto"
     >
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">Your Servers</h1>
+      <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+        <div>
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-white mb-2">Instances</h1>
+          <p className="text-zinc-400">Manage and monitor your server fleet.</p>
+        </div>
         {user?.role === "admin" && (
-          <Link to="/servers/create" className="px-4 py-2 bg-blue-600 hover:bg-blue-500 font-medium text-white rounded-lg transition-colors flex items-center shadow-sm">
-            <span className="mr-2">New Server</span>
+          <Link to="/servers/create" className="px-5 py-2.5 bg-white text-black font-semibold rounded-xl hover:bg-zinc-200 transition-colors shadow-lg shadow-white/10 text-sm whitespace-nowrap inline-flex items-center self-start md:self-auto">
+            <Plus size={18} className="mr-2" />
+            New Instance
           </Link>
         )}
       </div>
 
-      <motion.div variants={container} initial="hidden" animate="show" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <motion.div variants={container} initial="hidden" animate="show" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
         {servers.map(server => (
-          <motion.div variants={item} key={server.id} className="bg-gray-950 rounded-2xl border border-gray-800 p-6 flex flex-col hover:border-gray-700 transition-colors">
-            <Link to={`/servers/${server.id}`} className="block flex-1 group">
-              <div className="flex justify-between items-start mb-4">
-                <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-gray-900 rounded-lg border border-gray-800/50 group-hover:bg-gray-800 transition-colors">
-                    <Server className="w-5 h-5 text-gray-400 group-hover:text-blue-400 transition-colors" />
+          <motion.div variants={itemAnim} key={server.id} className="bg-[#0a0a0c] rounded-2xl border border-white/5 p-5 md:p-6 flex flex-col group hover:border-white/10 transition-all shadow-xl relative overflow-hidden">
+            {/* Subtle top glow based on status */}
+            <div className={`absolute top-0 left-0 right-0 h-[2px] opacity-50 ${server.status === 'online' ? 'bg-gradient-to-r from-transparent via-emerald-500 to-transparent' : 'bg-gradient-to-r from-transparent via-zinc-500 to-transparent'}`} />
+            
+            <Link to={`/servers/${server.id}`} className="block flex-1 z-10">
+              <div className="flex justify-between items-start mb-6">
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 rounded-xl bg-white/[0.03] border border-white/5 flex items-center justify-center group-hover:bg-indigo-500/10 group-hover:border-indigo-500/30 transition-colors shadow-inner">
+                    <Server className="w-6 h-6 text-zinc-400 group-hover:text-indigo-400 transition-colors" />
                   </div>
                   <div>
-                    <h2 className="font-semibold text-lg leading-tight group-hover:text-blue-400 transition-colors">{server.name}</h2>
-                    <div className="flex items-center mt-1 space-x-2">
-                      <span className={`w-2 h-2 rounded-full ${server.status === 'online' ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-gray-500'}`}></span>
-                      <span className="text-xs text-gray-400 capitalize">{server.status}</span>
+                    <h2 className="font-bold tracking-tight text-white text-lg group-hover:text-indigo-300 transition-colors">{server.name}</h2>
+                    <div className="flex items-center mt-1.5 space-x-2">
+                       <span className="flex h-2.5 w-2.5 relative">
+                          {server.status === 'online' && <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>}
+                          <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${server.status === 'online' ? 'bg-emerald-500' : 'bg-zinc-600'}`}></span>
+                        </span>
+                      <span className="text-xs font-medium text-zinc-400 capitalize flex items-center">{server.status}</span>
                     </div>
                   </div>
                 </div>
               </div>
               
-              <div className="grid grid-cols-2 gap-4 py-4 border-y border-gray-800/50 my-4 text-sm mt-auto">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4 py-4 border-y border-white/5 my-4 text-sm mt-auto">
                 <div>
-                  <p className="text-gray-500 text-xs mb-1">Port</p>
-                  <p className="font-mono text-gray-200">{server.port}</p>
+                  <p className="text-zinc-500 text-[10px] md:text-xs mb-1 font-medium uppercase tracking-wider">CPU Limit</p>
+                  <p className="font-mono text-zinc-300 text-xs md:text-sm">{server.cpu || 100} <span className="text-zinc-500">%</span></p>
                 </div>
                 <div>
-                  <p className="text-gray-500 text-xs mb-1">RAM</p>
-                  <p className="font-mono text-gray-200">{server.ram} GB</p>
+                  <p className="text-zinc-500 text-[10px] md:text-xs mb-1 font-medium uppercase tracking-wider">RAM Limit</p>
+                  <p className="font-mono text-zinc-300 text-xs md:text-sm">{server.ram} <span className="text-zinc-500">GB</span></p>
                 </div>
                 <div>
-                  <p className="text-gray-500 text-xs mb-1">Version</p>
-                  <p className="text-gray-200">{server.version}</p>
+                  <p className="text-zinc-500 text-[10px] md:text-xs mb-1 font-medium uppercase tracking-wider">Disk Limit</p>
+                  <p className="font-mono text-zinc-300 text-xs md:text-sm">{server.disk || 10} <span className="text-zinc-500">GB</span></p>
+                </div>
+                <div>
+                  <p className="text-zinc-500 text-[10px] md:text-xs mb-1 font-medium uppercase tracking-wider">Version</p>
+                  <p className="text-zinc-300 font-medium text-xs md:text-sm truncate" title={server.version}>
+                    {server.version}
+                  </p>
                 </div>
               </div>
             </Link>
-
-            <div className="flex space-x-2">
-              <Link to={`/servers/${server.id}`} className="flex-1 flex justify-center items-center py-2 bg-gray-900 hover:bg-gray-800 text-gray-300 rounded-lg text-sm transition-colors border border-gray-800/50">
-                Manage
-              </Link>
-              {server.status !== 'online' ? (
-                <button onClick={() => handleAction(server.id, 'start')} className="p-2 bg-green-500/10 hover:bg-green-500/20 text-green-500 rounded-lg transition-colors border border-green-500/20">
-                  <Play className="w-5 h-5 ml-0.5" />
-                </button>
-              ) : (
-                <button onClick={() => handleAction(server.id, 'stop')} className="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-lg transition-colors border border-red-500/20">
-                  <Square className="w-5 h-5" />
-                </button>
-              )}
-              <button onClick={() => handleAction(server.id, 'restart')} className="p-2 bg-orange-500/10 hover:bg-orange-500/20 text-orange-500 rounded-lg transition-colors border border-orange-500/20">
-                <RefreshCw className="w-5 h-5" />
-              </button>
-              {(user?.role === "admin" || server.owner === user?.id) && (
-                deletingId === server.id ? (
-                  <div className="flex space-x-1">
-                    <button onClick={() => handleDelete(server.id, true)} className="px-3 bg-red-600 hover:bg-red-500 text-white rounded-lg transition-colors text-xs font-bold">
-                      Confirm
-                    </button>
-                    <button onClick={() => setDeletingId(null)} className="px-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg transition-colors text-xs font-bold">
-                      Cancel
-                    </button>
-                  </div>
-                ) : (
-                  <button onClick={() => handleDelete(server.id)} className="p-2 bg-gray-900 hover:bg-red-500/20 hover:text-red-500 hover:border-red-500/20 rounded-lg transition-colors text-gray-400 border border-gray-800/50">
-                    <Trash2 className="w-5 h-5" />
-                  </button>
-                )
-              )}
-            </div>
           </motion.div>
         ))}
         {servers.length === 0 && (
-          <motion.div variants={item} className="col-span-full py-20 text-center text-gray-500 border border-dashed border-gray-800 rounded-2xl">
-            <Server className="w-10 h-10 mx-auto mb-3 opacity-20" />
-            <p>No servers found. {user?.role === "admin" && "Create one to get started."}</p>
+          <motion.div variants={itemAnim} className="col-span-full py-32 flex flex-col items-center justify-center text-zinc-500 border border-dashed border-white/10 rounded-3xl bg-white/[0.01]">
+            <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mb-6">
+                <Server className="w-8 h-8 opacity-50" />
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2">No Instances Running</h3>
+            <p className="max-w-sm text-center mb-6 text-sm">You haven't deployed any servers yet. Create one to start managing your game instances.</p>
+            {user?.role === "admin" && (
+                <Link to="/servers/create" className="px-5 py-2.5 bg-white text-black font-semibold rounded-xl hover:bg-zinc-200 transition-colors shadow-lg shadow-white/10 text-sm">
+                    Deploy your first server
+                </Link>
+            )}
           </motion.div>
         )}
       </motion.div>

@@ -19,11 +19,11 @@ import { useLocation } from "react-router-dom";
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
   if (loading) return (
-    <div className="h-[100dvh] w-full flex items-center justify-center bg-gray-950 text-white">
+    <div className="h-[100dvh] w-full flex items-center justify-center bg-[#030305] text-white">
       <motion.div
         animate={{ scale: [1, 1.2, 1], rotate: [0, 180, 360] }}
-        transition={{ duration: 2, repeat: Infinity }}
-        className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full"
+        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+        className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full"
       />
     </div>
   );
