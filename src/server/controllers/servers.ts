@@ -145,8 +145,8 @@ export const deleteServer = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "Server not found" });
     }
 
-    if (user.role !== "admin" && server.owner !== user.id) {
-      return res.status(403).json({ error: "Only admins or owners can delete servers" });
+    if (user.role !== "admin") {
+      return res.status(403).json({ error: "Only admins can delete servers" });
     }
 
     if (server.containerId) {
@@ -235,6 +235,48 @@ export const sendCommand = async (req: Request, res: Response) => {
   } catch (err: any) {
     console.error("Command error:", err);
     res.status(500).json({ error: err.message || "Failed to send command" });
+  }
+};
+
+export const changeServerVersion = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { version } = req.body;
+    const user = (req as any).user;
+    
+    if (!version) return res.status(400).json({ error: "Version is required" });
+    
+    let servers = await readJSON("servers.json") || [];
+    const server = servers.find((s: any) => s.id === id);
+    
+    if (!server) {
+      return res.status(404).json({ error: "Server not found" });
+    }
+
+    if (user.role !== "admin" && server.owner !== user.id) {
+      return res.status(403).json({ error: "Only admins or owners can change version" });
+    }
+
+    if (server.containerId) {
+      const status = await getContainerStatus(server.containerId);
+      if (status?.State?.Running) {
+        return res.status(400).json({ error: "Server must be stopped before changing version. Please stop the server first." });
+      }
+      // Delete old container
+      await deleteContainer(server.containerId);
+    }
+    
+    server.version = version;
+    // Recreate container with new version env
+    const newContainerId = await createServerContainer(server);
+    server.containerId = newContainerId;
+    
+    await writeJSON("servers.json", servers);
+    
+    res.json({ success: true, version });
+  } catch (err: any) {
+    console.error("Change version error", err);
+    res.status(500).json({ error: err.message });
   }
 };
 

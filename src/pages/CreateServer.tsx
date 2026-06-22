@@ -1,9 +1,10 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Server, ArrowLeft, Cpu, HardDrive, MemoryStick, Globe, Search, ChevronDown, Check, User } from "lucide-react";
+import { Server, ArrowLeft, Cpu, HardDrive, MemoryStick, Globe, User } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import SearchableDropdown from "../components/SearchableDropdown";
 
 export default function CreateServer() {
   const [name, setName] = useState("");
@@ -16,9 +17,7 @@ export default function CreateServer() {
   const [versions, setVersions] = useState<string[]>([]);
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [createProgress, setCreateProgress] = useState(0);
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -50,6 +49,17 @@ export default function CreateServer() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setCreateProgress(0);
+
+    const interval = setInterval(() => {
+      setCreateProgress(prev => {
+        if (prev >= 90) {
+          clearInterval(interval);
+          return 90;
+        }
+        return prev + 5;
+      });
+    }, 400);
     
     try {
       const payload: any = { 
@@ -64,8 +74,16 @@ export default function CreateServer() {
         payload.owner = owner;
       }
       await axios.post("/api/servers", payload);
-      navigate("/servers");
+      
+      clearInterval(interval);
+      setCreateProgress(100);
+      
+      setTimeout(() => {
+        navigate("/servers");
+      }, 500);
     } catch (e) {
+      clearInterval(interval);
+      setCreateProgress(0);
       alert("Error creating server");
       setLoading(false);
     }
@@ -166,72 +184,44 @@ export default function CreateServer() {
             <label className="block text-sm font-medium text-zinc-300 mb-2 flex items-center">
               <User className="w-4 h-4 mr-2 text-indigo-400" /> Assign Server Owner
             </label>
-            <div className="relative">
-              <select 
-                value={owner} 
-                onChange={e => setOwner(e.target.value)} 
-                className="w-full bg-white/[0.02] border border-white/10 hover:border-white/20 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 rounded-xl px-4 py-3 text-white transition-all shadow-inner outline-none appearance-none cursor-pointer font-medium pr-10"
-              >
-                <option value="" disabled className="bg-[#0a0a0c]">Select a user...</option>
-                {users.map(u => (
-                  <option key={u.id} value={u.id} className="bg-[#0a0a0c]">
-                    {u.username} {u.id === user?.id ? "(You)" : `(${u.role})`}
-                  </option>
-                ))}
-              </select>
-              <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-zinc-500">
-                <ChevronDown className="w-4 h-4" />
-              </div>
-            </div>
+            <SearchableDropdown
+              value={owner}
+              onChange={setOwner}
+              options={users.map(u => ({ value: u.id, label: `${u.username} ${u.id === user?.id ? "(You)" : `(${u.role})`}` }))}
+              placeholder="Select a user..."
+              searchPlaceholder="Search users..."
+            />
             <p className="text-xs text-zinc-500 mt-2">Select which user owns and has access to this server.</p>
           </div>
 
           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-zinc-300 mb-2">PaperMC Software Version</label>
-            <div className="relative" ref={dropdownRef}>
-              <div 
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="w-full bg-white/[0.02] border border-white/10 hover:border-white/20 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 rounded-xl px-4 py-3 text-white transition-all shadow-inner font-mono cursor-pointer flex justify-between items-center"
-              >
-                <span>{version || "Select a version"}</span>
-                <ChevronDown className={`w-4 h-4 text-zinc-400 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
-              </div>
-
-              {dropdownOpen && (
-                <div className="absolute z-50 mt-2 w-full bg-[#0a0a0c] border border-white/10 rounded-xl shadow-2xl overflow-hidden backdrop-blur-xl">
-                  <div className="p-3 border-b border-white/5 flex items-center bg-white/[0.02]">
-                    <Search className="w-4 h-4 text-zinc-400 mr-2" />
-                    <input 
-                      type="text" 
-                      placeholder="Search versions..." 
-                      className="bg-transparent border-none outline-none text-white text-sm w-full font-mono placeholder:font-sans"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      onClick={(e) => e.stopPropagation()}
-                    />
-                  </div>
-                  <div className="max-h-60 overflow-y-auto p-2 custom-scrollbar">
-                    {versions.filter(v => v.includes(searchQuery)).length === 0 ? (
-                      <div className="p-3 text-zinc-500 text-sm text-center">No versions found</div>
-                    ) : (
-                      versions.filter(v => v.includes(searchQuery)).map(v => (
-                        <div 
-                          key={v}
-                          onClick={() => { setVersion(v); setDropdownOpen(false); setSearchQuery(""); }}
-                          className={`px-3 py-2.5 rounded-lg cursor-pointer flex items-center justify-between text-sm transition-colors font-mono ${version === v ? 'bg-indigo-500/20 text-indigo-300' : 'text-zinc-300 hover:bg-white/5 hover:text-white'}`}
-                        >
-                          {v}
-                          {version === v && <Check className="w-4 h-4 text-indigo-400" />}
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
+            <SearchableDropdown
+              value={version}
+              onChange={setVersion}
+              options={versions.map(v => ({ value: v, label: v }))}
+              placeholder="Select a version..."
+              searchPlaceholder="Search versions..."
+              className="font-mono"
+            />
           </div>
 
           <div className="pt-4 border-t border-white/5">
+             {loading && (
+               <div className="mb-6 p-4 border border-zinc-800 bg-black/20 rounded-xl">
+                 <div className="flex justify-between items-center mb-2">
+                   <span className="text-sm font-medium text-indigo-400">Downloading {version} and creating container...</span>
+                   <span className="text-sm font-mono text-indigo-400/80">{createProgress}% downloading</span>
+                 </div>
+                 <div className="w-full bg-zinc-800/50 rounded-full h-2.5 overflow-hidden">
+                   <div 
+                     className="bg-indigo-500 h-2.5 rounded-full transition-all duration-300 ease-out" 
+                     style={{ width: `${createProgress}%` }}
+                   ></div>
+                 </div>
+               </div>
+             )}
+             
              <button 
                 type="submit" 
                 disabled={loading}
@@ -240,7 +230,7 @@ export default function CreateServer() {
                 {loading ? (
                   <>
                     <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }} className="w-5 h-5 border-2 border-zinc-900 border-t-transparent rounded-full mr-3" />
-                    Deploying Container...
+                    Deploying...
                   </>
                 ) : "Launch Instance"}
              </button>

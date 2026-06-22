@@ -3,16 +3,32 @@ import { Trash2, AlertTriangle, User, Save } from "lucide-react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import SearchableDropdown from "./SearchableDropdown";
 
 export default function ServerSettings({ serverId, server }: { serverId: string, server: any }) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [users, setUsers] = useState<any[]>([]);
   const [owner, setOwner] = useState(server?.owner || "");
   const [isSaving, setIsSaving] = useState(false);
+  
+  const [versions, setVersions] = useState<string[]>([]);
+  const [selectedVersion, setSelectedVersion] = useState(server?.version || "");
+  const [isChangingVersion, setIsChangingVersion] = useState(false);
+  const [versionProgress, setVersionProgress] = useState(0);
+
   const navigate = useNavigate();
   const { user } = useAuth();
   
   useEffect(() => {
+    // Fetch paper versions
+    axios.get("/api/system/paper-versions").then((res) => {
+      if (Array.isArray(res.data)) {
+        setVersions(res.data);
+      } else {
+        setVersions([]);
+      }
+    }).catch(() => {});
+
     if (user?.role === "admin") {
       axios.get("/api/auth/users").then(res => {
         setUsers(res.data);
@@ -30,6 +46,38 @@ export default function ServerSettings({ serverId, server }: { serverId: string,
     } catch(e) {
       alert("Failed to delete server");
       setIsDeleting(false);
+    }
+  };
+
+  const handleChangeVersion = async () => {
+    try {
+      setIsChangingVersion(true);
+      setVersionProgress(0);
+      
+      // Simulate progress up to 90%
+      const interval = setInterval(() => {
+        setVersionProgress(prev => {
+          if (prev >= 90) {
+            clearInterval(interval);
+            return 90;
+          }
+          return prev + 10;
+        });
+      }, 500);
+
+      await axios.put(`/api/servers/${serverId}/version`, { version: selectedVersion });
+      clearInterval(interval);
+      setVersionProgress(100);
+      
+      setTimeout(() => {
+        alert("Server version updated automatically. The container has been recreated.");
+        setIsChangingVersion(false);
+        setVersionProgress(0);
+      }, 500);
+    } catch(e: any) {
+      alert(e.response?.data?.error || "Failed to update server version. Ensure the server is stopped.");
+      setIsChangingVersion(false);
+      setVersionProgress(0);
     }
   };
 
@@ -55,70 +103,125 @@ export default function ServerSettings({ serverId, server }: { serverId: string,
 
         {canManage ? (
           <>
-            {user?.role === "admin" && (
-              <div className="border border-white/10 bg-white/[0.02] rounded-2xl p-6">
-                <h3 className="text-indigo-400 font-bold mb-2 flex items-center">
-                  <User className="w-5 h-5 mr-2" /> Server Ownership
-                </h3>
-                <p className="text-zinc-400 text-sm mb-4">
-                  Transfer the ownership of this server to another user.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <select 
-                    value={owner} 
-                    onChange={e => setOwner(e.target.value)} 
-                    className="flex-1 bg-[#0a0a0c] border border-white/10 focus:border-indigo-500 rounded-xl px-4 py-2 text-white outline-none"
-                  >
-                    {users.map(u => (
-                      <option key={u.id} value={u.id}>{u.username} ({u.role})</option>
-                    ))}
-                  </select>
-                  <button 
-                    onClick={handleUpdateOwner}
-                    disabled={isSaving || owner === server.owner}
-                    className="px-6 py-2 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 font-medium rounded-xl border border-indigo-500/20 transition-all disabled:opacity-50 flex items-center"
-                  >
-                    <Save className="w-4 h-4 mr-2" /> Save
-                  </button>
-                </div>
-              </div>
-            )}
-
-            <div className="border border-red-500/20 bg-red-500/5 rounded-2xl p-6">
-              <h3 className="text-red-400 font-bold mb-2 flex items-center">
-                <AlertTriangle className="w-5 h-5 mr-2" /> Danger Zone
+            <div className="border border-white/10 bg-white/[0.02] rounded-2xl p-6 mb-8">
+              <h3 className="text-amber-400 font-bold mb-2 flex items-center">
+                <AlertTriangle className="w-5 h-5 mr-2" /> Change Server Version
               </h3>
-              <p className="text-zinc-400 text-sm mb-6">
-                Permanently delete this server instance and all of its data. This action cannot be undone.
+              <p className="text-zinc-400 text-sm mb-4">
+                Update the server version (server.jar). 
+                <span className="text-amber-400/80 block mt-1">
+                  WARNING: The server MUST be stopped before changing the version. Do this at your own risk. Your world backup might be affected. If you have not taken a backup, please take a backup first. Changing the version will delete the old server.jar and download the new one.
+                </span>
               </p>
               
-              {!isDeleting ? (
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex-1">
+                  <SearchableDropdown
+                    value={selectedVersion}
+                    onChange={setSelectedVersion}
+                    options={versions.map(v => ({ value: v, label: v }))}
+                    placeholder="Select Version"
+                    searchPlaceholder="Search versions..."
+                    disabled={isChangingVersion}
+                    className="font-mono bg-[#0a0a0c]"
+                  />
+                </div>
                 <button 
-                  onClick={() => setIsDeleting(true)}
-                  className="px-6 py-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-500 font-semibold rounded-xl border border-red-500/20 transition-all flex items-center shadow-sm hover:shadow-red-500/10"
+                  onClick={handleChangeVersion}
+                  disabled={isChangingVersion || selectedVersion === server.version}
+                  className="px-6 py-2 bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 font-medium rounded-xl border border-amber-500/20 transition-all disabled:opacity-50 flex items-center min-w-[160px] justify-center"
                 >
-                  <Trash2 className="w-4 h-4 mr-2" /> Delete Server
+                  {isChangingVersion ? "Updating..." : "Change Version"}
                 </button>
-              ) : (
-                <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-3 bg-red-500/10 p-4 rounded-xl border border-red-500/30">
-                   <span className="text-red-400 font-medium text-sm">Are you absolutely sure?</span>
-                   <div className="flex space-x-2">
-                     <button 
-                       onClick={handleDelete}
-                       className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-bold rounded-lg transition-colors text-sm shadow-md"
-                     >
-                       Yes, Delete
-                     </button>
-                     <button 
-                       onClick={() => setIsDeleting(false)}
-                       className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-medium rounded-lg transition-colors text-sm"
-                     >
-                       Cancel
-                     </button>
-                   </div>
+              </div>
+
+              {isChangingVersion && (
+                <div className="mt-6 p-4 border border-zinc-800 bg-black/20 rounded-xl">
+                    <div className="flex justify-between items-center mb-2">
+                        <span className="text-sm font-medium text-amber-400">Downloading {selectedVersion} and recreating server...</span>
+                        <span className="text-sm font-mono text-amber-400/80">{versionProgress}% downloading</span>
+                    </div>
+                    <div className="w-full bg-zinc-800/50 rounded-full h-2.5 overflow-hidden">
+                        <div 
+                           className="bg-amber-500 h-2.5 rounded-full transition-all duration-300 ease-out" 
+                           style={{ width: `${versionProgress}%` }}
+                        ></div>
+                    </div>
                 </div>
               )}
             </div>
+
+            {user?.role === "admin" ? (
+              <>
+                <div className="border border-white/10 bg-white/[0.02] rounded-2xl p-6">
+                  <h3 className="text-indigo-400 font-bold mb-2 flex items-center">
+                    <User className="w-5 h-5 mr-2" /> Server Ownership
+                  </h3>
+                  <p className="text-zinc-400 text-sm mb-4">
+                    Transfer the ownership of this server to another user.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="flex-1">
+                      <SearchableDropdown
+                        value={owner}
+                        onChange={setOwner}
+                        options={users.map(u => ({ value: u.id, label: `${u.username} (${u.role})` }))}
+                        placeholder="Select an owner..."
+                        searchPlaceholder="Search users..."
+                        className="bg-[#0a0a0c]"
+                      />
+                    </div>
+                    <button 
+                      onClick={handleUpdateOwner}
+                      disabled={isSaving || owner === server.owner}
+                      className="px-6 py-2 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 font-medium rounded-xl border border-indigo-500/20 transition-all disabled:opacity-50 flex items-center"
+                    >
+                      <Save className="w-4 h-4 mr-2" /> Save
+                    </button>
+                  </div>
+                </div>
+
+                <div className="border border-red-500/20 bg-red-500/5 rounded-2xl p-6 mt-8">
+                  <h3 className="text-red-400 font-bold mb-2 flex items-center">
+                    <AlertTriangle className="w-5 h-5 mr-2" /> Danger Zone
+                  </h3>
+                  <p className="text-zinc-400 text-sm mb-6">
+                    Permanently delete this server instance and all of its data. This action cannot be undone.
+                  </p>
+                  
+                  {!isDeleting ? (
+                    <button 
+                      onClick={() => setIsDeleting(true)}
+                      className="px-6 py-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-500 font-semibold rounded-xl border border-red-500/20 transition-all flex items-center shadow-sm hover:shadow-red-500/10"
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" /> Delete Server
+                    </button>
+                  ) : (
+                    <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-3 bg-red-500/10 p-4 rounded-xl border border-red-500/30">
+                       <span className="text-red-400 font-medium text-sm">Are you absolutely sure?</span>
+                       <div className="flex space-x-2">
+                         <button 
+                           onClick={handleDelete}
+                           className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-bold rounded-lg transition-colors text-sm shadow-md"
+                         >
+                           Yes, Delete
+                         </button>
+                         <button 
+                           onClick={() => setIsDeleting(false)}
+                           className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-medium rounded-lg transition-colors text-sm"
+                         >
+                           Cancel
+                         </button>
+                       </div>
+                    </div>
+                  )}
+                </div>
+              </>
+            ) : (
+              <div className="text-zinc-500 text-sm p-4 bg-white/5 rounded-xl border border-white/5">
+                Contact an administrator to manage advanced server settings or to request server deletion.
+              </div>
+            )}
           </>
         ) : (
            <div className="text-zinc-500 text-sm p-4 bg-white/5 rounded-xl border border-white/5">

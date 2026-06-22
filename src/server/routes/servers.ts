@@ -1,6 +1,6 @@
 import express from "express";
 import { requireAuth } from "../middleware/auth.js";
-import { getServers, createServer, getServer, deleteServer, startServer, stopServer, restartServer, getFiles, uploadFile, deleteFile, renameFile, saveFileContent, sendCommand, getServerStats, updateOwner } from "../controllers/servers.js";
+import { getServers, createServer, getServer, deleteServer, startServer, stopServer, restartServer, changeServerVersion, getFiles, uploadFile, deleteFile, renameFile, saveFileContent, sendCommand, getServerStats, updateOwner } from "../controllers/servers.js";
 import multer from "multer";
 
 const router = express.Router();
@@ -14,6 +14,8 @@ router.get("/:id", getServer);
 router.get("/:id/stats", getServerStats);
 router.delete("/:id", deleteServer);
 router.put("/:id/owner", updateOwner);
+
+router.put("/:id/version", changeServerVersion);
 
 router.post("/:id/start", startServer);
 router.post("/:id/stop", stopServer);
