@@ -73,8 +73,7 @@ export const createServer = async (req: Request, res: Response) => {
   if (user.role !== "admin") {
     return res.status(403).json({ error: "Only admins can create servers" });
   }
-
-  const { name, ram, port, version, theme, cpu, disk } = req.body;
+  const { name, ram, port, version, theme, cpu, disk, owner } = req.body;
   if (!name || !ram || !port || !version || !cpu || !disk) {
     res.status(400).json({ error: "Missing required fields" });
     return;
@@ -84,7 +83,7 @@ export const createServer = async (req: Request, res: Response) => {
   const serverData = {
     id,
     name,
-    owner: user.id, // Or whoever admin assigned, default to admin
+    owner: owner || user.id, // Support assigning owner at creation
     ram,
     cpu,
     disk,
@@ -110,6 +109,28 @@ export const createServer = async (req: Request, res: Response) => {
     console.error(err);
     res.status(500).json({ error: err.message });
   }
+};
+
+export const updateOwner = async (req: Request, res: Response) => {
+  const user = (req as any).user;
+  if (user.role !== "admin") {
+    return res.status(403).json({ error: "Only admins can update owner" });
+  }
+
+  const { id } = req.params;
+  const { owner } = req.body;
+
+  if (!owner) return res.status(400).json({ error: "Owner required" });
+
+  const servers = await readJSON("servers.json") || [];
+  const server = servers.find((s: any) => s.id === id);
+
+  if (!server) return res.status(404).json({ error: "Server not found" });
+
+  server.owner = owner;
+  await writeJSON("servers.json", servers);
+  
+  res.json({ success: true });
 };
 
 export const deleteServer = async (req: Request, res: Response) => {

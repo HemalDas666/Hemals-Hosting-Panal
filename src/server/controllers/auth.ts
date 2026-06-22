@@ -39,3 +39,8 @@ export const logout = (req: Request, res: Response) => {
 export const getMe = (req: Request, res: Response) => {
   res.json({ user: (req as any).user });
 };
+
+export const getUsers = async (req: Request, res: Response) => {
+  const users = await readJSON("users.json") || [];
+  res.json(users.map((u: any) => ({ id: u.id, username: u.username, role: u.role })));
+};

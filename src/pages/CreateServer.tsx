@@ -2,7 +2,8 @@ import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Server, ArrowLeft, Cpu, HardDrive, MemoryStick, Globe, Search, ChevronDown, Check } from "lucide-react";
+import { Server, ArrowLeft, Cpu, HardDrive, MemoryStick, Globe, Search, ChevronDown, Check, User } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 export default function CreateServer() {
   const [name, setName] = useState("");
@@ -11,12 +12,15 @@ export default function CreateServer() {
   const [disk, setDisk] = useState<string>("10");
   const [port, setPort] = useState<string>("25565");
   const [version, setVersion] = useState("1.21.1");
+  const [owner, setOwner] = useState("");
   const [versions, setVersions] = useState<string[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -33,20 +37,33 @@ export default function CreateServer() {
       setVersions(res.data);
       if(res.data.length > 0) setVersion(res.data[0]);
     });
-  }, []);
+    axios.get("/api/auth/users").then(res => {
+      setUsers(res.data);
+      if (res.data.length > 0) {
+        // Default to the current admin's ID if available, otherwise first user
+        const defaultOwner = res.data.find((u: any) => u.id === user?.id)?.id || res.data[0].id;
+        setOwner(defaultOwner);
+      }
+    }).catch(() => {});
+  }, [user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    
     try {
-      await axios.post("/api/servers", { 
+      const payload: any = { 
         name, 
         ram: Number(ram), 
         cpu: Number(cpu),
         disk: Number(disk),
         port: Number(port), 
         version 
-      });
+      };
+      if (owner) {
+        payload.owner = owner;
+      }
+      await axios.post("/api/servers", payload);
       navigate("/servers");
     } catch (e) {
       alert("Error creating server");
@@ -145,7 +162,31 @@ export default function CreateServer() {
             </div>
           </div>
 
-          <div>
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium text-zinc-300 mb-2 flex items-center">
+              <User className="w-4 h-4 mr-2 text-indigo-400" /> Assign Server Owner
+            </label>
+            <div className="relative">
+              <select 
+                value={owner} 
+                onChange={e => setOwner(e.target.value)} 
+                className="w-full bg-white/[0.02] border border-white/10 hover:border-white/20 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 rounded-xl px-4 py-3 text-white transition-all shadow-inner outline-none appearance-none cursor-pointer font-medium pr-10"
+              >
+                <option value="" disabled className="bg-[#0a0a0c]">Select a user...</option>
+                {users.map(u => (
+                  <option key={u.id} value={u.id} className="bg-[#0a0a0c]">
+                    {u.username} {u.id === user?.id ? "(You)" : `(${u.role})`}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-zinc-500">
+                <ChevronDown className="w-4 h-4" />
+              </div>
+            </div>
+            <p className="text-xs text-zinc-500 mt-2">Select which user owns and has access to this server.</p>
+          </div>
+
+          <div className="md:col-span-2">
             <label className="block text-sm font-medium text-zinc-300 mb-2">PaperMC Software Version</label>
             <div className="relative" ref={dropdownRef}>
               <div 
