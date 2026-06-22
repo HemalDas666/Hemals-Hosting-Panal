@@ -4,7 +4,7 @@ import { createServerContainer, startContainer, stopContainer, restartContainer,
 import { v4 as uuidv4 } from "uuid";
 import fs from "fs-extra";
 import path from "path";
-import archiver from "archiver";
+import { ZipArchive } from "archiver";
 
 export const getServers = async (req: Request, res: Response) => {
   const user = (req as any).user;
@@ -415,22 +415,28 @@ export const createBackup = async (req: Request, res: Response) => {
   const backupPath = path.join(backupsDir, filename);
 
   try {
+    const serverExists = await fs.pathExists(serverDir);
+    if (!serverExists) {
+       await fs.ensureDir(serverDir); // ensure it acts properly if empty
+    }
+
     const output = fs.createWriteStream(backupPath);
-    const archive = archiver("zip", { zlib: { level: 9 } });
+    const archive = new ZipArchive({ zlib: { level: 9 } });
 
     output.on("close", () => {
-      res.json({ success: true, filename });
+      if (!res.headersSent) res.json({ success: true, filename });
     });
 
-    archive.on("error", (err) => {
-      res.status(500).json({ error: err.message });
+    archive.on("error", (err: any) => {
+      console.error("Archive error:", err);
+      if (!res.headersSent) res.status(500).json({ error: err.message });
     });
 
     archive.pipe(output);
     archive.directory(serverDir, false);
     await archive.finalize();
   } catch (e: any) {
-    res.status(500).json({ error: e.message });
+    if (!res.headersSent) res.status(500).json({ error: e.message });
   }
 };
 

@@ -12,6 +12,13 @@ export const login = async (req: Request, res: Response) => {
     return;
   }
 
+  // Temporary admin user for AI Studio Preview
+  if (username === "admin" && password === "admin") {
+    const token = jwt.sign({ id: "temp-admin", username: "admin", role: "admin" }, JWT_SECRET, { expiresIn: "7d" });
+    res.json({ token, user: { id: "temp-admin", username: "admin", role: "admin" } });
+    return;
+  }
+
   const users = await readJSON("users.json") || [];
   const user = users.find((u: any) => u.username === username);
 
