@@ -17,8 +17,8 @@ npm run build
 
 echo ""
 echo "[4/4] Restarting the panel process..."
-# Depending on whether pm2 is managing the process
-pm2 restart jtg-panel || pm2 start dist/server.cjs --name jtg-panel
+# Start or restart using the ecosystem file
+pm2 restart ecosystem.config.cjs || pm2 start ecosystem.config.cjs
 
 echo ""
 echo "====================================="
