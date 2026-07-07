@@ -274,6 +274,7 @@ export const changeServerVersion = async (req: Request, res: Response) => {
       "paper-global.yml", "paper-world-defaults.yml", "paper.yml",
       "config/paper-global.yml", "config/paper-world-defaults.yml"
     ];
+    
     for (const file of filesToDelete) {
       const filePath = path.join(serverDir, file);
       try {
