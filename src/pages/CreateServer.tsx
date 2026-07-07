@@ -12,6 +12,7 @@ export default function CreateServer() {
   const [cpu, setCpu] = useState<string>("100");
   const [disk, setDisk] = useState<string>("10");
   const [port, setPort] = useState<string>("25565");
+  const [ipAlias, setIpAlias] = useState<string>("");
   const [version, setVersion] = useState("1.21.1");
   const [owner, setOwner] = useState("");
   const [versions, setVersions] = useState<string[]>([]);
@@ -76,6 +77,7 @@ export default function CreateServer() {
         cpu: Number(cpu),
         disk: Number(disk),
         port: Number(port), 
+        ipAlias,
         version 
       };
       if (owner) {
@@ -183,6 +185,18 @@ export default function CreateServer() {
                 required 
                 value={port} 
                 onChange={e => setPort(e.target.value)} 
+                className="w-full bg-white/[0.02] border border-white/10 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 rounded-xl px-4 py-3 text-white transition-all shadow-inner outline-none font-mono"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-zinc-300 mb-2 flex items-center">
+                 <Globe className="w-4 h-4 mr-2 text-indigo-400" /> IP Alias
+              </label>
+              <input 
+                type="text" 
+                value={ipAlias} 
+                onChange={e => setIpAlias(e.target.value)} 
+                placeholder="e.g. play.example.com"
                 className="w-full bg-white/[0.02] border border-white/10 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 rounded-xl px-4 py-3 text-white transition-all shadow-inner outline-none font-mono"
               />
             </div>

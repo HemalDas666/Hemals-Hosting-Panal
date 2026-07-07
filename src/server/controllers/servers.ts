@@ -75,7 +75,7 @@ export const createServer = async (req: Request, res: Response) => {
   if (user.role !== "admin") {
     return res.status(403).json({ error: "Only admins can create servers" });
   }
-  const { name, ram, port, version, theme, cpu, disk, owner } = req.body;
+  const { name, ram, port, version, theme, cpu, disk, owner, ipAlias } = req.body;
   if (!name || !ram || !port || !version || !cpu || !disk) {
     res.status(400).json({ error: "Missing required fields" });
     return;
@@ -90,6 +90,7 @@ export const createServer = async (req: Request, res: Response) => {
     cpu,
     disk,
     port,
+    ipAlias: ipAlias || "",
     version,
     theme: theme || "default",
     status: "installing",
@@ -130,6 +131,26 @@ export const updateOwner = async (req: Request, res: Response) => {
   if (!server) return res.status(404).json({ error: "Server not found" });
 
   server.owner = owner;
+  await writeJSON("servers.json", servers);
+  
+  res.json({ success: true });
+};
+
+export const updateIpAlias = async (req: Request, res: Response) => {
+  const user = (req as any).user;
+  const { id } = req.params;
+  const { ipAlias } = req.body;
+
+  const servers = await readJSON("servers.json") || [];
+  const server = servers.find((s: any) => s.id === id);
+
+  if (!server) return res.status(404).json({ error: "Server not found" });
+
+  if (user.role !== "admin" && server.owner !== user.id) {
+    return res.status(403).json({ error: "Forbidden" });
+  }
+
+  server.ipAlias = ipAlias;
   await writeJSON("servers.json", servers);
   
   res.json({ success: true });

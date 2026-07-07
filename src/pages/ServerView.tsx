@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link, Routes, Route, useLocation } from "react-router-dom";
 import axios from "axios";
-import { Terminal, Folder, Play, Square, RefreshCw, ArrowLeft, Sliders, Archive, AlertTriangle } from "lucide-react";
+import { Terminal, Folder, Play, Square, RefreshCw, ArrowLeft, Sliders, Archive, AlertTriangle, Copy, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import ServerConsole from "../components/ServerConsole";
@@ -16,7 +16,16 @@ export default function ServerView() {
   const [server, setServer] = useState<any>(null);
   const [totalSystemRam, setTotalSystemRam] = useState<number>(0);
   const [showRamWarning, setShowRamWarning] = useState(false);
+  const [copied, setCopied] = useState(false);
   const location = useLocation();
+
+  const handleCopyIp = () => {
+    if (!server) return;
+    const textToCopy = server.ipAlias ? `${server.ipAlias}:${server.port}` : `${window.location.hostname}:${server.port}`;
+    navigator.clipboard.writeText(textToCopy);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const fetchServer = async () => {
     try {
@@ -93,7 +102,16 @@ export default function ServerView() {
                 </span>
                 <span className="text-[11px] md:text-xs font-medium text-zinc-400 capitalize">{server.status}</span>
                 <span className="text-[11px] md:text-xs text-zinc-600">•</span>
-                <span className="text-[11px] md:text-xs font-mono text-zinc-400">{server.port}</span>
+                <button 
+                  onClick={handleCopyIp}
+                  className="flex items-center space-x-1.5 px-2 py-0.5 rounded-md hover:bg-white/5 transition-colors group cursor-pointer -ml-2"
+                  title="Copy Connection Info"
+                >
+                  <span className="text-[11px] md:text-xs font-mono text-zinc-400 group-hover:text-zinc-300 transition-colors">
+                    {server.ipAlias ? `${server.ipAlias}:${server.port}` : server.port}
+                  </span>
+                  {copied ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} className="text-zinc-500 group-hover:text-zinc-300 transition-colors" />}
+                </button>
               </div>
             </div>
           </div>

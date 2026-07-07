@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Trash2, AlertTriangle, User, Save } from "lucide-react";
+import { Trash2, AlertTriangle, User, Save, Globe } from "lucide-react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -9,7 +9,9 @@ export default function ServerSettings({ serverId, server }: { serverId: string,
   const [isDeleting, setIsDeleting] = useState(false);
   const [users, setUsers] = useState<any[]>([]);
   const [owner, setOwner] = useState(server?.owner || "");
+  const [ipAlias, setIpAlias] = useState(server?.ipAlias || "");
   const [isSaving, setIsSaving] = useState(false);
+  const [isSavingAlias, setIsSavingAlias] = useState(false);
   
   const [versions, setVersions] = useState<string[]>([]);
   const [selectedVersion, setSelectedVersion] = useState(server?.version || "");
@@ -107,6 +109,18 @@ export default function ServerSettings({ serverId, server }: { serverId: string,
     }
   };
 
+  const handleUpdateIpAlias = async () => {
+    try {
+      setIsSavingAlias(true);
+      await axios.put(`/api/servers/${serverId}/ipalias`, { ipAlias });
+      alert("IP Alias updated successfully");
+    } catch(e) {
+      alert("Failed to update IP Alias");
+    } finally {
+      setIsSavingAlias(false);
+    }
+  };
+
   return (
     <>
       {showDowngradeRestartPopup && (
@@ -195,8 +209,36 @@ export default function ServerSettings({ serverId, server }: { serverId: string,
               )}
             </div>
 
+            <div className="border border-white/10 bg-white/[0.02] rounded-2xl p-6 mb-8">
+              <h3 className="text-indigo-400 font-bold mb-2 flex items-center">
+                <Globe className="w-5 h-5 mr-2" /> Server IP Alias
+              </h3>
+              <p className="text-zinc-400 text-sm mb-4">
+                Set a custom domain or IP to display on the console page.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex-1">
+                  <input 
+                    type="text" 
+                    value={ipAlias} 
+                    onChange={e => setIpAlias(e.target.value)} 
+                    placeholder="e.g. play.example.com"
+                    className="w-full bg-[#0a0a0c] border border-white/10 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 rounded-xl px-4 py-2 text-white transition-all shadow-inner outline-none font-mono"
+                  />
+                </div>
+                <button 
+                  onClick={handleUpdateIpAlias}
+                  disabled={isSavingAlias || ipAlias === (server.ipAlias || "")}
+                  className="px-6 py-2 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 font-medium rounded-xl border border-indigo-500/20 transition-all disabled:opacity-50 flex items-center"
+                >
+                  <Save className="w-4 h-4 mr-2" /> Save
+                </button>
+              </div>
+            </div>
+
             {user?.role === "admin" ? (
               <>
+
                 <div className="border border-white/10 bg-white/[0.02] rounded-2xl p-6">
                   <h3 className="text-indigo-400 font-bold mb-2 flex items-center">
                     <User className="w-5 h-5 mr-2" /> Server Ownership
