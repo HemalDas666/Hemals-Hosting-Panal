@@ -56,7 +56,14 @@ export const createServerContainer = async (serverData: any) => {
       `EULA=TRUE`,
       `TYPE=PAPER`,
       `VERSION=${serverData.version}`,
+      // MEMORY specifies the maximum heap size (-Xmx) for the Minecraft server.
+      // We allow allocating more RAM than the VPS has physically available (overcommitting).
+      // Since we don't set HostConfig.Memory limits here, Docker relies on the OS's OOM killer if physical RAM is fully exhausted.
       `MEMORY=${serverData.ram}G`,
+      // INIT_MEMORY sets the initial heap size (-Xms). By keeping this low (e.g., 128M),
+      // the application only consumes memory as it actually needs it during runtime,
+      // rather than reserving the entire 'MEMORY' amount immediately at startup.
+      `INIT_MEMORY=128M`,
       `SERVER_PORT=${serverData.port}`
     ],
     ExposedPorts: {

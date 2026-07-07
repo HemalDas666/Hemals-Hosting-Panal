@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { Server, ArrowLeft, Cpu, HardDrive, MemoryStick, Globe, User } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Server, ArrowLeft, Cpu, HardDrive, MemoryStick, Globe, User, AlertTriangle } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import SearchableDropdown from "../components/SearchableDropdown";
 
@@ -18,6 +18,8 @@ export default function CreateServer() {
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [createProgress, setCreateProgress] = useState(0);
+  const [totalSystemRam, setTotalSystemRam] = useState<number>(0);
+  const [showRamWarning, setShowRamWarning] = useState(false);
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -26,6 +28,10 @@ export default function CreateServer() {
       setVersions(res.data);
       if(res.data.length > 0) setVersion(res.data[0]);
     });
+    axios.get("/api/system/stats").then(res => {
+      // res.data.totalMemory is in bytes
+      setTotalSystemRam(res.data.totalMemory / (1024 * 1024 * 1024));
+    }).catch(() => {});
     axios.get("/api/auth/users").then(res => {
       setUsers(res.data);
       if (res.data.length > 0) {
@@ -38,6 +44,18 @@ export default function CreateServer() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Check for RAM overcommit
+    if (totalSystemRam > 0 && Number(ram) > totalSystemRam && !showRamWarning) {
+      setShowRamWarning(true);
+      return;
+    }
+    
+    executeSubmit();
+  };
+  
+  const executeSubmit = async () => {
+    setShowRamWarning(false);
     setLoading(true);
     setCreateProgress(0);
 
@@ -227,6 +245,49 @@ export default function CreateServer() {
           </div>
         </div>
       </form>
+
+      <AnimatePresence>
+        {showRamWarning && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              className="bg-[#121214] border border-red-500/30 shadow-2xl shadow-red-500/10 rounded-2xl p-6 max-w-md w-full relative overflow-hidden"
+            >
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-amber-500" />
+              <div className="flex items-start mb-4">
+                <div className="bg-red-500/10 p-3 rounded-full mr-4">
+                  <AlertTriangle className="w-6 h-6 text-red-500" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-white mb-1">High RAM Allocation</h3>
+                  <p className="text-zinc-400 text-sm leading-relaxed">
+                    You are attempting to allocate <strong className="text-white">{ram}GB</strong> of RAM, but this system only has <strong className="text-white">{totalSystemRam.toFixed(1)}GB</strong> physically available. 
+                  </p>
+                  <p className="text-zinc-400 text-sm leading-relaxed mt-2">
+                    The server has been configured to use memory on-demand, but if it actually consumes more than the available physical RAM during runtime, the host operating system may forcibly terminate (crash) it to prevent system instability.
+                  </p>
+                </div>
+              </div>
+              <div className="flex justify-end space-x-3 mt-6">
+                <button
+                  onClick={() => setShowRamWarning(false)}
+                  className="px-4 py-2 bg-white/5 hover:bg-white/10 text-white font-medium rounded-xl transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={executeSubmit}
+                  className="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 font-bold rounded-xl transition-colors border border-red-500/30"
+                >
+                  Yes, Proceed Anyway
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
