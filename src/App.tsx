@@ -49,12 +49,16 @@ const AnimatedRoutes = () => {
   );
 };
 
+import { SettingsProvider } from "./context/SettingsContext";
+
 export default function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <AnimatedRoutes />
-      </Router>
-    </AuthProvider>
+    <SettingsProvider>
+      <AuthProvider>
+        <Router>
+          <AnimatedRoutes />
+        </Router>
+      </AuthProvider>
+    </SettingsProvider>
   );
 }

@@ -1,11 +1,13 @@
 import { Link, useLocation } from "react-router-dom";
 import { Server, LayoutDashboard, Plus, LogOut, X, Settings } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { useSettings } from "../context/SettingsContext";
 import { motion } from "framer-motion";
 
 export function Sidebar({ onClose }: { onClose?: () => void }) {
   const location = useLocation();
   const { user, logout } = useAuth();
+  const { panelName } = useSettings();
   
   const links = [
     { name: "Dashboard", path: "/", icon: <LayoutDashboard size={18} /> },
@@ -27,11 +29,11 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
       )}
       
       <div className="px-6 mb-10 mt-2 flex items-center gap-3">
-        <div className="relative flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 shadow-[0_0_15px_rgba(99,102,241,0.5)]">
+        <div className="relative flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 shadow-[0_0_15px_rgba(99,102,241,0.5)] flex-shrink-0">
           <Server className="w-4 h-4 text-white" />
         </div>
-        <h1 className="text-xl font-bold text-white tracking-tight">
-          JTG <span className="text-zinc-400 font-medium">Panel</span>
+        <h1 className="text-xl font-bold text-white tracking-tight truncate">
+          {panelName}
         </h1>
       </div>
 

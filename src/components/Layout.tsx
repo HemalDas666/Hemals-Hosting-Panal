@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import { Sidebar } from "./Sidebar";
 import { Menu, X } from "lucide-react";
 import { useLocation, matchPath } from "react-router-dom";
+import { useSettings } from "../context/SettingsContext";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
+  const { panelName } = useSettings();
 
   const isServerView = matchPath("/servers/:id/*", location.pathname) && !matchPath("/servers/create", location.pathname);
 
@@ -45,7 +47,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className="md:hidden flex items-center justify-between p-4 bg-[#0a0a0c]/80 backdrop-blur-md border-b border-white/5 flex-shrink-0 relative z-10">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 rounded bg-gradient-to-br from-indigo-500 to-purple-600 shadow-[0_0_10px_rgba(99,102,241,0.5)]" />
-            <h1 className="text-lg font-bold tracking-tight text-white">JTG Panel</h1>
+            <h1 className="text-lg font-bold tracking-tight text-white truncate">{panelName}</h1>
           </div>
           <button onClick={() => setMobileOpen(true)} className="p-2 text-zinc-400 hover:text-white bg-white/5 rounded-lg transition-colors">
             <Menu size={20} />

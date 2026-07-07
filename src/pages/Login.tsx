@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import { useSettings } from "../context/SettingsContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Server } from "lucide-react";
@@ -10,6 +11,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const { login } = useAuth();
+  const { panelName } = useSettings();
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -40,7 +42,7 @@ export default function Login() {
           <div className="bg-gradient-to-br from-indigo-500 to-purple-600 p-4 rounded-2xl mb-5 shadow-[0_0_20px_rgba(99,102,241,0.4)]">
             <Server className="w-8 h-8 text-white" />
           </div>
-          <h2 className="text-3xl font-extrabold text-white tracking-tight">JTG Panel</h2>
+          <h2 className="text-3xl font-extrabold text-white tracking-tight">{panelName}</h2>
           <p className="text-zinc-400 mt-2 text-sm font-medium">Authenticate to platform controls</p>
         </div>
         

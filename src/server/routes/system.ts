@@ -68,4 +68,14 @@ router.delete("/users/:id", async (req, res) => {
   res.json({ success: true });
 });
 
+router.put("/settings", async (req, res) => {
+  const user = (req as any).user;
+  if(user.role !== "admin") return res.status(403).json({ error: "Forbidden"});
+  const { panelName } = req.body;
+  const settings = await readJSON("settings.json") || {};
+  settings.panelName = panelName || "JTG Panel";
+  await writeJSON("settings.json", settings);
+  res.json({ success: true });
+});
+
 export default router;

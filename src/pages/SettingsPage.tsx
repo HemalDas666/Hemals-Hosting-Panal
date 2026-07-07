@@ -1,15 +1,22 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
+import { useSettings } from "../context/SettingsContext";
 import { motion } from "framer-motion";
-import { Shield, User, Trash2 } from "lucide-react";
+import { Shield, User, Trash2, Layout } from "lucide-react";
 
 export default function SettingsPage() {
   const { user } = useAuth();
+  const { panelName, fetchSettings } = useSettings();
   const [users, setUsers] = useState<any[]>([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("user");
+  const [newPanelName, setNewPanelName] = useState(panelName);
+
+  useEffect(() => {
+    setNewPanelName(panelName);
+  }, [panelName]);
 
   const fetchUsers = async () => {
     if (user.role !== "admin") return;
@@ -77,6 +84,43 @@ export default function SettingsPage() {
           </div>
         </div>
       </div>
+
+      {user.role === "admin" && (
+        <div className="bg-[#0a0a0c] border border-white/5 rounded-2xl p-6 md:p-8 mb-8 shadow-xl relative overflow-hidden">
+          <h2 className="text-xl font-bold mb-6 flex items-center text-white relative z-10">
+            <Layout className="mr-3 text-emerald-400 w-5 h-5" /> Platform Preferences
+          </h2>
+          <form 
+            onSubmit={async (e) => {
+              e.preventDefault();
+              try {
+                await axios.put("/api/system/settings", { panelName: newPanelName });
+                fetchSettings();
+                alert("Settings updated successfully");
+              } catch (err: any) {
+                alert(err.response?.data?.error || "Error updating settings");
+              }
+            }}
+            className="relative z-10"
+          >
+            <div className="max-w-md">
+              <label className="block text-sm font-medium text-zinc-400 mb-1.5">Panel Name</label>
+              <div className="flex gap-3">
+                <input 
+                  required 
+                  value={newPanelName} 
+                  onChange={e => setNewPanelName(e.target.value)} 
+                  type="text" 
+                  className="flex-1 bg-white/[0.03] border border-white/10 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 rounded-xl px-4 py-2.5 text-white transition-all shadow-inner outline-none" 
+                />
+                <button type="submit" className="bg-white text-zinc-900 hover:bg-zinc-200 font-semibold px-6 py-2.5 rounded-xl transition-all shadow-sm active:scale-[0.98] whitespace-nowrap">
+                  Save
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      )}
 
       {user.role === "admin" && (
         <div className="bg-[#0a0a0c] border border-white/5 rounded-2xl p-6 md:p-8 shadow-xl relative overflow-hidden">
