@@ -270,7 +270,10 @@ export const changeServerVersion = async (req: Request, res: Response) => {
     
     // Automatically delete paper config files when changing version to avoid NumberFormatException
     const serverDir = path.join(process.cwd(), ".data", "servers", id);
-    const filesToDelete = ["paper-global.yml", "paper-world-defaults.yml", "paper.yml"];
+    const filesToDelete = [
+      "paper-global.yml", "paper-world-defaults.yml", "paper.yml",
+      "config/paper-global.yml", "config/paper-world-defaults.yml"
+    ];
     for (const file of filesToDelete) {
       const filePath = path.join(serverDir, file);
       try {

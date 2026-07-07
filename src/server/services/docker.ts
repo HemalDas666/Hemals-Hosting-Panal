@@ -64,7 +64,9 @@ export const createServerContainer = async (serverData: any) => {
       // the application only consumes memory as it actually needs it during runtime,
       // rather than reserving the entire 'MEMORY' amount immediately at startup.
       `INIT_MEMORY=128M`,
-      `SERVER_PORT=${serverData.port}`
+      `SERVER_PORT=${serverData.port}`,
+      `ENABLE_RCON=true`,
+      `RCON_PASSWORD=admin`
     ],
     ExposedPorts: {
       [`${serverData.port}/tcp`]: {}

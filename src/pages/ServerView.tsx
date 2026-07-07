@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link, Routes, Route, useLocation } from "react-router-dom";
 import axios from "axios";
-import { Terminal, Folder, Play, Square, RefreshCw, ArrowLeft, Sliders, Archive } from "lucide-react";
+import { Terminal, Folder, Play, Square, RefreshCw, ArrowLeft, Sliders, Archive, AlertTriangle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import ServerConsole from "../components/ServerConsole";
@@ -14,6 +14,8 @@ import { Settings } from "lucide-react";
 export default function ServerView() {
   const { id } = useParams();
   const [server, setServer] = useState<any>(null);
+  const [totalSystemRam, setTotalSystemRam] = useState<number>(0);
+  const [showRamWarning, setShowRamWarning] = useState(false);
   const location = useLocation();
 
   const fetchServer = async () => {
@@ -25,15 +27,26 @@ export default function ServerView() {
 
   useEffect(() => {
     fetchServer();
+    axios.get("/api/system/stats").then(res => {
+      setTotalSystemRam(res.data.totalMemory / (1024 * 1024 * 1024));
+    }).catch(() => {});
     const interval = setInterval(fetchServer, 5000);
     return () => clearInterval(interval);
   }, [id]);
 
-  const handleAction = async (action: string) => {
+  const executeAction = async (action: string) => {
     try {
        await axios.post(`/api/servers/${id}/${action}`);
        fetchServer();
     } catch(e) {}
+  };
+
+  const handleAction = async (action: string) => {
+    if (action === 'start' && totalSystemRam > 0 && server?.ram > totalSystemRam && !showRamWarning) {
+      setShowRamWarning(true);
+      return;
+    }
+    executeAction(action);
   };
 
   if (!server) return (
@@ -151,6 +164,52 @@ export default function ServerView() {
            </Routes>
         </div>
       </div>
+
+      <AnimatePresence>
+        {showRamWarning && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              className="bg-[#121214] border border-red-500/30 shadow-2xl shadow-red-500/10 rounded-2xl p-6 max-w-md w-full relative overflow-hidden"
+            >
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-amber-500" />
+              <div className="flex items-start mb-4">
+                <div className="bg-red-500/10 p-3 rounded-full mr-4">
+                  <AlertTriangle className="w-6 h-6 text-red-500" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-white mb-1">High RAM Allocation</h3>
+                  <p className="text-zinc-400 text-sm leading-relaxed">
+                    This instance is configured to use up to <strong className="text-white">{server?.ram}GB</strong> of RAM, but this system only has <strong className="text-white">{totalSystemRam.toFixed(1)}GB</strong> physically available. 
+                  </p>
+                  <p className="text-zinc-400 text-sm leading-relaxed mt-2">
+                    The container uses memory on-demand, but if actual memory usage exceeds the host's physical RAM, the server will crash/be terminated by the OS.
+                  </p>
+                </div>
+              </div>
+              <div className="flex justify-end space-x-3 mt-6">
+                <button
+                  onClick={() => setShowRamWarning(false)}
+                  className="px-4 py-2 bg-white/5 hover:bg-white/10 text-white font-medium rounded-xl transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    setShowRamWarning(false);
+                    executeAction('start');
+                  }}
+                  className="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 font-bold rounded-xl transition-colors border border-red-500/30"
+                >
+                  Start Anyway
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
