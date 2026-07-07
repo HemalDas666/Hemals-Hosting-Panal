@@ -67,7 +67,10 @@ export default function ServerConsole({ serverId, server }: { serverId: string, 
     }
   };
 
-  const formatLogLine = (log: string) => {
+  const formatLogLine = (rawLog: string) => {
+    // Strip ANSI escape codes
+    const log = rawLog.replace(/\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])/g, '');
+
     // Basic formatting for Minecraft/standard logs: e.g., "[14:23:45 INFO]: Starting minecraft server version 1.21"
     const timestampMatch = log.match(/^(\[\d{2}:\d{2}:\d{2}\s[^\]]+\]|\d{2}:\d{2}:\d{2})/);
     let levelClass = "text-gray-300";
