@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Server, Plus } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
+import ServerLiveStats from "../components/ServerLiveStats";
 
 export default function ServerList() {
   const [servers, setServers] = useState<any[]>([]);
@@ -87,8 +88,8 @@ export default function ServerList() {
                   <p className="font-mono text-zinc-300 text-xs md:text-sm">{server.cpu || 100} <span className="text-zinc-500">%</span></p>
                 </div>
                 <div>
-                  <p className="text-zinc-500 text-[10px] md:text-xs mb-1 font-medium uppercase tracking-wider">RAM Limit</p>
-                  <p className="font-mono text-zinc-300 text-xs md:text-sm">{server.ram} <span className="text-zinc-500">GB</span></p>
+                  <p className="text-zinc-500 text-[10px] md:text-xs mb-1 font-medium uppercase tracking-wider">RAM Usage</p>
+                  <ServerLiveStats serverId={server.id} limitRam={server.ram} status={server.status} />
                 </div>
                 <div>
                   <p className="text-zinc-500 text-[10px] md:text-xs mb-1 font-medium uppercase tracking-wider">Disk Limit</p>

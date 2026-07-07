@@ -15,6 +15,8 @@ export default function ServerSettings({ serverId, server }: { serverId: string,
   const [selectedVersion, setSelectedVersion] = useState(server?.version || "");
   const [isChangingVersion, setIsChangingVersion] = useState(false);
   const [versionProgress, setVersionProgress] = useState(0);
+  const [showDowngradeRestartPopup, setShowDowngradeRestartPopup] = useState(false);
+  const [isRestarting, setIsRestarting] = useState(false);
 
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -70,7 +72,7 @@ export default function ServerSettings({ serverId, server }: { serverId: string,
       setVersionProgress(100);
       
       setTimeout(() => {
-        alert("Server version updated automatically. The container has been recreated.");
+        setShowDowngradeRestartPopup(true);
         setIsChangingVersion(false);
         setVersionProgress(0);
       }, 500);
@@ -78,6 +80,18 @@ export default function ServerSettings({ serverId, server }: { serverId: string,
       alert(e.response?.data?.error || "Failed to update server version. Ensure the server is stopped.");
       setIsChangingVersion(false);
       setVersionProgress(0);
+    }
+  };
+
+  const handleDowngradeRestart = async () => {
+    try {
+      setIsRestarting(true);
+      await axios.post(`/api/servers/${serverId}/restart`);
+      setShowDowngradeRestartPopup(false);
+    } catch (e: any) {
+      alert("Failed to restart server: " + (e.response?.data?.error || e.message));
+    } finally {
+      setIsRestarting(false);
     }
   };
 
@@ -94,6 +108,36 @@ export default function ServerSettings({ serverId, server }: { serverId: string,
   };
 
   return (
+    <>
+      {showDowngradeRestartPopup && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#0a0a0c] border border-white/10 p-6 rounded-2xl max-w-md w-full shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1 bg-amber-500"></div>
+            <div className="flex items-start mb-4">
+              <div className="bg-amber-500/20 p-3 rounded-xl mr-4 text-amber-400">
+                <AlertTriangle className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-white mb-1">Restart Required</h3>
+                <p className="text-sm text-zinc-400 leading-relaxed">
+                  Restart the server to ensure files are processed correctly.
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex justify-end mt-6">
+              <button
+                onClick={handleDowngradeRestart}
+                disabled={isRestarting}
+                className="px-6 py-2.5 bg-amber-500 hover:bg-amber-400 text-black font-semibold rounded-xl transition-all disabled:opacity-50"
+              >
+                {isRestarting ? "Restarting..." : "OK"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     <div className="flex-1 overflow-y-auto p-4 md:p-6 custom-scrollbar text-white">
       <div className="max-w-3xl space-y-8">
         <div>
@@ -230,5 +274,6 @@ export default function ServerSettings({ serverId, server }: { serverId: string,
         )}
       </div>
     </div>
+    </>
   );
 }
