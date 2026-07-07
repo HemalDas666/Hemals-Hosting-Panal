@@ -37,10 +37,16 @@ export const createServerContainer = async (serverData: any) => {
     return "mock-container-id-" + serverData.id;
   }
 
+  const serverType = serverData.type || "PAPER";
+  const isProxy = ["VELOCITY", "BUNGEECORD", "WATERFALL"].includes(serverType.toUpperCase());
+  const dockerImage = isProxy
+    ? "itzg/bungeecord" 
+    : "itzg/minecraft-server";
+
   // Pull image if not exists
-  console.log(`Ensuring ${DOCKER_IMAGE} is pulled...`);
+  console.log(`Ensuring ${dockerImage} is pulled...`);
   await new Promise((resolve, reject) => {
-    docker.pull(DOCKER_IMAGE, (err: any, stream: any) => {
+    docker.pull(dockerImage, (err: any, stream: any) => {
       if (err) return reject(err);
       docker.modem.followProgress(stream, onFinished, onProgress);
       function onFinished(err: any, output: any) {
@@ -54,30 +60,31 @@ export const createServerContainer = async (serverData: any) => {
   const serverDir = path.join(process.cwd(), ".data", "servers", serverData.id);
   await fs.ensureDir(serverDir);
 
-  const container = await docker.createContainer({
-    Image: DOCKER_IMAGE,
-    name: `jtg-server-${serverData.id}`,
-    Tty: true,
-    OpenStdin: true,
-    StdinOnce: false,
-    Env: [
+  const envVars = [
+    `TYPE=${serverType}`,
+    `VERSION=${serverData.version}`,
+    `MEMORY=${serverData.ram}G`,
+    `INIT_MEMORY=128M`,
+    `SERVER_PORT=${serverData.port}`,
+  ];
+
+  if (!isProxy) {
+    envVars.push(
       `EULA=TRUE`,
-      `TYPE=${serverData.type || "PAPER"}`,
-      `VERSION=${serverData.version}`,
-      // MEMORY specifies the maximum heap size (-Xmx) for the Minecraft server.
-      // We allow allocating more RAM than the VPS has physically available (overcommitting).
-      // Since we don't set HostConfig.Memory limits here, Docker relies on the OS's OOM killer if physical RAM is fully exhausted.
-      `MEMORY=${serverData.ram}G`,
-      // INIT_MEMORY sets the initial heap size (-Xms). By keeping this low (e.g., 128M),
-      // the application only consumes memory as it actually needs it during runtime,
-      // rather than reserving the entire 'MEMORY' amount immediately at startup.
-      `INIT_MEMORY=128M`,
-      `SERVER_PORT=${serverData.port}`,
       `ENABLE_RCON=true`,
       `RCON_PASSWORD=admin`,
       `JVM_OPTS=-DPaper.IgnoreWorldDataVersion=true`,
       `JVM_DD_OPTS=Paper.IgnoreWorldDataVersion=true,paper.ignoreWorldDataVersion=true`
-    ],
+    );
+  }
+
+  const container = await docker.createContainer({
+    Image: dockerImage,
+    name: `jtg-server-${serverData.id}`,
+    Tty: true,
+    OpenStdin: true,
+    StdinOnce: false,
+    Env: envVars,
     ExposedPorts: {
       [`${serverData.port}/tcp`]: {}
     },
