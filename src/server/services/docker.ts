@@ -67,7 +67,8 @@ export const createServerContainer = async (serverData: any) => {
       `SERVER_PORT=${serverData.port}`,
       `ENABLE_RCON=true`,
       `RCON_PASSWORD=admin`,
-      `JVM_OPTS=-Dpaper.ignoreWorldDataVersion=true`
+      `JVM_OPTS=-DPaper.IgnoreWorldDataVersion=true`,
+      `JVM_DD_OPTS=Paper.IgnoreWorldDataVersion=true,paper.ignoreWorldDataVersion=true`
     ],
     ExposedPorts: {
       [`${serverData.port}/tcp`]: {}
