@@ -20,7 +20,12 @@ Made by Jishnu
    npm run build
    ```
 
-4. Start the server:
+4. Create an admin user:
+   ```bash
+   npm run createuser
+   ```
+
+5. Start the server:
    ```bash
    npm run start
    ```

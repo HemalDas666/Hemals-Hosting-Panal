@@ -15,14 +15,6 @@ export const login = async (req: Request, res: Response) => {
 
   const users = await readJSON("users.json") || [];
   
-  if (users.length === 0) {
-    if (username === "jtg" && password === "jtg") {
-      const token = jwt.sign({ id: "temp-admin", username: "jtg", role: "admin" }, JWT_SECRET, { expiresIn: "7d" });
-      res.json({ token, user: { id: "temp-admin", username: "jtg", role: "admin" } });
-      return;
-    }
-  }
-
   const user = users.find((u: any) => u.username === username);
 
   if (!user) {

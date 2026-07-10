@@ -3,7 +3,7 @@ import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import { useSettings } from "../context/SettingsContext";
 import { motion } from "framer-motion";
-import { Shield, User, Trash2, Layout, Upload } from "lucide-react";
+import { Shield, User, Trash2, Layout, Upload, RefreshCw } from "lucide-react";
 import { ImageCropper } from "../components/ImageCropper";
 import { LoadingOverlay } from "../components/LoadingOverlay";
 
@@ -29,8 +29,23 @@ export default function SettingsPage() {
   const [isUpdatingLogo, setIsUpdatingLogo] = useState(false);
   const [isSavingSettings, setIsSavingSettings] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isUpdatingSystem, setIsUpdatingSystem] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleSystemUpdate = async () => {
+    try {
+      setIsUpdatingSystem(true);
+      await axios.post("/api/system/update");
+      alert("System update triggered successfully. The panel will refresh shortly.");
+      setTimeout(() => {
+        window.location.reload();
+      }, 5000);
+    } catch (e) {
+      alert("Failed to update system. Please check logs.");
+      setIsUpdatingSystem(false);
+    }
+  };
 
   useEffect(() => {
     setNewPanelName(panelName);
@@ -528,7 +543,26 @@ export default function SettingsPage() {
         </div>
       )}
 
-      {(isProcessing || isUpdatingLogo || isSavingSettings || isChangingPassword || isCreatingUser) && <LoadingOverlay />}
+      {user.role === "admin" && (
+        <div className="bg-[#0a0a0c] border border-white/5 rounded-2xl p-6 md:p-8 shadow-xl mt-8">
+          <h2 className="text-xl font-bold mb-4 flex items-center text-white">
+            <RefreshCw className="mr-3 text-emerald-400 w-5 h-5" /> System Update
+          </h2>
+          <p className="text-zinc-400 text-sm mb-6 max-w-2xl">
+            Trigger an automatic update of the JTG Panel. This will run git pull and rebuild the system. The panel will be unavailable for a few seconds during this process.
+          </p>
+          <button 
+            onClick={handleSystemUpdate}
+            disabled={isUpdatingSystem}
+            className="px-6 py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-medium rounded-xl border border-emerald-500/20 transition-all shadow-sm flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <RefreshCw className={`w-4 h-4 mr-2 ${isUpdatingSystem ? "animate-spin" : ""}`} />
+            {isUpdatingSystem ? "Updating System..." : "Update Panel"}
+          </button>
+        </div>
+      )}
+
+      {(isProcessing || isUpdatingLogo || isSavingSettings || isChangingPassword || isCreatingUser || isUpdatingSystem) && <LoadingOverlay />}
     </motion.div>
   );
 }
