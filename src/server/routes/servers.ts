@@ -45,7 +45,12 @@ router.get("/:id/playit", async (req, res) => {
   if (user.role !== "admin") return res.status(403).json({ error: "Forbidden" });
 
   const { id } = req.params;
-  const pm2Name = `playit_tunnel_${id}`;
+  const serversJSON = await require("fs/promises").readFile(require("path").join(process.cwd(), ".data", "servers.json"), "utf8");
+  const servers = JSON.parse(serversJSON);
+  const server = servers.find((s: any) => s.id === id);
+  const serverName = server ? server.name.replace(/[^a-zA-Z0-9_-]/g, "_") : id;
+  const pm2Name = `playit_${serverName}`;
+  
   const { exec } = await import("child_process");
   
   exec("pm2 jlist", (err, stdout) => {
@@ -56,9 +61,7 @@ router.get("/:id/playit", async (req, res) => {
       if (playitProcess && playitProcess.pm2_env && playitProcess.pm2_env.status === "online") {
         status = "running";
       }
-    } catch (e) {
-      // JSON parse error or pm2 not installed
-    }
+    } catch (e) {}
 
     if (status === "running") {
       exec(`pm2 logs ${pm2Name} --nostream --lines 100`, (err, logStdout, logStderr) => {
@@ -81,13 +84,21 @@ router.post("/:id/playit/start", async (req, res) => {
   if (user.role !== "admin") return res.status(403).json({ error: "Forbidden" });
 
   const { id } = req.params;
-  const pm2Name = `playit_tunnel_${id}`;
+  const serversJSON = await require("fs/promises").readFile(require("path").join(process.cwd(), ".data", "servers.json"), "utf8");
+  const servers = JSON.parse(serversJSON);
+  const server = servers.find((s: any) => s.id === id);
+  const serverName = server ? server.name.replace(/[^a-zA-Z0-9_-]/g, "_") : id;
+  const pm2Name = `playit_${serverName}`;
+  
+  const serverDir = require("path").join(process.cwd(), ".data", "servers", id);
+  const playitBin = require("path").join(serverDir, `playit_${serverName}`);
+  const secretPath = require("path").join(serverDir, "playit.toml");
+  
   const { exec } = await import("child_process");
   
-  const playitCommand = process.env.PLAYIT_COMMAND || "playit";
-  // We use bash to allow execution of binaries in PATH
-  const secretPath = require("path").join(process.cwd(), ".data", "servers", id, "playit.toml");
-  exec(`pm2 start "${playitCommand}" --name ${pm2Name} -- --secret_path ${secretPath} && pm2 save`, (err, stdout, stderr) => {
+  const setupCmd = `if [ ! -f "${playitBin}" ]; then wget -qO "${playitBin}" "https://github.com/playit-cloud/playit-agent/releases/download/v0.15.26/playit-linux-amd64" && chmod +x "${playitBin}"; fi`;
+  
+  exec(`${setupCmd} && pm2 start "${playitBin}" --name ${pm2Name} -- --secret_path "${secretPath}" && pm2 save`, (err, stdout, stderr) => {
     if (err) {
       return res.status(500).json({ error: "Failed to start Playit Tunnel", details: stderr });
     }
@@ -100,11 +111,15 @@ router.post("/:id/playit/stop", async (req, res) => {
   if (user.role !== "admin") return res.status(403).json({ error: "Forbidden" });
 
   const { id } = req.params;
-  const pm2Name = `playit_tunnel_${id}`;
+  const serversJSON = await require("fs/promises").readFile(require("path").join(process.cwd(), ".data", "servers.json"), "utf8");
+  const servers = JSON.parse(serversJSON);
+  const server = servers.find((s: any) => s.id === id);
+  const serverName = server ? server.name.replace(/[^a-zA-Z0-9_-]/g, "_") : id;
+  const pm2Name = `playit_${serverName}`;
+  
   const { exec } = await import("child_process");
   
   exec(`pm2 delete ${pm2Name} && pm2 save`, (err, stdout, stderr) => {
-    // ignore error if it wasn't running
     res.json({ success: true });
   });
 });
