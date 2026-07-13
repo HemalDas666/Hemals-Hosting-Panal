@@ -68,7 +68,7 @@ router.get("/:id/playit", async (req, res) => {
 
     if (status === "running") {
       exec(`npx pm2 logs ${pm2Name} --nostream --lines 100`, (err, logStdout, logStderr) => {
-        const logs = (logStdout || "").replace(/\x1b\[[0-9;]*m/g, "");
+        const logs = (logStdout || "").replace(/\x1b\[[0-9;]*[a-zA-Z]|\x1b./g, "");
         const claimLinkMatch = logs.match(/https:\/\/playit\.gg\/claim\/[a-zA-Z0-9]+/);
         res.json({
           status,
@@ -101,7 +101,7 @@ router.post("/:id/playit/start", async (req, res) => {
   
   const setupCmd = `if [ ! -f "${playitBin}" ]; then wget -qO "${playitBin}" "https://github.com/playit-cloud/playit-agent/releases/download/v0.15.26/playit-linux-amd64" && chmod +x "${playitBin}"; fi`;
   
-  exec(`${setupCmd} && npx pm2 start "${playitBin}" --name ${pm2Name} -- --secret_path "${secretPath}" && npx pm2 save`, (err, stdout, stderr) => {
+  exec(`npx pm2 delete ${pm2Name}; ${setupCmd} && npx pm2 start "${playitBin}" --name ${pm2Name} -- -s --secret_path "${secretPath}" && npx pm2 save`, (err, stdout, stderr) => {
     if (err) {
       return res.status(500).json({ error: "Failed to start Playit Tunnel", details: stderr });
     }
