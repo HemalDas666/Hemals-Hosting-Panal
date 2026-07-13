@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { LoadingOverlay } from "../components/LoadingOverlay";
 import { useParams, Link, Routes, Route, useLocation } from "react-router-dom";
 import axios from "axios";
-import { Terminal, Folder, Play, Square, RefreshCw, ArrowLeft, Sliders, Archive, AlertTriangle, Copy, Check } from "lucide-react";
+import { Terminal, Folder, Play, Square, RefreshCw, ArrowLeft, Sliders, Archive, AlertTriangle, Copy, Check, Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import ServerConsole from "../components/ServerConsole";
@@ -11,8 +11,11 @@ import ServerSettings from "../components/ServerSettings";
 import ServerProperties from "../components/ServerProperties";
 import ServerBackups from "../components/ServerBackups";
 import PluginManager from "../components/PluginManager";
-import { Puzzle } from "lucide-react";
-import { Settings } from "lucide-react";
+import ModManager from "../components/ModManager";
+import PlayitTunnel from "./PlayitTunnel";
+import { Puzzle, Box } from "lucide-react";
+import { Settings, Globe } from "lucide-react";
+
 
 export default function ServerView() {
   const { id } = useParams();
@@ -22,6 +25,8 @@ export default function ServerView() {
   const [copied, setCopied] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const location = useLocation();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  
 
   const handleCopyIp = () => {
     if (!server) return;
@@ -90,9 +95,14 @@ export default function ServerView() {
     tabs.push({ name: "Plugins", path: `/servers/${id}/plugins`, exactPath: "plugins", icon: <Puzzle size={18} /> });
   }
 
+  if (server?.type === "FORGE" || server?.type === "FABRIC") {
+    tabs.push({ name: "Mods", path: `/servers/${id}/mods`, exactPath: "mods", icon: <Box size={18} /> });
+  }
+
   tabs.push(
     { name: "Settings", path: `/servers/${id}/settings`, exactPath: "settings", icon: <Settings size={18} /> },
-    { name: "Backup", path: `/servers/${id}/backup`, exactPath: "backup", icon: <Archive size={18} /> }
+    { name: "Backup", path: `/servers/${id}/backup`, exactPath: "backup", icon: <Archive size={18} /> },
+    { name: "Playit Tunnel", path: `/servers/${id}/playit`, exactPath: "playit", icon: <Globe size={18} /> }
   );
 
   return (
@@ -101,97 +111,134 @@ export default function ServerView() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="flex flex-col h-full bg-transparent"
+      className="flex h-full bg-transparent overflow-hidden"
     >
-      <div className="bg-[#0a0a0c]/80 backdrop-blur-xl border-b border-white/5 p-3 md:p-3 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 shrink-0 shadow-lg relative z-20">
-        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-        
-        {/* Left Side: Info */}
-        <div className="flex items-center justify-between w-full md:w-auto">
-          <div className="flex items-center space-x-3">
-            <Link to="/servers" className="p-1.5 bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 shadow-sm rounded-lg text-zinc-400 hover:text-white transition-all">
+            
+      
+      {/* Drawer Overlay */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 transition-opacity" 
+          onClick={() => setSidebarOpen(false)} 
+        />
+      )}
+
+      {/* Drawer Sidebar */}
+      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-black/80 backdrop-blur-3xl border-r border-white/10 flex flex-col shadow-2xl transform transition-transform duration-300 ease-in-out ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="flex items-center justify-between p-4 border-b border-white/10 shrink-0">
+          <div className="flex items-center gap-3 min-w-0">
+             <Link to="/servers" className="p-1.5 bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 shadow-sm rounded-lg text-zinc-400 hover:text-white transition-all shrink-0">
               <ArrowLeft size={16} />
             </Link>
-            <div>
-              <h1 className="text-base md:text-lg font-bold tracking-tight text-white mb-0.5 leading-none">{server.name}</h1>
-              <div className="flex items-center space-x-2 mt-1">
-                <span className={`flex h-2 w-2 relative`}>
+            <h1 className="text-lg font-bold tracking-tight text-white truncate pr-2">{server.name}</h1>
+          </div>
+          <button 
+            onClick={() => setSidebarOpen(false)}
+            className="p-1.5 text-zinc-400 hover:text-white bg-white/5 rounded-lg transition-colors"
+          >
+            <X size={16} />
+          </button>
+        </div>
+        
+        <div className="flex-1 overflow-y-auto p-3 flex flex-col gap-1 custom-scrollbar">
+          {/* Status & Quick Actions */}
+          <div className="mb-4 p-3 bg-white/[0.02] rounded-xl border border-white/5">
+             <div className="flex items-center space-x-2 mb-3">
+                <span className="flex h-2 w-2 relative shrink-0">
                    {server.status === 'online' && <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>}
                    <span className={`relative inline-flex rounded-full h-2 w-2 ${server.status === 'online' ? 'bg-emerald-500' : 'bg-zinc-600'}`}></span>
                 </span>
-                <span className="text-[11px] md:text-xs font-medium text-zinc-400 capitalize">{server.status}</span>
-                <span className="text-[11px] md:text-xs text-zinc-600">•</span>
-                <button 
-                  onClick={handleCopyIp}
-                  className="flex items-center space-x-1.5 px-2 py-0.5 rounded-md hover:bg-white/5 transition-colors group cursor-pointer -ml-2"
-                  title="Copy Connection Info"
-                >
-                  <span className="text-[11px] md:text-xs font-mono text-zinc-400 group-hover:text-zinc-300 transition-colors">
+                <span className="text-xs font-medium text-zinc-300 capitalize">{server.status}</span>
+                <span className="text-xs text-zinc-600">•</span>
+                <button onClick={handleCopyIp} className="flex items-center space-x-1.5 px-1.5 py-0.5 rounded-md hover:bg-white/10 transition-colors group cursor-pointer truncate" title="Copy Connection Info">
+                  <span className="text-[11px] font-mono text-zinc-400 group-hover:text-zinc-300 transition-colors truncate">
                     {server.ipAlias ? `${server.ipAlias}:${server.port}` : server.port}
                   </span>
-                  {copied ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} className="text-zinc-500 group-hover:text-zinc-300 transition-colors" />}
+                  {copied ? <Check size={12} className="text-emerald-400 shrink-0" /> : <Copy size={12} className="text-zinc-500 group-hover:text-zinc-300 transition-colors shrink-0" />}
                 </button>
-              </div>
-            </div>
+             </div>
+             <div className="grid grid-cols-2 gap-2">
+                {server.status !== 'online' ? (
+                  <button disabled={isProcessing} onClick={() => { handleAction('start'); setSidebarOpen(false); }} className="col-span-2 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 font-semibold rounded-lg transition-all border border-emerald-500/20 flex items-center justify-center text-xs shadow-sm disabled:opacity-50">
+                    {isProcessing ? <div className="w-3.5 h-3.5 border-2 border-emerald-500/50 border-t-emerald-500 rounded-full animate-spin mr-1.5" /> : <Play className="w-3.5 h-3.5 mr-1.5" />} Start
+                  </button>
+                ) : (
+                  <button disabled={isProcessing} onClick={() => { handleAction('stop'); setSidebarOpen(false); }} className="col-span-2 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-500 font-semibold rounded-lg transition-all border border-red-500/20 flex items-center justify-center text-xs shadow-sm disabled:opacity-50">
+                    {isProcessing ? <div className="w-3.5 h-3.5 border-2 border-red-500/50 border-t-red-500 rounded-full animate-spin mr-1.5" /> : <Square className="w-3.5 h-3.5 mr-1.5" />} Stop
+                  </button>
+                )}
+                <button disabled={isProcessing} onClick={() => { handleAction('restart'); setSidebarOpen(false); }} className="col-span-2 py-1.5 bg-orange-500/10 hover:bg-orange-500/20 text-orange-500 font-medium rounded-lg transition-all border border-orange-500/20 flex items-center justify-center text-xs shadow-sm disabled:opacity-50">
+                  {isProcessing ? <div className="w-3.5 h-3.5 border-2 border-orange-500/50 border-t-orange-500 rounded-full animate-spin mr-1.5" /> : <RefreshCw className="w-3.5 h-3.5 mr-1.5" />} Restart
+                </button>
+             </div>
           </div>
-
-          {/* Mobile Actions */}
-          <div className="flex items-center space-x-1.5 md:hidden">
-            {server.status !== 'online' ? (
-              <button disabled={isProcessing} onClick={() => handleAction('start')} className="p-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 rounded-lg border border-emerald-500/20 disabled:opacity-50">
-                {isProcessing ? <div className="w-3.5 h-3.5 border-2 border-emerald-500/50 border-t-emerald-500 rounded-full animate-spin" /> : <Play className="w-3.5 h-3.5" />}
-              </button>
-            ) : (
-              <button disabled={isProcessing} onClick={() => handleAction('stop')} className="p-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-lg border border-red-500/20 disabled:opacity-50">
-                {isProcessing ? <div className="w-3.5 h-3.5 border-2 border-red-500/50 border-t-red-500 rounded-full animate-spin" /> : <Square className="w-3.5 h-3.5" />}
-              </button>
-            )}
-            <button disabled={isProcessing} onClick={() => handleAction('restart')} className="p-1.5 bg-orange-500/10 hover:bg-orange-500/20 text-orange-500 rounded-lg border border-orange-500/20 disabled:opacity-50">
-              {isProcessing ? <div className="w-3.5 h-3.5 border-2 border-orange-500/50 border-t-orange-500 rounded-full animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
-            </button>
-          </div>
-        </div>
-        
-        {/* Right Side: Tabs + Actions for PC */}
-        <div className="flex flex-col md:flex-row items-center w-full md:w-auto gap-2 md:gap-4 mt-1 md:mt-0">
           
-          {/* Tabs */}
-          <div className="flex bg-white/[0.02] p-1 rounded-lg border border-white/5 w-full md:w-auto overflow-x-auto custom-scrollbar">
-            {tabs.map(tab => {
-               const isActive = location.pathname === tab.path || location.pathname === `${tab.path}/`;
-               return (
-                <Link 
-                  key={tab.name}
-                  to={tab.path}
-                  className={`flex flex-1 md:flex-none items-center justify-center space-x-1.5 px-3 py-1.5 text-[11px] md:text-xs font-medium transition-colors rounded-md ${isActive ? 'bg-white/10 text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-300'}`}
-                >
-                  <div className={`${isActive ? 'text-indigo-400' : 'text-zinc-500'} transition-colors hidden sm:block`}>{React.cloneElement(tab.icon, { size: 14 })}</div>
-                  <span>{tab.name}</span>
-                </Link>
-              );
-            })}
-          </div>
+          <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-3" />
+          
+          <div className="text-xs font-semibold text-zinc-500 mb-2 px-3 tracking-wider uppercase">Menu</div>
 
-          {/* PC Actions */}
-          <div className="hidden md:flex items-center space-x-2">
-            {server.status !== 'online' ? (
-              <button disabled={isProcessing} onClick={() => handleAction('start')} className="px-3 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 font-semibold rounded-lg transition-colors border border-emerald-500/20 flex items-center text-xs shadow-sm disabled:opacity-50">
-                {isProcessing ? <div className="w-3.5 h-3.5 border-2 border-emerald-500/50 border-t-emerald-500 rounded-full animate-spin mr-1.5" /> : <Play className="w-3.5 h-3.5 mr-1.5" />} Start
-              </button>
-            ) : (
-              <button disabled={isProcessing} onClick={() => handleAction('stop')} className="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-500 font-semibold rounded-lg transition-colors border border-red-500/20 flex items-center text-xs shadow-sm disabled:opacity-50">
-                {isProcessing ? <div className="w-3.5 h-3.5 border-2 border-red-500/50 border-t-red-500 rounded-full animate-spin mr-1.5" /> : <Square className="w-3.5 h-3.5 mr-1.5" />} Stop
-              </button>
-            )}
-            <button disabled={isProcessing} onClick={() => handleAction('restart')} className="p-1.5 bg-orange-500/10 hover:bg-orange-500/20 text-orange-500 font-medium rounded-lg transition-colors border border-orange-500/20 flex items-center shadow-sm disabled:opacity-50" title="Restart Unit">
-              {isProcessing ? <div className="w-4 h-4 border-2 border-orange-500/50 border-t-orange-500 rounded-full animate-spin" /> : <RefreshCw className="w-4 h-4" />}
-            </button>
-          </div>
+          {tabs.map(tab => {
+             const isActive = location.pathname === tab.path || location.pathname === `${tab.path}/`;
+             return (
+              <Link 
+                key={tab.name}
+                to={tab.path}
+                onClick={() => setSidebarOpen(false)}
+                className={`flex items-center space-x-3 px-3 py-2.5 text-sm font-medium transition-all rounded-lg ${isActive ? 'bg-indigo-500/20 text-indigo-300 shadow-sm border border-indigo-500/30' : 'text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.05] border border-transparent'}`}
+              >
+                <div className={`${isActive ? 'text-indigo-400' : 'text-zinc-500'} transition-colors`}>
+                  {React.cloneElement(tab.icon, { className: "w-4 h-4" })}
+                </div>
+                <span>{tab.name}</span>
+              </Link>
+            );
+          })}
         </div>
       </div>
 
-      <div className="flex-1 relative flex flex-col min-h-0 bg-transparent isolate">
-        <div className="flex-1 flex flex-col relative overflow-hidden bg-[#0a0a0c]">
+      <div className="flex-1 flex flex-col h-full bg-transparent overflow-hidden relative isolate">
+        {/* Top Header with Hamburger */}
+        <div className="bg-black/40 backdrop-blur-2xl border-b border-white/10 p-3 md:p-4 flex items-center justify-between gap-3 shrink-0 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.5)] relative z-20">
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="p-1.5 bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 shadow-sm rounded-lg text-zinc-400 hover:text-white transition-all flex items-center justify-center relative overflow-hidden group"
+            >
+              <div className="absolute inset-0 bg-red-500/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+              <Menu size={18} className="relative z-10 group-hover:text-red-400 transition-colors" />
+            </button>
+            <div className="w-px h-6 bg-white/10 mx-1 hidden sm:block" />
+            <h1 className="text-base md:text-lg font-bold tracking-tight text-white mb-0.5 leading-none hidden sm:block">{server.name}</h1>
+          </div>
+          
+          <div className="flex items-center gap-3">
+             <div className="flex items-center space-x-2">
+                <span className="flex h-2 w-2 relative shrink-0">
+                   {server.status === 'online' && <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>}
+                   <span className={`relative inline-flex rounded-full h-2 w-2 ${server.status === 'online' ? 'bg-emerald-500' : 'bg-zinc-600'}`}></span>
+                </span>
+                <span className="text-xs font-medium text-zinc-400 capitalize hidden sm:block">{server.status}</span>
+             </div>
+             
+             <div className="flex items-center space-x-2">
+                {server.status !== 'online' ? (
+                  <button disabled={isProcessing} onClick={() => handleAction('start')} className="p-1.5 sm:px-3 sm:py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 font-semibold rounded-lg transition-all border border-emerald-500/20 flex items-center justify-center text-xs shadow-sm disabled:opacity-50">
+                    {isProcessing ? <div className="w-3.5 h-3.5 border-2 border-emerald-500/50 border-t-emerald-500 rounded-full animate-spin sm:mr-1.5" /> : <Play className="w-3.5 h-3.5 sm:mr-1.5" />} <span className="hidden sm:block">Start</span>
+                  </button>
+                ) : (
+                  <button disabled={isProcessing} onClick={() => handleAction('stop')} className="p-1.5 sm:px-3 sm:py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-500 font-semibold rounded-lg transition-all border border-red-500/20 flex items-center justify-center text-xs shadow-sm disabled:opacity-50">
+                    {isProcessing ? <div className="w-3.5 h-3.5 border-2 border-red-500/50 border-t-red-500 rounded-full animate-spin sm:mr-1.5" /> : <Square className="w-3.5 h-3.5 sm:mr-1.5" />} <span className="hidden sm:block">Stop</span>
+                  </button>
+                )}
+                <button disabled={isProcessing} onClick={() => handleAction('restart')} className="p-1.5 sm:px-3 sm:py-1.5 bg-orange-500/10 hover:bg-orange-500/20 text-orange-500 font-medium rounded-lg transition-all border border-orange-500/20 flex items-center justify-center text-xs shadow-sm disabled:opacity-50">
+                  {isProcessing ? <div className="w-3.5 h-3.5 border-2 border-orange-500/50 border-t-orange-500 rounded-full animate-spin sm:mr-1.5" /> : <RefreshCw className="w-3.5 h-3.5 sm:mr-1.5" />} <span className="hidden sm:block">Restart</span>
+                </button>
+             </div>
+          </div>
+        </div>
+
+<div className="flex-1 relative flex flex-col min-h-0 bg-transparent">
+        <div className="flex-1 flex flex-col relative overflow-hidden bg-transparent">
            <Routes>
              <Route path="/" element={<ServerConsole serverId={id!} server={server} />} />
              <Route path="/properties" element={<ServerProperties serverId={id!} />} />
@@ -199,8 +246,12 @@ export default function ServerView() {
              <Route path="/settings" element={<ServerSettings serverId={id!} server={server} />} />
              <Route path="/backup" element={<ServerBackups serverId={id!} />} />
              <Route path="/plugins" element={<PluginManager serverId={id!} />} />
+             <Route path="/mods" element={<ModManager serverId={id!} />} />
+             <Route path="/playit" element={<PlayitTunnel serverId={id!} />} />
            </Routes>
         </div>
+      </div>
+
       </div>
 
       <AnimatePresence>
@@ -252,3 +303,4 @@ export default function ServerView() {
     </motion.div>
   );
 }
+

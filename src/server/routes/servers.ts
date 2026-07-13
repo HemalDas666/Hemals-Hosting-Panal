@@ -1,7 +1,7 @@
 import express from "express";
 import path from "path";
 import { requireAuth } from "../middleware/auth.js";
-import { getServers, createServer, getServer, deleteServer, startServer, stopServer, restartServer, changeServerVersion, getFiles, uploadFile, deleteFile, renameFile, saveFileContent, sendCommand, getServerStats, updateOwner, updateIpAlias, getBackups, createBackup, downloadBackup, deleteBackup, unzipFile, zipFiles, installPlugin } from "../controllers/servers.js";
+import { getServers, createServer, getServer, deleteServer, startServer, stopServer, restartServer, changeServerVersion, getFiles, uploadFile, deleteFile, renameFile, saveFileContent, sendCommand, getServerStats, updateOwner, updateIpAlias, getBackups, createBackup, downloadBackup, deleteBackup, unzipFile, zipFiles, installPlugin, installMod } from "../controllers/servers.js";
 import multer from "multer";
 
 const router = express.Router();
@@ -39,6 +39,77 @@ router.post("/:id/backups", createBackup);
 router.get("/:id/backups/:filename", downloadBackup);
 router.delete("/:id/backups/:filename", deleteBackup);
 
+
+router.get("/:id/playit", async (req, res) => {
+  const user = (req as any).user;
+  if (user.role !== "admin") return res.status(403).json({ error: "Forbidden" });
+
+  const { id } = req.params;
+  const pm2Name = `playit_tunnel_${id}`;
+  const { exec } = await import("child_process");
+  
+  exec("pm2 jlist", (err, stdout) => {
+    let status = "stopped";
+    try {
+      const pm2List = JSON.parse(stdout);
+      const playitProcess = pm2List.find((p: any) => p.name === pm2Name);
+      if (playitProcess && playitProcess.pm2_env && playitProcess.pm2_env.status === "online") {
+        status = "running";
+      }
+    } catch (e) {
+      // JSON parse error or pm2 not installed
+    }
+
+    if (status === "running") {
+      exec(`pm2 logs ${pm2Name} --nostream --lines 100`, (err, logStdout, logStderr) => {
+        const logs = logStdout || "";
+        const claimLinkMatch = logs.match(/https:\/\/playit\.gg\/claim\/[a-zA-Z0-9]+/);
+        res.json({
+          status,
+          claimLink: claimLinkMatch ? claimLinkMatch[0] : null,
+          logs: logs.split('\n').slice(-50).join('\n')
+        });
+      });
+    } else {
+      res.json({ status: "stopped", claimLink: null, logs: "" });
+    }
+  });
+});
+
+router.post("/:id/playit/start", async (req, res) => {
+  const user = (req as any).user;
+  if (user.role !== "admin") return res.status(403).json({ error: "Forbidden" });
+
+  const { id } = req.params;
+  const pm2Name = `playit_tunnel_${id}`;
+  const { exec } = await import("child_process");
+  
+  const playitCommand = process.env.PLAYIT_COMMAND || "playit";
+  // We use bash to allow execution of binaries in PATH
+  const secretPath = require("path").join(process.cwd(), ".data", "servers", id, "playit.toml");
+  exec(`pm2 start "${playitCommand}" --name ${pm2Name} -- --secret_path ${secretPath} && pm2 save`, (err, stdout, stderr) => {
+    if (err) {
+      return res.status(500).json({ error: "Failed to start Playit Tunnel", details: stderr });
+    }
+    res.json({ success: true });
+  });
+});
+
+router.post("/:id/playit/stop", async (req, res) => {
+  const user = (req as any).user;
+  if (user.role !== "admin") return res.status(403).json({ error: "Forbidden" });
+
+  const { id } = req.params;
+  const pm2Name = `playit_tunnel_${id}`;
+  const { exec } = await import("child_process");
+  
+  exec(`pm2 delete ${pm2Name} && pm2 save`, (err, stdout, stderr) => {
+    // ignore error if it wasn't running
+    res.json({ success: true });
+  });
+});
+
 export default router;
 
 router.post("/:id/plugins/install", installPlugin);
+router.post("/:id/mods/install", installMod);

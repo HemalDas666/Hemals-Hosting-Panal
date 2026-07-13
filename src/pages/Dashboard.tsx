@@ -89,17 +89,18 @@ export default function Dashboard() {
         </Link>
       </div>
 
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.5 }} className="bg-[#0a0a0c] rounded-2xl border border-white/5 overflow-hidden shadow-2xl relative">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.5 }} className="bg-black/40 backdrop-blur-xl rounded-3xl border border-white/10 overflow-hidden shadow-[0_0_50px_-15px_rgba(0,0,0,0.5)] ring-1 ring-white/5 relative">
         {/* Subtle top glow */}
-        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent opacity-50" />
         
         {servers.length === 0 ? (
-           <div className="p-12 text-center">
-             <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/5">
-                <Server className="text-zinc-500" size={32} />
+           <div className="p-16 text-center relative overflow-hidden">
+             <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent pointer-events-none" />
+             <div className="w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-white/10 shadow-inner relative z-10">
+                <Server className="text-zinc-400" size={40} />
              </div>
-             <h3 className="text-lg font-medium text-white mb-1">No Activity Found</h3>
-             <p className="text-zinc-500 text-sm">Create a new server to get started.</p>
+             <h3 className="text-xl font-bold text-white mb-2 relative z-10 tracking-tight">No Activity Found</h3>
+             <p className="text-zinc-400 text-sm font-medium relative z-10">Create a new server to get started.</p>
            </div>
         ) : (
           <div className="divide-y divide-white/5">
@@ -110,27 +111,29 @@ export default function Dashboard() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4 + (index * 0.05) }}
               >
-                <Link to={`/servers/${server.id}`} className="flex items-center justify-between p-5 hover:bg-white/[0.02] transition-colors group">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-white/5 flex items-center justify-center group-hover:border-indigo-500/30 group-hover:bg-indigo-500/10 transition-all">
-                      <Server className="w-5 h-5 text-zinc-400 group-hover:text-indigo-400 transition-colors" />
+                <Link to={`/servers/${server.id}`} className="flex items-center justify-between p-5 md:p-6 hover:bg-white/5 transition-all group relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/0 via-indigo-500/0 to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="flex items-center gap-5 relative z-10">
+                    <div className="w-12 h-12 rounded-2xl bg-black/60 border border-white/10 flex items-center justify-center group-hover:border-indigo-500/40 group-hover:bg-indigo-500/20 transition-all shadow-inner relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <Server className="w-6 h-6 text-zinc-400 group-hover:text-indigo-400 transition-colors relative z-10" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-zinc-200 group-hover:text-white transition-colors">{server.name}</h3>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="flex h-2 w-2 relative">
+                      <h3 className="font-bold text-zinc-100 group-hover:text-white transition-colors text-lg tracking-tight drop-shadow-sm">{server.name}</h3>
+                      <div className="flex items-center gap-2 mt-1.5">
+                        <span className="flex h-2.5 w-2.5 relative">
                           {server.status === 'online' && <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>}
-                          <span className={`relative inline-flex rounded-full h-2 w-2 ${server.status === 'online' ? 'bg-emerald-500' : 'bg-zinc-600'}`}></span>
+                          <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${server.status === 'online' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]' : 'bg-zinc-600'}`}></span>
                         </span>
-                        <p className="text-xs text-zinc-500 capitalize">{server.status}</p>
+                        <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest">{server.status}</p>
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-4">
-                    <div className="text-xs font-mono text-zinc-500 hidden sm:block">
+                  <div className="flex items-center gap-5 relative z-10">
+                    <div className="text-xs font-mono font-medium text-zinc-500 hidden sm:block bg-black/40 px-3 py-1.5 rounded-lg border border-white/5">
                       {new Date(server.createdAt).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                     </div>
-                    <ChevronRight className="w-5 h-5 text-zinc-600 group-hover:text-zinc-300 transition-colors group-hover:translate-x-1" />
+                    <ChevronRight className="w-6 h-6 text-zinc-500 group-hover:text-white transition-colors group-hover:translate-x-1" />
                   </div>
                 </Link>
               </motion.div>
@@ -148,21 +151,23 @@ function StatCard({ title, value, icon, trend, chartColor }: { title: string, va
     show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
   };
   return (
-    <motion.div variants={itemAnim} className="bg-[#0a0a0c] p-6 rounded-2xl border border-white/5 relative overflow-hidden group hover:border-white/10 transition-colors">
+    <motion.div variants={itemAnim} className="bg-black/40 backdrop-blur-xl p-6 rounded-2xl border border-white/10 relative overflow-hidden group hover:bg-black/60 transition-all shadow-[0_0_40px_-15px_rgba(0,0,0,0.5)] ring-1 ring-white/5">
       {/* Decorative gradient blur in background */}
-      <div className={`absolute -bottom-10 -right-10 w-32 h-32 bg-gradient-to-br ${chartColor} opacity-10 blur-2xl group-hover:opacity-20 transition-opacity`} />
+      <div className={`absolute inset-0 bg-gradient-to-br ${chartColor} opacity-5 group-hover:opacity-10 transition-opacity`} />
+      <div className={`absolute -bottom-10 -right-10 w-40 h-40 bg-gradient-to-br ${chartColor} opacity-20 blur-[50px] group-hover:opacity-40 transition-opacity`} />
       
       <div className="relative z-10 flex justify-between items-start mb-4">
-        <div className="p-2.5 bg-white/[0.03] rounded-xl border border-white/5">
+        <div className="p-3 bg-white/5 rounded-xl border border-white/10 shadow-inner">
           {icon}
         </div>
       </div>
       <div className="relative z-10">
-        <h3 className="text-3xl font-bold text-white tracking-tight mb-1">{value}</h3>
-        <p className="text-sm font-medium text-zinc-400">{title}</p>
+        <h3 className="text-3xl font-black text-white tracking-tight mb-1 drop-shadow-md">{value}</h3>
+        <p className="text-sm font-bold text-zinc-300 uppercase tracking-widest opacity-80">{title}</p>
       </div>
       {trend && (
-        <div className="relative z-10 mt-4 text-xs font-medium text-zinc-500">
+        <div className="relative z-10 mt-4 text-xs font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-current"></span>
           {trend}
         </div>
       )}

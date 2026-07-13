@@ -36,7 +36,7 @@ export default function Login() {
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.5, type: "spring", stiffness: 300, damping: 25 }}
-        className="max-w-[400px] w-full bg-[#0a0a0c]/80 backdrop-blur-xl p-8 rounded-3xl shadow-2xl border border-white/10 relative z-10 m-4 overflow-hidden"
+        className="max-w-[420px] w-full bg-black/40 backdrop-blur-3xl p-10 rounded-[2rem] shadow-[0_0_50px_-10px_rgba(0,0,0,0.8)] border border-white/10 ring-1 ring-white/5 relative z-10 m-4 overflow-hidden group"
       >
         <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
         
@@ -44,8 +44,8 @@ export default function Login() {
           <div className="bg-gradient-to-br from-indigo-500 to-purple-600 p-4 rounded-2xl mb-5 shadow-[0_0_20px_rgba(99,102,241,0.4)]">
             <Server className="w-8 h-8 text-white" />
           </div>
-          <h2 className="text-3xl font-extrabold text-white tracking-tight">{panelName}</h2>
-          <p className="text-zinc-400 mt-2 text-sm font-medium">Authenticate to platform controls</p>
+          <h2 className="text-4xl font-black text-white tracking-tight drop-shadow-md">{panelName}</h2>
+          <p className="text-indigo-400/80 font-bold uppercase tracking-widest text-[10px] mt-3">Authenticate to platform controls</p>
         </div>
         
         {error && (

@@ -153,17 +153,17 @@ export default function PluginManager({ serverId }: { serverId: string }) {
   };
 
   return (
-    <div className="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-6 text-white">
+    <div className="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-8 text-white bg-transparent">
       <div className="max-w-4xl mx-auto space-y-6 md:space-y-8">
         
         <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
           <div>
-            <h2 className="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60 mb-1">Plugin Manager</h2>
-            <p className="text-sm text-zinc-400">Search and install plugins from Modrinth, Spigot, and Paper Hangar.</p>
+            <h2 className="text-2xl md:text-3xl font-black text-white tracking-tight drop-shadow-md mb-1">Plugin Manager</h2>
+            <p className="text-[11px] font-bold text-indigo-400/80 uppercase tracking-widest mt-1">Search and install plugins from Modrinth, Spigot, and Paper Hangar.</p>
           </div>
         </div>
 
-        <div className="bg-[#0a0a0c] border border-white/5 rounded-xl overflow-hidden shadow-lg">
+        <div className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden shadow-[0_0_40px_-15px_rgba(0,0,0,0.5)] ring-1 ring-white/5">
           <div className="p-4 border-b border-white/5 space-y-4">
             <form onSubmit={handleSearch} className="flex gap-2">
               <div className="relative flex-1">

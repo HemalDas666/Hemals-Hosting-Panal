@@ -48,7 +48,7 @@ export default function SearchableDropdown({
       </div>
 
       {isOpen && (
-        <div className="absolute z-50 mt-2 w-full bg-[#0a0a0c] border border-white/10 rounded-xl md:rounded-none shadow-2xl overflow-hidden backdrop-blur-xl">
+        <div className="absolute z-50 mt-2 w-full bg-black/80 backdrop-blur-xl shadow-[0_0_20px_-5px_rgba(0,0,0,0.5)] ring-1 ring-white/10 border border-white/10 rounded-xl md:rounded-none shadow-2xl overflow-hidden backdrop-blur-xl">
           <div className="p-3 border-b border-white/5 flex items-center bg-white/[0.02]">
             <Search className="w-4 h-4 text-zinc-400 mr-2 shrink-0" />
             <input
@@ -78,7 +78,7 @@ export default function SearchableDropdown({
                     className={`px-3 py-2.5 rounded-lg cursor-pointer flex items-center justify-between text-sm transition-colors ${
                       value === o.value
                         ? "bg-indigo-500/20 text-indigo-300"
-                        : "text-zinc-300 hover:bg-white/5 hover:text-white"
+                        : "text-zinc-300 hover:bg-white/10 hover:text-white"
                     }`}
                   >
                     <span className="truncate">{o.label}</span>

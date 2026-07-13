@@ -16,7 +16,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <div className="flex h-[100dvh] w-full bg-transparent text-zinc-100 font-sans overflow-hidden selection:bg-indigo-500/30">
         <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden relative">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[400px] bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none" />
-          <main className="flex-1 overflow-hidden w-full h-full relative z-10">
+          <main className="flex-1 w-full h-full relative z-10 overflow-hidden">
             {children}
           </main>
         </div>
@@ -25,7 +25,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="flex h-[100dvh] w-full bg-transparent text-zinc-100 font-sans overflow-hidden selection:bg-indigo-500/30">
+    <div className={`flex h-[100dvh] w-full bg-transparent text-zinc-100 font-sans overflow-hidden selection:bg-indigo-500/30`}>
       {/* Mobile Sidebar Overlay */}
       {mobileOpen && (
         <div 
@@ -34,7 +34,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         />
       )}
       
-      {/* Sidebar Container */}
+      {/* Sidebar Container (always available on mobile, optional on desktop based on layout) */}
       <div className={`fixed inset-y-0 left-0 z-50 transform flex-shrink-0 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 ease-in-out`}>
         <Sidebar onClose={() => setMobileOpen(false)} />
       </div>
@@ -43,7 +43,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         {/* Subtle background glow effect */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[400px] bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none" />
 
-        {/* Mobile Header */}
+        {/* Mobile Header (only shown on mobile screens) */}
         <div className="md:hidden flex items-center justify-between p-4 bg-transparent backdrop-blur-md border-b border-white/5 flex-shrink-0 relative z-10">
           <div className="flex items-center gap-2">
             {panelLogo ? (
@@ -59,7 +59,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
         
         {/* Main Content */}
-        <main className="flex-1 overflow-x-hidden overflow-y-auto w-full h-full pb-safe relative z-10 custom-scrollbar">
+        <main className={`flex-1 w-full h-full relative z-10 ${isServerView ? 'overflow-hidden' : 'overflow-x-hidden overflow-y-auto pb-safe custom-scrollbar'}`}>
           {children}
         </main>
       </div>

@@ -12,6 +12,7 @@ import ServerList from "./pages/ServerList";
 import CreateServer from "./pages/CreateServer";
 import ServerView from "./pages/ServerView";
 import SettingsPage from "./pages/SettingsPage";
+import PlayitTunnel from "./pages/PlayitTunnel";
 import Layout from "./components/Layout";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";

@@ -170,11 +170,11 @@ export default function SettingsPage() {
       className="p-5 md:p-10 max-w-7xl mx-auto"
     >
       <div className="mb-10">
-        <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-white mb-2">Settings</h1>
-        <p className="text-zinc-400">Configure your account and platform preferences.</p>
+        <h1 className="text-4xl md:text-5xl font-black tracking-tight text-white mb-2 drop-shadow-lg">Settings</h1>
+        <p className="text-indigo-400/80 font-bold uppercase tracking-widest text-sm mt-2">Configure your account and platform preferences.</p>
       </div>
 
-      <div className="bg-[#0a0a0c] border border-white/5 rounded-2xl p-6 md:p-8 mb-8 shadow-xl relative overflow-hidden">
+      <div className="bg-black/40 backdrop-blur-2xl border border-white/10 rounded-3xl p-6 md:p-10 mb-8 shadow-[0_0_50px_-15px_rgba(0,0,0,0.5)] ring-1 ring-white/5 relative overflow-hidden">
         {/* Subtle decorative glow */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 blur-[80px] rounded-full pointer-events-none" />
         
@@ -182,11 +182,11 @@ export default function SettingsPage() {
           <User className="mr-3 text-indigo-400 w-5 h-5" /> Account Details
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10 mb-8">
-          <div className="bg-white/[0.02] p-4 border border-white/5 rounded-xl">
+          <div className="bg-black/40 backdrop-blur-xl border border-white/10 p-5 rounded-2xl shadow-[0_0_30px_-15px_rgba(0,0,0,0.5)] ring-1 ring-white/5">
             <p className="text-sm font-medium text-zinc-500 mb-1">Username</p>
             <p className="text-lg font-semibold text-zinc-200">{user.username}</p>
           </div>
-          <div className="bg-white/[0.02] p-4 border border-white/5 rounded-xl">
+          <div className="bg-black/40 backdrop-blur-xl border border-white/10 p-5 rounded-2xl shadow-[0_0_30px_-15px_rgba(0,0,0,0.5)] ring-1 ring-white/5">
             <p className="text-sm font-medium text-zinc-500 mb-1">Access Role</p>
             <p className="text-lg font-semibold text-zinc-200 capitalize flex items-center gap-2">
               {user.role}
@@ -255,7 +255,7 @@ export default function SettingsPage() {
       </div>
 
       {user.role === "admin" && (
-        <div className="bg-[#0a0a0c] border border-white/5 rounded-2xl p-6 md:p-8 mb-8 shadow-xl relative overflow-hidden">
+        <div className="bg-black/40 backdrop-blur-2xl border border-white/10 rounded-3xl p-6 md:p-10 mb-8 shadow-[0_0_50px_-15px_rgba(0,0,0,0.5)] ring-1 ring-white/5 relative overflow-hidden">
           <h2 className="text-xl font-bold mb-6 flex items-center text-white relative z-10">
             <Layout className="mr-3 text-emerald-400 w-5 h-5" /> Platform Preferences
           </h2>
@@ -402,10 +402,11 @@ export default function SettingsPage() {
                   </button>
                 </div>
                 <p className="text-xs text-zinc-500 mt-3 text-center">Will be automatically scaled and cropped to fit 16:9 on desktop and 9:16 on mobile.</p>
+
               </div>
-              
+
               <div className="flex-1 flex flex-col justify-center">
-                <label className="block text-sm font-medium text-zinc-400 mb-2">Background Blur: {tempBgBlur}px</label>
+                <label className="block text-xs font-bold text-indigo-300 uppercase tracking-widest mb-2 drop-shadow-sm">Background Blur: {tempBgBlur}px</label>
                 <p className="text-xs text-zinc-500 mb-6">Adjust the blur to make the text and UI elements more readable.</p>
                 <input 
                   type="range" 

@@ -224,14 +224,14 @@ export default function FileManager({ serverId }: { serverId: string }) {
   const filteredFiles = files.filter(f => f.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
   return (
-    <div className="bg-gray-900/60 backdrop-blur-xl rounded-none md:rounded-2xl border-0 md:border border-gray-700/50 flex-1 flex flex-col overflow-hidden relative min-h-0 h-full shadow-2xl w-full">
-      <div className="p-3 md:p-4 border-b border-gray-700/50 flex flex-col sm:flex-row items-center justify-between bg-gray-900/40 shrink-0 gap-3">
+    <div className="flex-1 flex flex-col overflow-hidden relative min-h-0 h-full w-full bg-transparent p-4 md:p-6">
+      <div className="p-4 md:p-6 mb-6 flex flex-col sm:flex-row items-center justify-between bg-black/40 backdrop-blur-xl rounded-3xl border border-white/10 shrink-0 gap-4 shadow-[0_0_40px_-15px_rgba(0,0,0,0.5)] ring-1 ring-white/5">
         <div className="flex items-center justify-between w-full sm:w-auto">
           <div className="flex items-center space-x-3">
             <button onClick={goUp} disabled={path === "/" && !editingFile} className="p-2 bg-gray-800/60 hover:bg-gray-700/60 rounded-lg text-gray-300 disabled:opacity-50 transition-colors">
               <ArrowLeft size={18} />
             </button>
-            <div className="font-mono text-sm text-gray-200 bg-gray-800/60 px-3 py-1.5 rounded-lg border border-gray-700/50 backdrop-blur-md max-w-[150px] sm:max-w-xs truncate">
+            <div className="font-mono text-sm font-bold text-white bg-black/60 px-4 py-2 rounded-xl border border-white/10 backdrop-blur-md shadow-inner max-w-[150px] sm:max-w-xs truncate tracking-tight">
               {editingFile ? `Editing: ${editingFile}` : path}
             </div>
           </div>

@@ -138,13 +138,13 @@ export default function ServerProperties({ serverId }: { serverId: string }) {
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-xl font-bold text-white">Server Properties</h2>
-            <p className="text-sm text-zinc-400">Configure core server rules and settings</p>
+            <h2 className="text-2xl font-black text-white tracking-tight drop-shadow-md">Properties</h2>
+            <p className="text-indigo-400/80 font-bold uppercase tracking-widest text-xs mt-1">Configure core server rules and settings</p>
           </div>
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white font-medium rounded-lg transition-colors flex items-center disabled:opacity-50"
+            className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl transition-all flex items-center disabled:opacity-50 shadow-[0_0_15px_rgba(79,70,229,0.3)] hover:shadow-[0_0_20px_rgba(99,102,241,0.5)] ring-1 ring-white/10"
           >
             <Save className="w-4 h-4 mr-2" />
             {isSaving ? 'Saving...' : 'Save Changes'}
@@ -153,9 +153,9 @@ export default function ServerProperties({ serverId }: { serverId: string }) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {COMMON_PROPERTIES.map((prop) => (
-            <div key={prop.key} className="bg-white/[0.02] border border-white/5 p-4 rounded-xl md:rounded-none">
+            <div key={prop.key} className="bg-black/40 backdrop-blur-xl border border-white/10 p-5 rounded-2xl shadow-[0_0_30px_-15px_rgba(0,0,0,0.5)] ring-1 ring-white/5 relative overflow-hidden group hover:bg-black/60 transition-colors">
               <div className="flex items-center justify-between mb-2">
-                <label className="text-sm font-medium text-zinc-200">{prop.label}</label>
+                <label className="text-xs font-bold text-indigo-300 uppercase tracking-widest drop-shadow-sm mb-2 block">{prop.label}</label>
                 {prop.type === 'boolean' && (
                   <button
                     onClick={() => handleChange(prop.key, properties[prop.key] === 'true' ? 'false' : 'true')}
@@ -176,7 +176,7 @@ export default function ServerProperties({ serverId }: { serverId: string }) {
                 <select
                   value={properties[prop.key] || ''}
                   onChange={(e) => handleChange(prop.key, e.target.value)}
-                  className="w-full bg-[#0a0a0c] border border-white/10 focus:border-indigo-500 rounded-lg px-3 py-2 text-sm text-white outline-none"
+                  className="w-full bg-black/60 border border-white/10 focus:border-indigo-500 rounded-xl px-4 py-2.5 text-sm font-medium text-white outline-none shadow-inner transition-colors"
                 >
                   {prop.options?.map(opt => (
                     <option key={opt} value={opt}>{opt}</option>
@@ -189,7 +189,7 @@ export default function ServerProperties({ serverId }: { serverId: string }) {
                   type="number"
                   value={properties[prop.key] || ''}
                   onChange={(e) => handleChange(prop.key, e.target.value)}
-                  className="w-full bg-[#0a0a0c] border border-white/10 focus:border-indigo-500 rounded-lg px-3 py-2 text-sm text-white outline-none"
+                  className="w-full bg-black/60 border border-white/10 focus:border-indigo-500 rounded-xl px-4 py-2.5 text-sm font-medium text-white outline-none shadow-inner transition-colors"
                 />
               )}
 
@@ -198,7 +198,7 @@ export default function ServerProperties({ serverId }: { serverId: string }) {
                   type="text"
                   value={properties[prop.key] || ''}
                   onChange={(e) => handleChange(prop.key, e.target.value)}
-                  className="w-full bg-[#0a0a0c] border border-white/10 focus:border-indigo-500 rounded-lg px-3 py-2 text-sm text-white outline-none"
+                  className="w-full bg-black/60 border border-white/10 focus:border-indigo-500 rounded-xl px-4 py-2.5 text-sm font-medium text-white outline-none shadow-inner transition-colors"
                 />
               )}
 
@@ -208,8 +208,8 @@ export default function ServerProperties({ serverId }: { serverId: string }) {
         </div>
 
         <div className="mt-8">
-          <h3 className="text-lg font-bold text-white mb-4">Advanced Properties</h3>
-          <div className="bg-white/[0.02] border border-white/5 rounded-xl md:rounded-none overflow-hidden">
+          <h3 className="text-lg font-black text-white tracking-tight drop-shadow-md mb-4 mt-8">Advanced Properties</h3>
+          <div className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_0_30px_-15px_rgba(0,0,0,0.5)] ring-1 ring-white/5 overflow-hidden">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
               {Object.keys(properties).filter(k => !COMMON_PROPERTIES.find(cp => cp.key === k)).map(key => (
                 <div key={key} className="flex flex-col">

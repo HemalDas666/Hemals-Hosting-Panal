@@ -132,9 +132,10 @@ export default function ServerSettings({ serverId, server }: { serverId: string,
   return (
     <>
       {showDowngradeRestartPopup && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#0a0a0c] border border-white/10 p-6 rounded-2xl max-w-md w-full shadow-2xl relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-1 bg-amber-500"></div>
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-black/60 backdrop-blur-2xl border border-white/10 p-6 md:p-8 rounded-3xl max-w-md w-full shadow-[0_0_50px_-10px_rgba(0,0,0,0.8)] ring-1 ring-white/5 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent pointer-events-none" />
+            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-amber-600 to-amber-400"></div>
             <div className="flex items-start mb-4">
               <div className="bg-amber-500/20 p-3 rounded-xl mr-4 text-amber-400">
                 <AlertTriangle className="w-6 h-6" />
@@ -160,7 +161,7 @@ export default function ServerSettings({ serverId, server }: { serverId: string,
         </div>
       )}
 
-    <div className="flex-1 overflow-y-auto p-4 md:p-6 custom-scrollbar text-white">
+    <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar text-white bg-transparent">
       <div className="max-w-3xl space-y-8">
         <div>
           <h2 className="text-xl font-bold mb-2">Settings</h2>
@@ -169,7 +170,7 @@ export default function ServerSettings({ serverId, server }: { serverId: string,
 
         {canManage ? (
           <>
-            <div className="border border-white/10 bg-white/[0.02] rounded-2xl p-6 mb-8">
+            <div className="bg-black/40 backdrop-blur-xl border border-white/10 p-6 md:p-8 rounded-3xl shadow-[0_0_40px_-15px_rgba(0,0,0,0.5)] ring-1 ring-white/5 relative overflow-hidden group hover:bg-black/60 transition-colors mb-8">
               <h3 className="text-amber-400 font-bold mb-2 flex items-center">
                 <AlertTriangle className="w-5 h-5 mr-2" /> Change Server Version
               </h3>
@@ -238,7 +239,7 @@ export default function ServerSettings({ serverId, server }: { serverId: string,
               )}
             </div>
 
-            <div className="border border-white/10 bg-white/[0.02] rounded-2xl p-6 mb-8">
+            <div className="bg-black/40 backdrop-blur-xl border border-white/10 p-6 md:p-8 rounded-3xl shadow-[0_0_40px_-15px_rgba(0,0,0,0.5)] ring-1 ring-white/5 relative overflow-hidden group hover:bg-black/60 transition-colors mb-8">
               <h3 className="text-indigo-400 font-bold mb-2 flex items-center">
                 <Globe className="w-5 h-5 mr-2" /> Server IP Alias
               </h3>
@@ -268,7 +269,7 @@ export default function ServerSettings({ serverId, server }: { serverId: string,
             {user?.role === "admin" ? (
               <>
 
-                <div className="border border-white/10 bg-white/[0.02] rounded-2xl p-6">
+                <div className="bg-black/40 backdrop-blur-xl border border-white/10 p-6 md:p-8 rounded-3xl shadow-[0_0_40px_-15px_rgba(0,0,0,0.5)] ring-1 ring-white/5 relative overflow-hidden group hover:bg-black/60 transition-colors">
                   <h3 className="text-indigo-400 font-bold mb-2 flex items-center">
                     <User className="w-5 h-5 mr-2" /> Server Ownership
                   </h3>

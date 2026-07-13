@@ -23,6 +23,7 @@ export default function CreateServer() {
   const [createProgress, setCreateProgress] = useState(0);
   const [totalSystemRam, setTotalSystemRam] = useState<number>(0);
   const [showRamWarning, setShowRamWarning] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -93,14 +94,15 @@ export default function CreateServer() {
       
       clearInterval(interval);
       setCreateProgress(100);
+      setError(null);
       
       setTimeout(() => {
         navigate("/servers");
       }, 500);
-    } catch (e) {
+    } catch (e: any) {
       clearInterval(interval);
       setCreateProgress(0);
-      alert("Error creating server");
+      setError(e.response?.data?.error || "Error creating server");
       setLoading(false);
     }
   };
@@ -183,16 +185,22 @@ export default function CreateServer() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-zinc-300 mb-2 flex items-center">
-                 <Globe className="w-4 h-4 mr-2 text-orange-400" /> Network Port
+              <label className={`block text-sm font-medium mb-2 flex items-center ${error?.includes("Port") ? "text-red-400" : "text-zinc-300"}`}>
+                 <Globe className={`w-4 h-4 mr-2 ${error?.includes("Port") ? "text-red-400" : "text-orange-400"}`} /> Network Port
               </label>
               <input 
                 type="number" 
                 required 
                 value={port} 
-                onChange={e => setPort(e.target.value)} 
-                className="w-full bg-white/[0.02] border border-white/10 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 rounded-xl px-4 py-3 text-white transition-all shadow-inner outline-none font-mono"
+                onChange={e => { setPort(e.target.value); setError(null); }} 
+                className={`w-full bg-white/[0.02] border focus:ring-1 rounded-xl px-4 py-3 text-white transition-all shadow-inner outline-none font-mono ${error?.includes("Port") ? "border-red-500 focus:border-red-500 focus:ring-red-500/50" : "border-white/10 focus:border-indigo-500 focus:ring-indigo-500/50"}`}
               />
+              {error?.includes("Port") && (
+                <p className="mt-2 text-sm text-red-400 flex items-center">
+                  <AlertTriangle className="w-4 h-4 mr-1.5" />
+                  {error}
+                </p>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium text-zinc-300 mb-2 flex items-center">
@@ -263,6 +271,12 @@ export default function CreateServer() {
                      style={{ width: `${createProgress}%` }}
                    ></div>
                  </div>
+               </div>
+             )}
+             {error && !error.includes("Port") && (
+               <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-start text-red-400 mb-6">
+                 <AlertTriangle className="w-5 h-5 mr-3 shrink-0 mt-0.5" />
+                 <p className="text-sm font-medium">{error}</p>
                </div>
              )}
              
