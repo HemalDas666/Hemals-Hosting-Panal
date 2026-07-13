@@ -17,7 +17,8 @@ router.get("/settings", async (req, res) => {
     panelName: settings.panelName || "JTG Panel",
     panelLogo: settings.panelLogo || "",
     panelBackgroundImage: settings.panelBackgroundImage || "",
-    panelBackgroundBlur: settings.panelBackgroundBlur !== undefined ? settings.panelBackgroundBlur : 10
+    panelBackgroundBlur: settings.panelBackgroundBlur !== undefined ? settings.panelBackgroundBlur : 10,
+    enablePlayit: settings.enablePlayit !== undefined ? settings.enablePlayit : false
   });
 });
 

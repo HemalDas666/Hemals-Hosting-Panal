@@ -9,12 +9,13 @@ import { LoadingOverlay } from "../components/LoadingOverlay";
 
 export default function SettingsPage() {
   const { user, logout } = useAuth();
-  const { panelName, panelLogo, panelBackgroundImage, panelBackgroundBlur, fetchSettings } = useSettings();
+  const { panelName, panelLogo, panelBackgroundImage, panelBackgroundBlur, enablePlayit, fetchSettings } = useSettings();
   const [users, setUsers] = useState<any[]>([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("user");
   const [newPanelName, setNewPanelName] = useState(panelName);
+  const [newEnablePlayit, setNewEnablePlayit] = useState(enablePlayit);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [croppingType, setCroppingType] = useState<"logo" | "background" | null>(null);
   const [bgAspectRatio, setBgAspectRatio] = useState<number>(16/9);
@@ -49,7 +50,8 @@ export default function SettingsPage() {
 
   useEffect(() => {
     setNewPanelName(panelName);
-  }, [panelName]);
+    setNewEnablePlayit(enablePlayit);
+  }, [panelName, enablePlayit]);
 
   const fetchUsers = async () => {
     if (user.role !== "admin") return;
@@ -265,7 +267,7 @@ export default function SettingsPage() {
                 e.preventDefault();
                 setIsSavingSettings(true);
                 try {
-                  await axios.put("/api/system/settings", { panelName: newPanelName });
+                  await axios.put("/api/system/settings", { panelName: newPanelName, enablePlayit: newEnablePlayit });
                   fetchSettings();
                   alert("Settings updated successfully");
                 } catch (err: any) {
@@ -289,6 +291,19 @@ export default function SettingsPage() {
                   {isSavingSettings ? "Saving..." : "Save"}
                 </button>
               </div>
+              
+              <label className="flex items-center gap-3 cursor-pointer">
+                <div className="relative flex items-center">
+                  <input 
+                    type="checkbox" 
+                    checked={newEnablePlayit} 
+                    onChange={e => setNewEnablePlayit(e.target.checked)}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-500"></div>
+                </div>
+                <span className="text-sm font-medium text-zinc-400">Enable Playit Tunnel</span>
+              </label>
             </form>
             
             <div className="flex-1 max-w-sm">

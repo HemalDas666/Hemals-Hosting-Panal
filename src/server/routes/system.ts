@@ -103,12 +103,13 @@ router.put("/users/:id/password", async (req, res) => {
 router.put("/settings", async (req, res) => {
   const user = (req as any).user;
   if(user.role !== "admin") return res.status(403).json({ error: "Forbidden"});
-  const { panelName, panelLogo, panelBackgroundImage, panelBackgroundBlur } = req.body;
+  const { panelName, panelLogo, panelBackgroundImage, panelBackgroundBlur, enablePlayit } = req.body;
   const settings = await readJSON("settings.json") || {};
   if (panelName !== undefined) settings.panelName = panelName || "JTG Panel";
   if (panelLogo !== undefined) settings.panelLogo = panelLogo;
   if (panelBackgroundImage !== undefined) settings.panelBackgroundImage = panelBackgroundImage;
   if (panelBackgroundBlur !== undefined) settings.panelBackgroundBlur = panelBackgroundBlur;
+  if (enablePlayit !== undefined) settings.enablePlayit = enablePlayit;
   await writeJSON("settings.json", settings);
   res.json({ success: true });
 });

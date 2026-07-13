@@ -209,7 +209,18 @@ export const startServer = async (req: Request, res: Response) => {
     if (!server || !server.containerId) {
       return res.status(404).json({ error: "Not found" });
     }
-    await startContainer(server.containerId);
+    try {
+      await startContainer(server.containerId);
+    } catch (startErr: any) {
+      if (startErr.statusCode === 404 || (startErr.message && startErr.message.toLowerCase().includes("no such container"))) {
+        console.log(`Container missing for server ${server.id}. Recreating...`);
+        server.containerId = await createServerContainer(server);
+        await writeJSON("servers.json", servers);
+        await startContainer(server.containerId);
+      } else {
+        throw startErr;
+      }
+    }
     await attachContainerSocket(server.containerId, server.id);
     res.json({ success: true });
   } catch (err: any) {
@@ -226,7 +237,15 @@ export const stopServer = async (req: Request, res: Response) => {
     if (!server || !server.containerId) {
       return res.status(404).json({ error: "Not found" });
     }
-    await stopContainer(server.containerId);
+    try {
+      await stopContainer(server.containerId);
+    } catch (stopErr: any) {
+      if (stopErr.statusCode === 404 || (stopErr.message && stopErr.message.toLowerCase().includes("no such container"))) {
+        console.log(`Container already missing for server ${server.id}. Assuming stopped.`);
+      } else {
+        throw stopErr;
+      }
+    }
     res.json({ success: true });
   } catch (err: any) {
     console.error("Stop server error:", err);
@@ -242,7 +261,18 @@ export const restartServer = async (req: Request, res: Response) => {
     if (!server || !server.containerId) {
       return res.status(404).json({ error: "Not found" });
     }
-    await restartContainer(server.containerId);
+    try {
+      await restartContainer(server.containerId);
+    } catch (startErr: any) {
+      if (startErr.statusCode === 404 || (startErr.message && startErr.message.toLowerCase().includes("no such container"))) {
+        console.log(`Container missing for server ${server.id}. Recreating...`);
+        server.containerId = await createServerContainer(server);
+        await writeJSON("servers.json", servers);
+        await startContainer(server.containerId);
+      } else {
+        throw startErr;
+      }
+    }
     await attachContainerSocket(server.containerId, server.id);
     res.json({ success: true });
   } catch (err: any) {
@@ -635,10 +665,10 @@ export const installPlugin = async (req: Request, res: Response) => {
         }
       }
     } else if (source === 'spigot') {
-       const res = await axios.get(`https://api.spiget.org/v2/resources/${pluginId}`);
-       if (res.data && res.data.file) {
-         if (res.data.file.type === 'external' && res.data.file.externalUrl) {
-           const extUrl = res.data.file.externalUrl;
+       const apiRes = await axios.get(`https://api.spiget.org/v2/resources/${pluginId}`);
+       if (apiRes.data && apiRes.data.file) {
+         if (apiRes.data.file.type === 'external' && apiRes.data.file.externalUrl) {
+           const extUrl = apiRes.data.file.externalUrl;
            if (extUrl.includes('github.com') && extUrl.includes('/releases/')) {
              // Try to extract github repo to get the jar
              const match = extUrl.match(/github\.com\/([^\/]+)\/([^\/]+)\/releases\/tag\/([^\/]+)/);

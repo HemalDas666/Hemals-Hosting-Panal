@@ -15,10 +15,12 @@ import ModManager from "../components/ModManager";
 import PlayitTunnel from "./PlayitTunnel";
 import { Puzzle, Box } from "lucide-react";
 import { Settings, Globe } from "lucide-react";
+import { useSettings } from "../context/SettingsContext";
 
 
 export default function ServerView() {
   const { id } = useParams();
+  const { enablePlayit } = useSettings();
   const [server, setServer] = useState<any>(null);
   const [totalSystemRam, setTotalSystemRam] = useState<number>(0);
   const [showRamWarning, setShowRamWarning] = useState(false);
@@ -101,9 +103,14 @@ export default function ServerView() {
 
   tabs.push(
     { name: "Settings", path: `/servers/${id}/settings`, exactPath: "settings", icon: <Settings size={18} /> },
-    { name: "Backup", path: `/servers/${id}/backup`, exactPath: "backup", icon: <Archive size={18} /> },
-    { name: "Playit Tunnel", path: `/servers/${id}/playit`, exactPath: "playit", icon: <Globe size={18} /> }
+    { name: "Backup", path: `/servers/${id}/backup`, exactPath: "backup", icon: <Archive size={18} /> }
   );
+
+  if (enablePlayit) {
+    tabs.push(
+      { name: "Playit Tunnel", path: `/servers/${id}/playit`, exactPath: "playit", icon: <Globe size={18} /> }
+    );
+  }
 
   return (
     <motion.div 
@@ -247,7 +254,7 @@ export default function ServerView() {
              <Route path="/backup" element={<ServerBackups serverId={id!} />} />
              <Route path="/plugins" element={<PluginManager serverId={id!} />} />
              <Route path="/mods" element={<ModManager serverId={id!} />} />
-             <Route path="/playit" element={<PlayitTunnel serverId={id!} />} />
+             {enablePlayit && <Route path="/playit" element={<PlayitTunnel serverId={id!} />} />}
            </Routes>
         </div>
       </div>
