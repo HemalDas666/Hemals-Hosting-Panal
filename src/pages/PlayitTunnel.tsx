@@ -20,7 +20,7 @@ export default function PlayitTunnel({ serverId }: { serverId: string }) {
       const res = await axios.get(`/api/servers/${serverId}/playit`);
       setStatus(res.data.status);
       setClaimLink(res.data.claimLink || null);
-      if (res.data.logs) {
+      if (res.data.logs !== undefined) {
         setLogs(res.data.logs);
       }
     } catch (e) {

@@ -53,10 +53,13 @@ router.get("/:id/playit", async (req, res) => {
   
   const { exec } = await import("child_process");
   
-  exec("pm2 jlist", (err, stdout) => {
+  exec("npx pm2 jlist", (err, stdout) => {
     let status = "stopped";
     try {
-      const pm2List = JSON.parse(stdout);
+      const jsonStart = stdout.indexOf('[');
+      const jsonEnd = stdout.lastIndexOf(']');
+      const jsonStr = jsonStart !== -1 && jsonEnd !== -1 ? stdout.substring(jsonStart, jsonEnd + 1) : stdout;
+      const pm2List = JSON.parse(jsonStr);
       const playitProcess = pm2List.find((p: any) => p.name === pm2Name);
       if (playitProcess && playitProcess.pm2_env && playitProcess.pm2_env.status === "online") {
         status = "running";
@@ -64,8 +67,8 @@ router.get("/:id/playit", async (req, res) => {
     } catch (e) {}
 
     if (status === "running") {
-      exec(`pm2 logs ${pm2Name} --nostream --lines 100`, (err, logStdout, logStderr) => {
-        const logs = logStdout || "";
+      exec(`npx pm2 logs ${pm2Name} --nostream --lines 100`, (err, logStdout, logStderr) => {
+        const logs = (logStdout || "").replace(/\x1b\[[0-9;]*m/g, "");
         const claimLinkMatch = logs.match(/https:\/\/playit\.gg\/claim\/[a-zA-Z0-9]+/);
         res.json({
           status,
@@ -98,7 +101,7 @@ router.post("/:id/playit/start", async (req, res) => {
   
   const setupCmd = `if [ ! -f "${playitBin}" ]; then wget -qO "${playitBin}" "https://github.com/playit-cloud/playit-agent/releases/download/v0.15.26/playit-linux-amd64" && chmod +x "${playitBin}"; fi`;
   
-  exec(`${setupCmd} && pm2 start "${playitBin}" --name ${pm2Name} -- --secret_path "${secretPath}" && pm2 save`, (err, stdout, stderr) => {
+  exec(`${setupCmd} && npx pm2 start "${playitBin}" --name ${pm2Name} -- --secret_path "${secretPath}" && npx pm2 save`, (err, stdout, stderr) => {
     if (err) {
       return res.status(500).json({ error: "Failed to start Playit Tunnel", details: stderr });
     }
@@ -119,7 +122,7 @@ router.post("/:id/playit/stop", async (req, res) => {
   
   const { exec } = await import("child_process");
   
-  exec(`pm2 delete ${pm2Name} && pm2 save`, (err, stdout, stderr) => {
+  exec(`npx pm2 delete ${pm2Name} && npx pm2 save`, (err, stdout, stderr) => {
     res.json({ success: true });
   });
 });
