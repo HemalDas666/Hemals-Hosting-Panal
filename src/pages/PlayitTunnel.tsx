@@ -30,6 +30,8 @@ export default function PlayitTunnel({ serverId }: { serverId: string }) {
 
   const generateTunnel = async () => {
     setIsProcessing(true);
+    setLogs("");
+    setClaimLink(null);
     try {
       await axios.post(`/api/servers/${serverId}/playit/start`);
       setStatus("running");
@@ -47,6 +49,7 @@ export default function PlayitTunnel({ serverId }: { serverId: string }) {
       await axios.post(`/api/servers/${serverId}/playit/stop`);
       setStatus("stopped");
       setClaimLink(null);
+      setLogs("");
       fetchStatus();
     } catch (e) {
       console.error("Failed to stop tunnel", e);
