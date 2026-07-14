@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { LoadingOverlay } from "../components/LoadingOverlay";
 import { useParams, Link, Routes, Route, useLocation } from "react-router-dom";
 import axios from "axios";
-import { Terminal, Folder, Play, Square, RefreshCw, ArrowLeft, Sliders, Archive, AlertTriangle, Copy, Check, Menu, X } from "lucide-react";
+import { Terminal, Folder, Play, Square, RefreshCw, ArrowLeft, Sliders, Archive, AlertTriangle, Copy, Check, Menu, X, Users, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import ServerConsole from "../components/ServerConsole";
@@ -12,6 +12,7 @@ import ServerProperties from "../components/ServerProperties";
 import ServerBackups from "../components/ServerBackups";
 import PluginManager from "../components/PluginManager";
 import ModManager from "../components/ModManager";
+import SubUsersManager from "../components/SubUsersManager";
 import PlayitTunnel from "./PlayitTunnel";
 import { Puzzle, Box } from "lucide-react";
 import { Settings, Globe } from "lucide-react";
@@ -84,7 +85,8 @@ export default function ServerView() {
 
   const tabs: any[] = [
     { name: "Terminal", path: `/servers/${id}`, exactPath: "", icon: <Terminal size={18} /> },
-    { name: "Filesystem", path: `/servers/${id}/files`, exactPath: "files", icon: <Folder size={18} /> },
+    { name: "File Manager", path: `/servers/${id}/files`, exactPath: "files", icon: <Folder size={18} /> },
+    { name: "Sub-Users", path: `/servers/${id}/subusers`, exactPath: "subusers", icon: <Users size={18} /> },
   ];
 
   const isProxy = ["VELOCITY", "BUNGEECORD", "WATERFALL"].includes(server?.type?.toUpperCase() || "");
@@ -111,6 +113,10 @@ export default function ServerView() {
       { name: "Playit Tunnel", path: `/servers/${id}/playit`, exactPath: "playit", icon: <Globe size={18} /> }
     );
   }
+
+  const navTabs: any[] = [
+    { name: "Back to Dashboard", path: `/servers`, exactPath: "back", icon: <LogOut size={18} /> }
+  ];
 
   return (
     <motion.div 
@@ -200,6 +206,26 @@ export default function ServerView() {
               </Link>
             );
           })}
+          
+          <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent my-4" />
+          
+          <div className="text-xs font-semibold text-zinc-500 mb-2 px-3 tracking-wider uppercase">Navigation</div>
+
+          {navTabs.map(tab => {
+             return (
+              <Link 
+                key={tab.name}
+                to={tab.path}
+                onClick={() => setSidebarOpen(false)}
+                className="flex items-center space-x-3 px-3 py-2.5 text-sm font-medium transition-all rounded-lg text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.05] border border-transparent"
+              >
+                <div className="text-zinc-500 transition-colors">
+                  {React.cloneElement(tab.icon, { className: "w-4 h-4" })}
+                </div>
+                <span>{tab.name}</span>
+              </Link>
+            );
+          })}
         </div>
       </div>
 
@@ -261,11 +287,12 @@ export default function ServerView() {
         </div>
 
 <div className="flex-1 relative flex flex-col min-h-0 bg-transparent">
-        <div className="flex-1 flex flex-col relative overflow-hidden bg-transparent">
+        <div className="flex-1 flex flex-col relative overflow-hidden bg-transparent min-h-0">
            <Routes>
              <Route path="/" element={<ServerConsole serverId={id!} server={server} />} />
              <Route path="/properties" element={<ServerProperties serverId={id!} />} />
              <Route path="/files" element={<FileManager serverId={id!} />} />
+             <Route path="/subusers" element={<SubUsersManager serverId={id!} />} />
              <Route path="/settings" element={<ServerSettings serverId={id!} server={server} />} />
              <Route path="/backup" element={<ServerBackups serverId={id!} />} />
              <Route path="/plugins" element={<PluginManager serverId={id!} />} />

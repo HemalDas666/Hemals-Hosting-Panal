@@ -35,7 +35,7 @@ export default function PlayerManager({ serverId, players }: { serverId: string,
         </div>
       </div>
 
-      <div className="relative z-10 divide-y divide-white/5">
+      <div className="relative z-10 divide-y divide-white/5 overflow-y-auto max-h-[50vh] md:max-h-none custom-scrollbar touch-auto overscroll-y-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
         {players.length === 0 ? (
           <div className="p-8 text-center text-zinc-500 flex flex-col items-center">
             <Users className="w-8 h-8 mb-3 text-zinc-700" />

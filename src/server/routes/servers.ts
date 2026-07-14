@@ -147,7 +147,68 @@ router.post("/:id/playit/reset", async (req, res) => {
   });
 });
 
-export default router;
+// Sub-users endpoints
+router.get("/:id/subusers", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { readJSON } = await import("../services/db.js");
+    const servers = await readJSON("servers.json") || [];
+    const server = servers.find((s: any) => s.id === id);
+    if (!server) return res.status(404).json({ error: "Server not found" });
+
+    const users = await readJSON("users.json") || [];
+    res.json({
+      subUsers: server.subUsers || [],
+      availableUsers: users.map((u: any) => ({ id: u.id, username: u.username }))
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.post("/:id/subusers", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { userId, permissions } = req.body;
+    const { readJSON, writeJSON } = await import("../services/db.js");
+    const servers = await readJSON("servers.json") || [];
+    const serverIndex = servers.findIndex((s: any) => s.id === id);
+    if (serverIndex === -1) return res.status(404).json({ error: "Server not found" });
+
+    if (!servers[serverIndex].subUsers) servers[serverIndex].subUsers = [];
+    const subUserIndex = servers[serverIndex].subUsers.findIndex((su: any) => su.userId === userId);
+    
+    if (subUserIndex !== -1) {
+      servers[serverIndex].subUsers[subUserIndex].permissions = permissions;
+    } else {
+      servers[serverIndex].subUsers.push({ userId, permissions });
+    }
+
+    await writeJSON("servers.json", servers);
+    res.json({ success: true, subUsers: servers[serverIndex].subUsers });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.delete("/:id/subusers/:userId", async (req, res) => {
+  try {
+    const { id, userId } = req.params;
+    const { readJSON, writeJSON } = await import("../services/db.js");
+    const servers = await readJSON("servers.json") || [];
+    const serverIndex = servers.findIndex((s: any) => s.id === id);
+    if (serverIndex === -1) return res.status(404).json({ error: "Server not found" });
+
+    if (!servers[serverIndex].subUsers) servers[serverIndex].subUsers = [];
+    servers[serverIndex].subUsers = servers[serverIndex].subUsers.filter((su: any) => su.userId !== userId);
+
+    await writeJSON("servers.json", servers);
+    res.json({ success: true, subUsers: servers[serverIndex].subUsers });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 router.post("/:id/plugins/install", installPlugin);
 router.post("/:id/mods/install", installMod);
+export default router;

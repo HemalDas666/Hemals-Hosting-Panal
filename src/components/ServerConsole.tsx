@@ -145,9 +145,9 @@ export default function ServerConsole({ serverId, server }: { serverId: string, 
   };
 
   return (
-    <div className="flex flex-col flex-1 bg-transparent h-full overflow-y-auto custom-scrollbar md:p-6 md:pb-12 text-white">
-      <div className="flex flex-col w-full max-w-4xl mx-auto min-h-full gap-4 md:gap-6 pb-20 md:pb-0">
-        <div className="flex flex-col flex-none h-[45vh] md:h-auto md:w-full md:aspect-[4/3] bg-black/40 backdrop-blur-xl border-b md:border md:rounded-2xl border-white/10 overflow-hidden shadow-[0_0_50px_-12px_rgba(99,102,241,0.25)] relative ring-1 ring-white/5">
+    <div className="absolute inset-0 overflow-y-auto custom-scrollbar text-white touch-auto overscroll-y-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
+      <div className="flex flex-col w-full max-w-4xl mx-auto min-h-full gap-4 md:gap-6 p-4 md:p-0 md:pt-6 pb-24 md:pb-12">
+        <div className="flex flex-col flex-none h-[50vh] md:h-auto md:w-full md:aspect-[4/3] bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden shadow-[0_0_50px_-12px_rgba(99,102,241,0.25)] relative ring-1 ring-white/5">
           <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/5 to-transparent pointer-events-none"></div>
           <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-indigo-500/80 to-transparent shadow-[0_0_20px_rgba(99,102,241,1)]"></div>
           
@@ -163,7 +163,7 @@ export default function ServerConsole({ serverId, server }: { serverId: string, 
             <div className="w-12"></div>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-4 md:p-6 font-mono text-xs md:text-[13px] custom-scrollbar leading-relaxed relative z-10">
+          <div className="flex-1 overflow-y-auto p-4 md:p-6 font-mono text-xs md:text-[13px] custom-scrollbar leading-relaxed relative z-10" style={{ WebkitOverflowScrolling: 'touch' }}>
             {logs.length === 0 && (
               <div className="text-zinc-500 flex items-center animate-pulse">
                 <span className="text-indigo-400 mr-2">➜</span> Awaiting connection...
