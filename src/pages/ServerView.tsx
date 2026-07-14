@@ -205,36 +205,45 @@ export default function ServerView() {
 
       <div className="flex-1 flex flex-col h-full bg-transparent overflow-hidden relative isolate">
         {/* Top Header with Hamburger */}
-        <div className="bg-black/40 backdrop-blur-2xl border-b border-white/10 p-3 md:p-4 flex items-center justify-between gap-3 shrink-0 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.5)] relative z-20">
-          <div className="flex items-center gap-3">
-            <button 
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="p-1.5 bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 shadow-sm rounded-lg text-zinc-400 hover:text-white transition-all flex items-center justify-center relative overflow-hidden group"
-            >
-              <div className="absolute inset-0 bg-red-500/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-              <Menu size={18} className="relative z-10 group-hover:text-red-400 transition-colors" />
-            </button>
-            <div className="w-px h-6 bg-white/10 mx-1 hidden sm:block" />
-            <h1 className="text-base md:text-lg font-bold tracking-tight text-white mb-0.5 leading-none hidden sm:block">{server.name}</h1>
+        <div className="bg-black/40 backdrop-blur-2xl border-b border-white/10 p-3 md:p-4 flex flex-col md:flex-row md:items-center justify-between gap-3 shrink-0 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.5)] relative z-20">
+          <div className="flex items-center justify-between w-full md:w-auto">
+            <div className="flex items-center gap-3">
+              <button 
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                className="p-1.5 bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 shadow-sm rounded-lg text-zinc-400 hover:text-white transition-all flex items-center justify-center relative overflow-hidden group"
+              >
+                <div className="absolute inset-0 bg-red-500/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                <Menu size={18} className="relative z-10 group-hover:text-red-400 transition-colors" />
+              </button>
+              <div className="w-px h-6 bg-white/10 mx-1 hidden sm:block" />
+              <h1 className="text-base md:text-lg font-bold tracking-tight text-white mb-0.5 leading-none">{server.name}</h1>
+            </div>
+            <div className="flex md:hidden items-center space-x-2 shrink-0">
+               <span className="flex h-2 w-2 relative shrink-0">
+                  {server.status === 'online' && <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>}
+                  <span className={`relative inline-flex rounded-full h-2 w-2 ${server.status === 'online' ? 'bg-emerald-500' : 'bg-zinc-600'}`}></span>
+               </span>
+               <span className="text-xs font-medium text-zinc-400 capitalize flex">{server.status}</span>
+            </div>
           </div>
           
-          <div className="flex items-center gap-3">
-             <button onClick={handleCopyIp} className="hidden sm:flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 transition-colors group cursor-pointer shrink-0" title="Copy Connection Info">
+          <div className="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-1 sm:pb-0 justify-between w-full md:w-auto">
+             <button onClick={handleCopyIp} className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 transition-colors group cursor-pointer shrink-0" title="Copy Connection Info">
                 <span className="text-xs font-mono text-zinc-400 group-hover:text-zinc-300 transition-colors truncate max-w-[150px] lg:max-w-[200px]">
                   {server.ipAlias ? `${server.ipAlias}:${server.port}` : server.port}
                 </span>
                 {copied ? <Check size={14} className="text-emerald-400 shrink-0" /> : <Copy size={14} className="text-zinc-500 group-hover:text-zinc-300 transition-colors shrink-0" />}
              </button>
-             <div className="hidden sm:block w-px h-5 bg-white/10" />
-             <div className="flex items-center space-x-2">
+             <div className="hidden md:block w-px h-5 bg-white/10" />
+             <div className="hidden md:flex items-center space-x-2 shrink-0">
                 <span className="flex h-2 w-2 relative shrink-0">
                    {server.status === 'online' && <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>}
                    <span className={`relative inline-flex rounded-full h-2 w-2 ${server.status === 'online' ? 'bg-emerald-500' : 'bg-zinc-600'}`}></span>
                 </span>
-                <span className="text-xs font-medium text-zinc-400 capitalize hidden sm:block">{server.status}</span>
+                <span className="text-xs font-medium text-zinc-400 capitalize flex">{server.status}</span>
              </div>
-             
-             <div className="flex items-center space-x-2">
+                
+             <div className="flex items-center space-x-1 sm:space-x-2 shrink-0 ml-auto md:ml-1">
                 {server.status !== 'online' ? (
                   <button disabled={isProcessing} onClick={() => handleAction('start')} className="p-1.5 sm:px-3 sm:py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 font-semibold rounded-lg transition-all border border-emerald-500/20 flex items-center justify-center text-xs shadow-sm disabled:opacity-50">
                     {isProcessing ? <div className="w-3.5 h-3.5 border-2 border-emerald-500/50 border-t-emerald-500 rounded-full animate-spin sm:mr-1.5" /> : <Play className="w-3.5 h-3.5 sm:mr-1.5" />} <span className="hidden sm:block">Start</span>

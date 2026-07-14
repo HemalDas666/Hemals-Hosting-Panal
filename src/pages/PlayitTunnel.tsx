@@ -58,6 +58,23 @@ export default function PlayitTunnel({ serverId }: { serverId: string }) {
     }
   };
 
+  const resetTunnel = async () => {
+    if (!window.confirm("Are you sure you want to reset the Playit agent? This will generate a new claim link and you will lose any static IPs assigned to this agent.")) return;
+    setIsProcessing(true);
+    setLogs("");
+    setClaimLink(null);
+    try {
+      await axios.post(`/api/servers/${serverId}/playit/reset`);
+      await axios.post(`/api/servers/${serverId}/playit/start`);
+      setStatus("running");
+      fetchStatus();
+    } catch (e) {
+      console.error("Failed to reset tunnel", e);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -117,6 +134,14 @@ export default function PlayitTunnel({ serverId }: { serverId: string }) {
                   >
                     {isProcessing ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
                     <span>Restart</span>
+                  </button>
+                  <button 
+                    onClick={resetTunnel}
+                    disabled={isProcessing}
+                    className="flex items-center justify-center space-x-2 px-4 py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 border border-rose-500/20 font-medium rounded-lg transition-colors shadow-sm disabled:opacity-50"
+                  >
+                    {isProcessing ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
+                    <span>Reset Agent</span>
                   </button>
                 </>
               )}

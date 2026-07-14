@@ -145,9 +145,9 @@ export default function ServerConsole({ serverId, server }: { serverId: string, 
   };
 
   return (
-    <div className="flex flex-col flex-1 bg-transparent h-full min-h-[400px] md:h-auto md:min-h-full overflow-y-auto custom-scrollbar md:p-6 md:pb-12 text-white">
-      <div className="flex flex-col w-full max-w-4xl mx-auto h-full md:h-auto gap-0 md:gap-6">
-        <div className="flex flex-col flex-1 md:flex-none md:w-full md:aspect-[4/3] bg-black/40 backdrop-blur-xl border-b md:border md:rounded-2xl border-white/10 overflow-hidden min-h-0 shadow-[0_0_50px_-12px_rgba(99,102,241,0.25)] relative ring-1 ring-white/5">
+    <div className="flex flex-col flex-1 bg-transparent h-full overflow-y-auto custom-scrollbar md:p-6 md:pb-12 text-white">
+      <div className="flex flex-col w-full max-w-4xl mx-auto min-h-full gap-4 md:gap-6 pb-20 md:pb-0">
+        <div className="flex flex-col flex-none h-[45vh] md:h-auto md:w-full md:aspect-[4/3] bg-black/40 backdrop-blur-xl border-b md:border md:rounded-2xl border-white/10 overflow-hidden shadow-[0_0_50px_-12px_rgba(99,102,241,0.25)] relative ring-1 ring-white/5">
           <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/5 to-transparent pointer-events-none"></div>
           <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-indigo-500/80 to-transparent shadow-[0_0_20px_rgba(99,102,241,1)]"></div>
           
@@ -199,7 +199,7 @@ export default function ServerConsole({ serverId, server }: { serverId: string, 
           </form>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-white/10 shrink-0 border-y md:border border-white/10 md:w-full md:rounded-2xl overflow-hidden mt-auto md:mt-0 shadow-[0_0_30px_-10px_rgba(0,0,0,0.5)] ring-1 ring-white/5 backdrop-blur-xl relative">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-white/10 shrink-0 border-y md:border border-white/10 md:w-full md:rounded-2xl overflow-hidden shadow-[0_0_30px_-10px_rgba(0,0,0,0.5)] ring-1 ring-white/5 backdrop-blur-xl relative">
         <div className="bg-black/60 p-4 md:p-5 flex flex-col justify-center relative overflow-hidden group hover:bg-black/40 transition-colors">
           <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
           <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-2 md:mb-3 relative z-10">
@@ -238,6 +238,13 @@ export default function ServerConsole({ serverId, server }: { serverId: string, 
           </div>
         </div>
       </div>
+        <button 
+          onClick={() => document.getElementById('player-manager')?.scrollIntoView({ behavior: 'smooth' })}
+          className="md:hidden flex flex-col items-center justify-center py-4 text-zinc-500 hover:text-zinc-300 transition-colors opacity-70 hover:opacity-100 animate-bounce mt-2 w-full cursor-pointer"
+        >
+          <span className="text-[10px] uppercase tracking-widest font-bold mb-1">Scroll for Players</span>
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+        </button>
         <PlayerManager serverId={serverId} players={players} />
      </div>
     </div>

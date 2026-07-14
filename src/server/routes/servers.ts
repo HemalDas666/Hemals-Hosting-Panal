@@ -69,10 +69,10 @@ router.get("/:id/playit", async (req, res) => {
     if (status === "running") {
       exec(`npx pm2 logs ${pm2Name} --nostream --lines 100`, (err, logStdout, logStderr) => {
         const logs = (logStdout || "").replace(/\x1b\[[0-9;]*[a-zA-Z]|\x1b./g, "");
-        const claimLinkMatch = logs.match(/https:\/\/playit\.gg\/claim\/[a-zA-Z0-9]+/);
+        const claimLinkMatches = logs.match(/https:\/\/playit\.gg\/claim\/[a-zA-Z0-9]+/g);
         res.json({
           status,
-          claimLink: claimLinkMatch ? claimLinkMatch[0] : null,
+          claimLink: claimLinkMatches ? claimLinkMatches[claimLinkMatches.length - 1] : null,
           logs: logs.split('\n').slice(-50).join('\n')
         });
       });
@@ -123,6 +123,26 @@ router.post("/:id/playit/stop", async (req, res) => {
   const { exec } = await import("child_process");
   
   exec(`npx pm2 delete ${pm2Name} && npx pm2 save`, (err, stdout, stderr) => {
+    res.json({ success: true });
+  });
+});
+
+router.post("/:id/playit/reset", async (req, res) => {
+  const user = (req as any).user;
+  if (user.role !== "admin") return res.status(403).json({ error: "Forbidden" });
+
+  const { id } = req.params;
+  const serversJSON = await (await import("fs/promises")).readFile(path.join(process.cwd(), ".data", "servers.json"), "utf8");
+  const servers = JSON.parse(serversJSON);
+  const server = servers.find((s: any) => s.id === id);
+  const serverName = server ? server.name.replace(/[^a-zA-Z0-9_-]/g, "_") : id;
+  const pm2Name = `playit_${serverName}`;
+  const serverDir = path.join(process.cwd(), ".data", "servers", id);
+  const secretPath = path.join(serverDir, "playit.toml");
+
+  const { exec } = await import("child_process");
+
+  exec(`npx pm2 delete ${pm2Name} || true; npx pm2 flush ${pm2Name} || true; rm -f "${secretPath}" && npx pm2 save`, (err, stdout, stderr) => {
     res.json({ success: true });
   });
 });

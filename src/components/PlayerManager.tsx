@@ -17,7 +17,7 @@ export default function PlayerManager({ serverId, players }: { serverId: string,
   };
 
   return (
-    <div className="mt-6 md:mt-8 bg-black/40 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden shadow-[0_0_40px_-15px_rgba(0,0,0,0.5)] ring-1 ring-white/5 relative group">
+    <div id="player-manager" className="mt-6 md:mt-8 bg-black/40 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden shadow-[0_0_40px_-15px_rgba(0,0,0,0.5)] ring-1 ring-white/5 relative group">
       <div className="absolute inset-0 overflow-hidden rounded-xl pointer-events-none">
         <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-indigo-500/10 blur-[100px] rounded-full" />
         <div className="absolute top-0 left-1/4 w-32 h-32 bg-emerald-500/5 blur-[80px] rounded-full" />
@@ -53,33 +53,33 @@ export default function PlayerManager({ serverId, players }: { serverId: string,
                 />
                 <span className="font-medium text-zinc-200">{player.name}</span>
               </div>
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="flex flex-wrap md:flex-nowrap items-center gap-2 w-full md:w-auto mt-2 md:mt-0">
                 <button 
                   onClick={() => handleAction(player.name, 'op', `op ${player.name}`)}
-                  className="px-3 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 rounded-lg text-xs font-medium flex items-center transition-colors"
+                  className="flex-1 md:flex-none px-3 py-2.5 md:py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 rounded-lg text-xs md:text-sm font-medium flex justify-center items-center transition-colors"
                 >
-                  {loadingAction?.player === player.name && loadingAction?.action === 'op' ? <Check className="w-3.5 h-3.5 mr-1.5" /> : <Shield className="w-3.5 h-3.5 mr-1.5" />}
+                  {loadingAction?.player === player.name && loadingAction?.action === 'op' ? <Check className="w-4 h-4 md:w-3.5 md:h-3.5 mr-1.5" /> : <Shield className="w-4 h-4 md:w-3.5 md:h-3.5 mr-1.5" />}
                   Make OP
                 </button>
                 <button 
                   onClick={() => handleAction(player.name, 'kick', `kick ${player.name} Kicked by admin.`)}
-                  className="px-3 py-1.5 bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 border border-orange-500/20 rounded-lg text-xs font-medium flex items-center transition-colors"
+                  className="flex-1 md:flex-none px-3 py-2.5 md:py-1.5 bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 border border-orange-500/20 rounded-lg text-xs md:text-sm font-medium flex justify-center items-center transition-colors"
                 >
-                  {loadingAction?.player === player.name && loadingAction?.action === 'kick' ? <Check className="w-3.5 h-3.5 mr-1.5" /> : <UserMinus className="w-3.5 h-3.5 mr-1.5" />}
+                  {loadingAction?.player === player.name && loadingAction?.action === 'kick' ? <Check className="w-4 h-4 md:w-3.5 md:h-3.5 mr-1.5" /> : <UserMinus className="w-4 h-4 md:w-3.5 md:h-3.5 mr-1.5" />}
                   Kick
                 </button>
                 <button 
                   onClick={() => handleAction(player.name, 'ban', `ban ${player.name} Banned by admin.`)}
-                  className="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 rounded-lg text-xs font-medium flex items-center transition-colors"
+                  className="flex-1 md:flex-none px-3 py-2.5 md:py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 rounded-lg text-xs md:text-sm font-medium flex justify-center items-center transition-colors"
                 >
-                  {loadingAction?.player === player.name && loadingAction?.action === 'ban' ? <Check className="w-3.5 h-3.5 mr-1.5" /> : <Gavel className="w-3.5 h-3.5 mr-1.5" />}
+                  {loadingAction?.player === player.name && loadingAction?.action === 'ban' ? <Check className="w-4 h-4 md:w-3.5 md:h-3.5 mr-1.5" /> : <Gavel className="w-4 h-4 md:w-3.5 md:h-3.5 mr-1.5" />}
                   Ban
                 </button>
                 <button 
                   onClick={() => handleAction(player.name, 'ban-ip', `ban-ip ${player.name}`)}
-                  className="px-3 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 rounded-lg text-xs font-medium flex items-center transition-colors"
+                  className="flex-1 md:flex-none px-3 py-2.5 md:py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 rounded-lg text-xs md:text-sm font-medium flex justify-center items-center transition-colors"
                 >
-                  {loadingAction?.player === player.name && loadingAction?.action === 'ban-ip' ? <Check className="w-3.5 h-3.5 mr-1.5" /> : <ShieldAlert className="w-3.5 h-3.5 mr-1.5" />}
+                  {loadingAction?.player === player.name && loadingAction?.action === 'ban-ip' ? <Check className="w-4 h-4 md:w-3.5 md:h-3.5 mr-1.5" /> : <ShieldAlert className="w-4 h-4 md:w-3.5 md:h-3.5 mr-1.5" />}
                   Ban IP
                 </button>
               </div>
