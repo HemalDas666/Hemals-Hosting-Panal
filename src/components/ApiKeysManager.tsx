@@ -45,24 +45,13 @@ export default function ApiKeysManager() {
     }
   };
 
-  const handleRevokeKey = async (id: string) => {
-    if (!confirm("Are you sure you want to revoke this API key?")) return;
+  const handleDeleteKey = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this API key? This action cannot be undone.")) return;
     try {
       await axios.delete(`/api/admin/api-keys/${id}`);
       fetchApiKeys();
     } catch (e) {
-      console.error("Failed to revoke API key", e);
-    }
-  };
-
-  const handleRotateKey = async (id: string) => {
-    if (!confirm("Are you sure you want to rotate this API key? The old key will immediately stop working.")) return;
-    try {
-      const res = await axios.post(`/api/admin/api-keys/${id}/rotate`);
-      setNewKeyString(res.data.key);
-      fetchApiKeys();
-    } catch (e) {
-      console.error("Failed to rotate API key", e);
+      console.error("Failed to delete API key", e);
     }
   };
 
@@ -131,23 +120,13 @@ export default function ApiKeysManager() {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                {!key.revoked && (
-                  <>
-                    <button 
-                      onClick={() => handleRotateKey(key.id)}
-                      className="px-3 py-1.5 text-xs font-medium text-orange-400 bg-orange-500/10 hover:bg-orange-500/20 rounded-lg transition-colors flex items-center gap-1.5"
-                    >
-                      <RefreshCw size={14} /> Rotate
-                    </button>
-                    <button 
-                      onClick={() => handleRevokeKey(key.id)}
-                      className="p-1.5 text-zinc-500 bg-white/[0.03] border border-transparent hover:border-red-500/30 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all" 
-                      title="Revoke Key"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </>
-                )}
+                <button 
+                  onClick={() => handleDeleteKey(key.id)}
+                  className="p-1.5 text-zinc-500 bg-white/[0.03] border border-transparent hover:border-red-500/30 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all" 
+                  title="Delete Key"
+                >
+                  <Trash2 size={16} />
+                </button>
               </div>
             </div>
           ))}

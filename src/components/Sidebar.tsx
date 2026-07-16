@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Server, LayoutDashboard, Plus, LogOut, X, Settings, Globe } from "lucide-react";
+import { Server, LayoutDashboard, Plus, LogOut, X, Settings, Globe, Key } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useSettings } from "../context/SettingsContext";
 import { motion } from "framer-motion";
@@ -16,6 +16,7 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
 
   if (user?.role === "admin") {
     links.push({ name: "Create Server", path: "/servers/create", icon: <Plus size={18} /> });
+    links.push({ name: "API Keys", path: "/api-keys", icon: <Key size={18} /> });
   }
 
   links.push({ name: "Settings", path: "/settings", icon: <Settings size={18} /> });

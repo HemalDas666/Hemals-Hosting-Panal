@@ -12,6 +12,7 @@ import ServerList from "./pages/ServerList";
 import CreateServer from "./pages/CreateServer";
 import ServerView from "./pages/ServerView";
 import SettingsPage from "./pages/SettingsPage";
+import ApiKeysPage from "./pages/ApiKeysPage";
 import PlayitTunnel from "./pages/PlayitTunnel";
 import Layout from "./components/Layout";
 import { motion, AnimatePresence } from "framer-motion";
@@ -44,6 +45,7 @@ const AnimatedRoutes = () => {
           <Route path="/servers/create" element={<ProtectedRoute><CreateServer /></ProtectedRoute>} />
           <Route path="/servers/:id/*" element={<ProtectedRoute><ServerView /></ProtectedRoute>} />
           <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+          <Route path="/api-keys" element={<ProtectedRoute><ApiKeysPage /></ProtectedRoute>} />
         </Routes>
       </div>
     </AnimatePresence>

@@ -34,9 +34,14 @@ router.post("/", async (req, res) => {
     const { label, scopes, expires_at } = req.body;
     const user = (req as any).user;
 
-    // Generate random API key (32 bytes = 64 hex chars)
-    const rawKey = crypto.randomBytes(32).toString("hex");
-    const keyString = `jtg_${rawKey}`;
+    // Generate random API key (14 chars)
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const randomBytes = crypto.randomBytes(14);
+    let rawKey = '';
+    for (let i = 0; i < 14; i++) {
+      rawKey += chars[randomBytes[i] % chars.length];
+    }
+    const keyString = `jtg-${rawKey}`;
     
     // Hash the key for storage
     const keyHash = crypto.createHash('sha256').update(keyString).digest('hex');
@@ -71,7 +76,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Revoke API Key
+// Delete API Key
 router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -82,48 +87,14 @@ router.delete("/:id", async (req, res) => {
       return res.status(404).json({ error: "Key not found" });
     }
 
-    apiKeys[keyIndex].revoked = true;
+    apiKeys.splice(keyIndex, 1);
     await writeJSON("api_keys.json", apiKeys);
 
-    res.json({ success: true, message: "Key revoked successfully" });
+    res.json({ success: true, message: "Key deleted successfully" });
   } catch (err: any) {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-// Rotate API Key
-router.post("/:id/rotate", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const apiKeys = await readJSON("api_keys.json") || [];
-    const keyIndex = apiKeys.findIndex((k: any) => k.id === id);
-    
-    if (keyIndex === -1) {
-      return res.status(404).json({ error: "Key not found" });
-    }
-
-    if (apiKeys[keyIndex].revoked) {
-      return res.status(400).json({ error: "Cannot rotate revoked key" });
-    }
-
-    // Generate random API key
-    const rawKey = crypto.randomBytes(32).toString("hex");
-    const keyString = `jtg_${rawKey}`;
-    
-    // Hash the key for storage
-    const keyHash = crypto.createHash('sha256').update(keyString).digest('hex');
-
-    apiKeys[keyIndex].key_hash = keyHash;
-    await writeJSON("api_keys.json", apiKeys);
-
-    res.json({ 
-      success: true, 
-      key: keyString, // Only show once
-      message: "Key rotated successfully" 
-    });
-  } catch (err: any) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
 
 export default router;
