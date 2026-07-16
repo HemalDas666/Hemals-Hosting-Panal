@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { Shield, User, Trash2, Layout, Upload, RefreshCw } from "lucide-react";
 import { ImageCropper } from "../components/ImageCropper";
 import { LoadingOverlay } from "../components/LoadingOverlay";
+import ApiKeysManager from "../components/ApiKeysManager";
 
 export default function SettingsPage() {
   const { user, logout } = useAuth();
@@ -564,6 +565,8 @@ export default function SettingsPage() {
           </div>
         </div>
       )}
+
+      {user.role === "admin" && <ApiKeysManager />}
 
       {user.role === "admin" && (
         <div className="bg-[#0a0a0c] border border-white/5 rounded-2xl p-6 md:p-8 shadow-xl mt-8">

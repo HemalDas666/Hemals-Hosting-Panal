@@ -10,7 +10,7 @@ export default function ServerConsole({ serverId, server }: { serverId: string, 
   const [command, setCommand] = useState("");
   const [players, setPlayers] = useState<{name: string}[]>([]);
   const [stats, setStats] = useState({ cpu: 0, ram: 0, disk: 0, limitRam: 1024, limitCpu: 100, limitDisk: 10 });
-  const endRef = useRef<HTMLDivElement>(null);
+  const consoleBodyRef = useRef<HTMLDivElement>(null);
   const { token } = useAuth();
 
   useEffect(() => {
@@ -103,7 +103,9 @@ export default function ServerConsole({ serverId, server }: { serverId: string, 
   }, [serverId]);
 
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (consoleBodyRef.current) {
+      consoleBodyRef.current.scrollTop = consoleBodyRef.current.scrollHeight;
+    }
   }, [logs]);
 
   const sendCommand = async (e: React.FormEvent) => {
@@ -163,7 +165,7 @@ export default function ServerConsole({ serverId, server }: { serverId: string, 
             <div className="w-12"></div>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-4 md:p-6 font-mono text-xs md:text-[13px] custom-scrollbar leading-relaxed relative z-10" style={{ WebkitOverflowScrolling: 'touch' }}>
+          <div ref={consoleBodyRef} className="flex-1 overflow-y-auto p-4 md:p-6 font-mono text-xs md:text-[13px] custom-scrollbar leading-relaxed relative z-10" style={{ WebkitOverflowScrolling: 'touch' }}>
             {logs.length === 0 && (
               <div className="text-zinc-500 flex items-center animate-pulse">
                 <span className="text-indigo-400 mr-2">➜</span> Awaiting connection...
@@ -177,7 +179,6 @@ export default function ServerConsole({ serverId, server }: { serverId: string, 
                  {formatLogLine(log)}
               </div>
             ))}
-            <div ref={endRef} />
           </div>
           
           <form onSubmit={sendCommand} className="p-2 md:p-3 bg-black/60 flex space-x-2 shrink-0 border-t border-white/10 relative z-10 backdrop-blur-md">

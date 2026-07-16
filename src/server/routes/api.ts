@@ -6,10 +6,12 @@ const router = express.Router();
 import authRoutes from "./auth.js";
 import serverRoutes from "./servers.js";
 import systemRoutes from "./system.js";
+import apiKeyRoutes from "./api-keys.js";
 
 router.use("/auth", authRoutes);
 router.use("/servers", serverRoutes);
 router.use("/system", systemRoutes);
+router.use("/admin/api-keys", apiKeyRoutes);
 
 router.get("/settings", async (req, res) => {
   const settings = await readJSON("settings.json") || {};
