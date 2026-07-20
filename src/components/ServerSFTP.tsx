@@ -42,10 +42,11 @@ export default function ServerSFTP({ serverId, server }: { serverId: string, ser
   const createSftpAccount = async () => {
     try {
       setLoading(true);
-      await axios.post(`/api/servers/${serverId}/sftp/create`);
-      await fetchSftpInfo();
+      const res = await axios.post(`/api/servers/${serverId}/sftp/create`);
+      setSftpInfo(res.data);
     } catch (e: any) {
       setError(e.response?.data?.error || "Failed to create SFTP account");
+    } finally {
       setLoading(false);
     }
   };
@@ -55,8 +56,8 @@ export default function ServerSFTP({ serverId, server }: { serverId: string, ser
     
     try {
       setIsResetting(true);
-      await axios.post(`/api/servers/${serverId}/sftp/reset-password`);
-      await fetchSftpInfo();
+      const res = await axios.post(`/api/servers/${serverId}/sftp/reset-password`);
+      setSftpInfo(res.data);
     } catch (e: any) {
       setError(e.response?.data?.error || "Failed to reset password");
     } finally {
