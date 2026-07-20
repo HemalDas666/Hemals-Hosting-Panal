@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { motion } from "framer-motion";
-import { Network, Copy, Check, Key, RefreshCw, Eye, EyeOff, AlertTriangle, ShieldCheck } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Network, Copy, Check, Key, RefreshCw, Eye, EyeOff, AlertTriangle, ShieldCheck, Lock } from "lucide-react";
 import { LoadingOverlay } from "./LoadingOverlay";
 
 export default function ServerSFTP({ serverId, server }: { serverId: string, server: any }) {
@@ -51,11 +51,12 @@ export default function ServerSFTP({ serverId, server }: { serverId: string, ser
     }
   };
 
-  const resetPassword = async () => {
-    if (!confirm("Are you sure you want to reset the SFTP password? The old password will immediately become invalid.")) return;
-    
+  const [showConfirmReset, setShowConfirmReset] = useState(false);
+
+  const executeResetPassword = async () => {
     try {
       setIsResetting(true);
+      setShowConfirmReset(false);
       const res = await axios.post(`/api/servers/${serverId}/sftp/reset-password`);
       setSftpInfo(res.data);
     } catch (e: any) {
@@ -63,6 +64,10 @@ export default function ServerSFTP({ serverId, server }: { serverId: string, ser
     } finally {
       setIsResetting(false);
     }
+  };
+
+  const resetPassword = () => {
+    setShowConfirmReset(true);
   };
 
   if (loading) {
@@ -92,7 +97,7 @@ export default function ServerSFTP({ serverId, server }: { serverId: string, ser
         )}
 
         {!sftpInfo ? (
-          <div className="bg-black/40 backdrop-blur-xl border border-white/10 p-8 rounded-2xl flex flex-col items-center justify-center text-center">
+          <div className="qx-glass border border-white/[0.07] p-8 rounded-2xl flex flex-col items-center justify-center text-center">
             <div className="w-16 h-16 bg-indigo-500/10 rounded-2xl flex items-center justify-center mb-4 border border-indigo-500/20">
               <ShieldCheck className="w-8 h-8 text-indigo-400" />
             </div>
@@ -110,7 +115,7 @@ export default function ServerSFTP({ serverId, server }: { serverId: string, ser
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-6">
-              <div className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl p-6 relative overflow-hidden group">
+              <div className="qx-glass border border-white/[0.07] rounded-2xl p-6 relative overflow-hidden group">
                 <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                 <h3 className="text-lg font-bold text-white mb-6 flex items-center">
                   <Key className="w-5 h-5 mr-2 text-indigo-400" /> Connection Info
@@ -120,7 +125,7 @@ export default function ServerSFTP({ serverId, server }: { serverId: string, ser
                   <div>
                     <label className="block text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-2">Host</label>
                     <div className="flex">
-                      <div className="flex-1 bg-black/40 border border-white/10 border-r-0 rounded-l-xl px-4 py-3 font-mono text-sm text-zinc-200 truncate">
+                      <div className="flex-1 bg-white/[0.03] border border-white/[0.08] border-r-0 rounded-l-xl px-4 py-3 font-mono text-sm text-zinc-200 truncate">
                         {sftpInfo.host}
                       </div>
                       <button 
@@ -135,7 +140,7 @@ export default function ServerSFTP({ serverId, server }: { serverId: string, ser
                   <div>
                     <label className="block text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-2">Port</label>
                     <div className="flex">
-                      <div className="flex-1 bg-black/40 border border-white/10 border-r-0 rounded-l-xl px-4 py-3 font-mono text-sm text-zinc-200">
+                      <div className="flex-1 bg-white/[0.03] border border-white/[0.08] border-r-0 rounded-l-xl px-4 py-3 font-mono text-sm text-zinc-200">
                         {sftpInfo.port}
                       </div>
                       <button 
@@ -150,7 +155,7 @@ export default function ServerSFTP({ serverId, server }: { serverId: string, ser
                   <div>
                     <label className="block text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-2">Username</label>
                     <div className="flex">
-                      <div className="flex-1 bg-black/40 border border-white/10 border-r-0 rounded-l-xl px-4 py-3 font-mono text-sm text-zinc-200 truncate">
+                      <div className="flex-1 bg-white/[0.03] border border-white/[0.08] border-r-0 rounded-l-xl px-4 py-3 font-mono text-sm text-zinc-200 truncate">
                         {sftpInfo.username}
                       </div>
                       <button 
@@ -164,25 +169,50 @@ export default function ServerSFTP({ serverId, server }: { serverId: string, ser
 
                   <div>
                     <label className="block text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-2">Password</label>
-                    <div className="flex">
-                      <div className={`flex-1 bg-black/40 border border-white/10 border-r-0 rounded-l-xl px-4 py-3 font-mono text-sm truncate ${sftpInfo.password.startsWith("(Hidden") ? "text-zinc-500 italic" : "text-zinc-200"}`}>
-                        {sftpInfo.password.startsWith("(Hidden") ? sftpInfo.password : (showPassword ? sftpInfo.password : "••••••••••••••••")}
+                    {sftpInfo.password.startsWith("(Hidden") ? (
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                        <div className="flex-1 bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 font-mono text-sm text-zinc-500 italic flex items-center justify-between">
+                          <span>••••••••••••••••</span>
+                          <Lock className="w-4 h-4 text-zinc-600" />
+                        </div>
+                        <button
+                          onClick={resetPassword}
+                          disabled={isResetting}
+                          className="px-5 py-3 bg-indigo-500 hover:bg-indigo-600 text-white font-bold rounded-xl transition-colors shadow-lg shadow-indigo-500/20 flex items-center justify-center shrink-0 disabled:opacity-50"
+                        >
+                          {isResetting ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : <RefreshCw className="w-4 h-4 mr-2" />}
+                          Generate Password
+                        </button>
                       </div>
-                      <button 
-                        onClick={() => setShowPassword(!showPassword)}
-                        disabled={sftpInfo.password.startsWith("(Hidden")}
-                        className="px-4 bg-white/5 border border-white/10 border-r-0 hover:bg-white/10 transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        {showPassword ? <EyeOff className="w-4 h-4 text-zinc-400" /> : <Eye className="w-4 h-4 text-zinc-400" />}
-                      </button>
-                      <button 
-                        onClick={() => handleCopy(sftpInfo.password, 'password')}
-                        disabled={sftpInfo.password.startsWith("(Hidden")}
-                        className="px-4 bg-white/5 border border-white/10 rounded-r-xl hover:bg-white/10 transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        {copiedField === 'password' ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4 text-zinc-400" />}
-                      </button>
-                    </div>
+                    ) : (
+                      <div className="flex">
+                        <div className="flex-1 bg-white/[0.03] border border-white/[0.08] border-r-0 rounded-l-xl px-4 py-3 font-mono text-sm truncate text-emerald-400 font-bold bg-emerald-500/5">
+                          {showPassword ? sftpInfo.password : "••••••••••••••••"}
+                        </div>
+                        <button 
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="px-4 bg-white/5 border border-emerald-500/20 border-r-0 hover:bg-white/10 transition-colors flex items-center justify-center text-emerald-400"
+                        >
+                          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                        <button 
+                          onClick={() => handleCopy(sftpInfo.password, 'password')}
+                          className="px-4 bg-emerald-500/10 border border-emerald-500/20 rounded-r-xl hover:bg-emerald-500/20 transition-colors flex items-center justify-center text-emerald-400"
+                        >
+                          {copiedField === 'password' ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                        </button>
+                      </div>
+                    )}
+                    {sftpInfo.password.startsWith("(Hidden") && (
+                      <p className="text-[11px] text-zinc-500 mt-2 flex items-center">
+                        <AlertTriangle className="w-3 h-3 mr-1" /> For security, passwords are not stored. Generate a new one to connect.
+                      </p>
+                    )}
+                    {!sftpInfo.password.startsWith("(Hidden") && (
+                      <p className="text-[11px] text-emerald-500/80 mt-2 flex items-center">
+                        <Check className="w-3 h-3 mr-1" /> Password generated successfully. Copy it now, it won't be shown again.
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -206,7 +236,7 @@ export default function ServerSFTP({ serverId, server }: { serverId: string, ser
             </div>
 
             <div className="space-y-6">
-              <div className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+              <div className="qx-glass border border-white/[0.07] rounded-2xl p-6">
                 <h3 className="text-lg font-bold text-white mb-4">How to connect</h3>
                 <div className="space-y-4 text-sm text-zinc-400 leading-relaxed">
                   <p>
@@ -232,6 +262,46 @@ export default function ServerSFTP({ serverId, server }: { serverId: string, ser
         )}
       </div>
       {isResetting && <LoadingOverlay message="Resetting SFTP credentials..." />}
+      
+      <AnimatePresence>
+        {showConfirmReset && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              className="bg-[#121214] border border-orange-500/30 shadow-2xl shadow-orange-500/10 rounded-2xl p-6 max-w-md w-full relative overflow-hidden"
+            >
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-500 to-red-500" />
+              <div className="flex items-start mb-4">
+                <div className="bg-orange-500/10 p-3 rounded-full mr-4">
+                  <AlertTriangle className="w-6 h-6 text-orange-500" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-white mb-1">Reset SFTP Password</h3>
+                  <p className="text-zinc-400 text-sm leading-relaxed">
+                    Are you sure you want to reset your SFTP password? The old password will immediately become invalid and any active sessions will be disconnected.
+                  </p>
+                </div>
+              </div>
+              <div className="flex justify-end space-x-3 mt-6">
+                <button
+                  onClick={() => setShowConfirmReset(false)}
+                  className="px-4 py-2 bg-white/5 hover:bg-white/10 text-white font-medium rounded-xl transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={executeResetPassword}
+                  className="px-4 py-2 bg-orange-500/20 hover:bg-orange-500/30 text-orange-400 font-bold rounded-xl transition-colors border border-orange-500/30"
+                >
+                  Reset Password
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

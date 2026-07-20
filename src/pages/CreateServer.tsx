@@ -16,11 +16,24 @@ import {
   Check,
   Zap,
   Box,
+  FastForward,
+  Network,
+  Wrench,
+  Feather,
+  CheckCircle2
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import SearchableDropdown from "../components/SearchableDropdown";
 
 export default function CreateServer() {
+  const SOFTWARE_TYPES = [
+    { id: "PAPER", name: "Paper", desc: "Performance Vanilla", icon: Zap, color: "text-amber-400", bg: "bg-amber-400/10", border: "border-amber-400/20", activeRing: "ring-amber-500/50", glow: "to-amber-500/10" },
+    { id: "VELOCITY", name: "Velocity", desc: "Next-gen Proxy", icon: FastForward, color: "text-cyan-400", bg: "bg-cyan-400/10", border: "border-cyan-400/20", activeRing: "ring-cyan-500/50", glow: "to-cyan-500/10" },
+    { id: "BUNGEECORD", name: "BungeeCord", desc: "Classic Proxy", icon: Network, color: "text-orange-400", bg: "bg-orange-400/10", border: "border-orange-400/20", activeRing: "ring-orange-500/50", glow: "to-orange-500/10" },
+    { id: "FORGE", name: "Forge", desc: "Modded Minecraft", icon: Wrench, color: "text-stone-400", bg: "bg-stone-400/10", border: "border-stone-400/20", activeRing: "ring-stone-500/50", glow: "to-stone-500/10" },
+    { id: "FABRIC", name: "Fabric", desc: "Lightweight Mods", icon: Feather, color: "text-amber-200", bg: "bg-amber-200/10", border: "border-amber-200/20", activeRing: "ring-amber-300/50", glow: "to-amber-300/10" },
+  ];
+
   const [name, setName] = useState("");
   const [ram, setRam] = useState<string>("4");
   const [cpu, setCpu] = useState<string>("150");
@@ -284,39 +297,57 @@ export default function CreateServer() {
             <p className="text-xs text-zinc-500 mt-2">Select which user owns and has access to this server.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
-            <div>
-              <label className="block text-sm font-medium text-zinc-300 mb-2 flex items-center">
-                <Box className="w-4 h-4 mr-2 text-indigo-400" /> Server Software
-              </label>
-              <select
-                value={type}
-                onChange={e => setType(e.target.value)}
-                className="w-full bg-white/[0.02] border border-white/10 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 rounded-xl px-4 py-3 text-white transition-all shadow-inner outline-none"
-              >
-                <option value="PAPER" className="bg-zinc-900">Paper (Performance Minecraft)</option>
-                <option value="VELOCITY" className="bg-zinc-900">Velocity (Proxy)</option>
-                <option value="BUNGEECORD" className="bg-zinc-900">BungeeCord (Proxy)</option>
-                <option value="FORGE" className="bg-zinc-900">Forge (Modded)</option>
-                <option value="FABRIC" className="bg-zinc-900">Fabric (Modded)</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-zinc-300 mb-2 flex items-center">
-                <Box className="w-4 h-4 mr-2 text-cyan-400" /> Software Version
-              </label>
-              <SearchableDropdown
-                value={version}
-                onChange={setVersion}
-                options={versions.map(v => ({ value: v, label: v }))}
-                placeholder="Select a version..."
-                searchPlaceholder="Search versions..."
-                className="font-mono"
-              />
+          <div className="md:col-span-2 relative z-10">
+            <label className="block text-sm font-medium text-zinc-300 mb-3 flex items-center">
+              <Box className="w-4 h-4 mr-2 text-indigo-400" /> Server Software
+            </label>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+              {SOFTWARE_TYPES.map((soft) => {
+                const isSelected = type === soft.id;
+                const Icon = soft.icon;
+                return (
+                  <button
+                    key={soft.id}
+                    type="button"
+                    onClick={() => setType(soft.id)}
+                    className={`flex flex-col items-center justify-center p-4 rounded-2xl border transition-all duration-200 relative overflow-hidden group ${
+                      isSelected 
+                        ? `${soft.bg} ${soft.border} ring-1 ${soft.activeRing} shadow-lg` 
+                        : "bg-white/[0.02] border-white/5 hover:border-white/20 hover:bg-white/[0.04]"
+                    }`}
+                  >
+                    {isSelected && <div className={`absolute inset-0 bg-gradient-to-br from-transparent ${soft.glow}`} />}
+                    
+                    <Icon className={`w-8 h-8 mb-3 ${isSelected ? soft.color : "text-zinc-500 group-hover:text-zinc-300"} transition-colors relative z-10`} />
+                    <span className={`text-sm font-bold relative z-10 ${isSelected ? "text-white" : "text-zinc-300"}`}>{soft.name}</span>
+                    <span className={`text-[10px] text-center mt-1 relative z-10 ${isSelected ? "text-white/70" : "text-zinc-500"}`}>{soft.desc}</span>
+                    
+                    {isSelected && (
+                      <div className={`absolute top-2 right-2 ${soft.color}`}>
+                        <CheckCircle2 className="w-4 h-4" />
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-          <div className="pt-4 border-t border-white/5">
+          <div className="md:col-span-2 relative z-10">
+            <label className="block text-sm font-medium text-zinc-300 mb-2 flex items-center">
+              <Box className="w-4 h-4 mr-2 text-cyan-400" /> Software Version
+            </label>
+            <SearchableDropdown
+              value={version}
+              onChange={setVersion}
+              options={versions.map(v => ({ value: v, label: v }))}
+              placeholder="Select a version..."
+              searchPlaceholder="Search versions..."
+              className="font-mono"
+            />
+          </div>
+
+          <div className="pt-4 border-t border-white/5 md:col-span-2">
              {loading && (
                <div className="mb-6 p-4 border border-zinc-800 bg-black/20 rounded-xl">
                  <div className="flex justify-between items-center mb-2">
