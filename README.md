@@ -17,7 +17,8 @@ bash <(curl -s https://raw.githubusercontent.com/HemalDas666/Hemals-Hosting-Pana
 1. Clone the repository:
    ```bash
 git clone https://github.com/HemalDas666/Hemals-Hosting-Panal.git
-cd Hemals-Hosting-Panal
+cd 
+Hemals-Hosting-Panal
    ```
 
 2. Install dependencies:
