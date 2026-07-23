@@ -31,7 +31,7 @@ export default function Dashboard() {
       <motion.div
         animate={{ scale: [1, 1.2, 1], rotate: [0, 180, 360] }}
         transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-        className="w-12 h-12 border-2 border-indigo-500 border-t-transparent rounded-full"
+        className="w-12 h-12 border-2 border-cyan-500 border-t-transparent rounded-full"
       />
     </div>
   );
@@ -72,7 +72,7 @@ export default function Dashboard() {
       </div>
       
       <motion.div variants={container} initial="hidden" animate="show" className={`grid grid-cols-1 md:grid-cols-2 ${user?.role === 'admin' ? 'lg:grid-cols-4' : 'lg:grid-cols-2 lg:max-w-3xl'} gap-5 mb-12`}>
-        <StatCard title="Total Servers" value={servers.length.toString()} icon={<Server size={22} className="text-indigo-400" />} trend="+2 this week" chartColor="from-indigo-500 to-indigo-500/0" />
+        <StatCard title="Total Servers" value={servers.length.toString()} icon={<Server size={22} className="text-cyan-400" />} trend="+2 this week" chartColor="from-cyan-500 to-cyan-500/0" />
         <StatCard title="Running Servers" value={runningServers.toString()} icon={<Activity size={22} className="text-emerald-400" />} trend="Active now" chartColor="from-emerald-500 to-emerald-500/0" />
         {user?.role === "admin" && (
           <>
@@ -84,18 +84,18 @@ export default function Dashboard() {
 
       <div className="flex items-center justify-between mb-6 mt-14">
         <h2 className="text-xl font-bold tracking-tight text-white">Recent Activity</h2>
-        <Link to="/servers" className="text-sm font-medium text-indigo-400 hover:text-indigo-300 flex items-center transition-colors">
+        <Link to="/servers" className="text-sm font-medium text-cyan-400 hover:text-cyan-300 flex items-center transition-colors">
           View all <ChevronRight size={16} className="ml-1" />
         </Link>
       </div>
 
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.5 }} className="bg-black/40 backdrop-blur-xl rounded-3xl border border-white/10 overflow-hidden shadow-[0_0_50px_-15px_rgba(0,0,0,0.5)] ring-1 ring-white/5 relative">
         {/* Subtle top glow */}
-        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent opacity-50" />
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent opacity-50" />
         
         {servers.length === 0 ? (
            <div className="p-16 text-center relative overflow-hidden">
-             <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent pointer-events-none" />
+             <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent pointer-events-none" />
              <div className="w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-white/10 shadow-inner relative z-10">
                 <Server className="text-zinc-400" size={40} />
              </div>
@@ -112,11 +112,11 @@ export default function Dashboard() {
                 transition={{ delay: 0.4 + (index * 0.05) }}
               >
                 <Link to={`/servers/${server.id}`} className="flex items-center justify-between p-5 md:p-6 hover:bg-white/5 transition-all group relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/0 via-indigo-500/0 to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/0 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                   <div className="flex items-center gap-5 relative z-10">
-                    <div className="w-12 h-12 rounded-2xl bg-black/60 border border-white/10 flex items-center justify-center group-hover:border-indigo-500/40 group-hover:bg-indigo-500/20 transition-all shadow-inner relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                      <Server className="w-6 h-6 text-zinc-400 group-hover:text-indigo-400 transition-colors relative z-10" />
+                    <div className="w-12 h-12 rounded-2xl bg-black/60 border border-white/10 flex items-center justify-center group-hover:border-cyan-500/40 group-hover:bg-purple-500/20 transition-all shadow-inner relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <Server className="w-6 h-6 text-zinc-400 group-hover:text-cyan-400 transition-colors relative z-10" />
                     </div>
                     <div>
                       <h3 className="font-bold text-zinc-100 group-hover:text-white transition-colors text-lg tracking-tight drop-shadow-sm">{server.name}</h3>

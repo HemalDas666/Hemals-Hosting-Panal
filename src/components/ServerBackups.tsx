@@ -93,7 +93,7 @@ export default function ServerBackups({ serverId }: { serverId: string }) {
 
         <div className="bg-white/[0.02] border border-white/5 p-5 md:p-6 rounded-xl flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-4 w-full md:w-auto">
-            <div className="p-3 bg-indigo-500/10 text-indigo-400 rounded-lg shrink-0">
+            <div className="p-3 bg-cyan-500/10 text-cyan-400 rounded-lg shrink-0">
               <FileArchive className="w-6 h-6" />
             </div>
             <div>
@@ -104,7 +104,7 @@ export default function ServerBackups({ serverId }: { serverId: string }) {
           <button 
             onClick={handleCreateBackup}
             disabled={isCreating}
-            className="w-full md:w-auto px-5 py-2.5 bg-indigo-500 hover:bg-indigo-600 border border-indigo-400/50 text-white font-medium rounded-lg transition-all shadow-lg flex items-center justify-center shrink-0 disabled:opacity-50"
+            className="w-full md:w-auto px-5 py-2.5 bg-cyan-500 hover:bg-cyan-600 border border-cyan-400/50 text-white font-medium rounded-lg transition-all shadow-lg flex items-center justify-center shrink-0 disabled:opacity-50"
           >
             {isCreating ? (
               <><RefreshCw className="w-4 h-4 mr-2 animate-spin" /> Zipping files...</>
@@ -122,7 +122,7 @@ export default function ServerBackups({ serverId }: { serverId: string }) {
           <div className="bg-white/[0.02] border border-white/5 rounded-xl overflow-hidden shadow-xl">
             {loading ? (
               <div className="p-12 flex justify-center">
-                <RefreshCw className="w-6 h-6 text-indigo-500 animate-spin" />
+                <RefreshCw className="w-6 h-6 text-cyan-500 animate-spin" />
               </div>
             ) : backups.length === 0 ? (
               <div className="p-12 text-center flex flex-col items-center justify-center">

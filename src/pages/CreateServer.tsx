@@ -166,20 +166,20 @@ export default function CreateServer() {
       
       <form onSubmit={handleSubmit} className="bg-[#0a0a0c] p-6 md:p-8 rounded-2xl border border-white/5 shadow-2xl relative">
         <div className="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 blur-[100px] rounded-full" />
+          <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/5 blur-[100px] rounded-full" />
         </div>
 
         <div className="space-y-8 relative z-10">
           <div>
             <label className="block text-sm font-medium text-zinc-300 mb-2 flex items-center">
-              <Server className="w-4 h-4 mr-2 text-indigo-400" /> Instance Name
+              <Server className="w-4 h-4 mr-2 text-cyan-400" /> Instance Name
             </label>
             <input 
               type="text" 
               required 
               value={name} 
               onChange={e => setName(e.target.value)} 
-              className="w-full bg-white/[0.02] border border-white/10 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 rounded-xl px-4 py-3 text-white transition-all shadow-inner outline-none"
+              className="w-full bg-white/[0.02] border border-white/10 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 rounded-xl px-4 py-3 text-white transition-all shadow-inner outline-none"
               placeholder="e.g. Production Survival"
             />
           </div>
@@ -197,7 +197,7 @@ export default function CreateServer() {
                     onClick={() => handleRamSelect(preset)}
                     className={`py-2 px-1 rounded-lg text-sm font-medium transition-all border ${
                       ram === preset.toString()
-                        ? "bg-indigo-500/20 border-indigo-500/50 text-indigo-300 shadow-[0_0_10px_rgba(99,102,241,0.2)]"
+                        ? "bg-cyan-500/20 border-cyan-500/50 text-cyan-300 shadow-[0_0_10px_rgba(6,182,212,0.2)]"
                         : "bg-black/20 border-white/10 text-zinc-400 hover:border-white/20 hover:bg-white/5"
                     }`}
                   >
@@ -211,7 +211,7 @@ export default function CreateServer() {
                 min={1}
                 value={ram} 
                 onChange={e => setRam(e.target.value)} 
-                className="w-full bg-white/[0.02] border border-white/10 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 rounded-xl px-4 py-3 text-white transition-all shadow-inner outline-none font-mono"
+                className="w-full bg-white/[0.02] border border-white/10 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 rounded-xl px-4 py-3 text-white transition-all shadow-inner outline-none font-mono"
               />
             </div>
             <div>
@@ -225,22 +225,22 @@ export default function CreateServer() {
                   min={10}
                   value={cpu} 
                   onChange={e => setCpu(e.target.value)} 
-                  className="w-full bg-white/[0.02] border border-white/10 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 rounded-xl px-4 py-3 text-white transition-all shadow-inner outline-none font-mono"
+                  className="w-full bg-white/[0.02] border border-white/10 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 rounded-xl px-4 py-3 text-white transition-all shadow-inner outline-none font-mono"
                 />
                 <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                  <span className="text-[10px] bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded-full border border-indigo-500/30 font-bold">
+                  <span className="text-[10px] bg-cyan-500/20 text-cyan-300 px-2 py-0.5 rounded-full border border-cyan-500/30 font-bold">
                     AUTO
                   </span>
                 </div>
               </div>
               <p className="text-[10px] text-zinc-500 mt-1.5 flex items-center gap-1">
-                <Check className="w-3 h-3 text-emerald-400" /> 
+                <Check className="w-3 h-3 text-cyan-400" /> 
                 Auto-optimized for {ram}GB
               </p>
             </div>
             <div>
               <label className="block text-sm font-medium text-zinc-300 mb-2 flex items-center">
-                <HardDrive className="w-4 h-4 mr-2 text-emerald-400" /> Disk Limit (GB)
+                <HardDrive className="w-4 h-4 mr-2 text-cyan-400" /> Disk Limit (GB)
               </label>
               <input 
                 type="number" 
@@ -248,7 +248,7 @@ export default function CreateServer() {
                 min={1}
                 value={disk} 
                 onChange={e => setDisk(e.target.value)} 
-                className="w-full bg-white/[0.02] border border-white/10 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 rounded-xl px-4 py-3 text-white transition-all shadow-inner outline-none font-mono"
+                className="w-full bg-white/[0.02] border border-white/10 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 rounded-xl px-4 py-3 text-white transition-all shadow-inner outline-none font-mono"
               />
             </div>
             <div>
@@ -260,7 +260,7 @@ export default function CreateServer() {
                 required 
                 value={port} 
                 onChange={e => { setPort(e.target.value); setError(null); }} 
-                className={`w-full bg-white/[0.02] border focus:ring-1 rounded-xl px-4 py-3 text-white transition-all shadow-inner outline-none font-mono ${error?.includes("Port") ? "border-red-500 focus:border-red-500 focus:ring-red-500/50" : "border-white/10 focus:border-indigo-500 focus:ring-indigo-500/50"}`}
+                className={`w-full bg-white/[0.02] border focus:ring-1 rounded-xl px-4 py-3 text-white transition-all shadow-inner outline-none font-mono ${error?.includes("Port") ? "border-red-500 focus:border-red-500 focus:ring-red-500/50" : "border-white/10 focus:border-cyan-500 focus:ring-cyan-500/50"}`}
               />
               {error?.includes("Port") && (
                 <p className="mt-2 text-sm text-red-400 flex items-center">
@@ -271,21 +271,21 @@ export default function CreateServer() {
             </div>
             <div>
               <label className="block text-sm font-medium text-zinc-300 mb-2 flex items-center">
-                 <Globe className="w-4 h-4 mr-2 text-indigo-400" /> IP Alias
+                 <Globe className="w-4 h-4 mr-2 text-cyan-400" /> IP Alias
               </label>
               <input 
                 type="text" 
                 value={ipAlias} 
                 onChange={e => setIpAlias(e.target.value)} 
                 placeholder="e.g. play.example.com"
-                className="w-full bg-white/[0.02] border border-white/10 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 rounded-xl px-4 py-3 text-white transition-all shadow-inner outline-none font-mono"
+                className="w-full bg-white/[0.02] border border-white/10 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 rounded-xl px-4 py-3 text-white transition-all shadow-inner outline-none font-mono"
               />
             </div>
           </div>
 
           <div className="md:col-span-2 relative z-20">
             <label className="block text-sm font-medium text-zinc-300 mb-2 flex items-center">
-              <User className="w-4 h-4 mr-2 text-indigo-400" /> Assign Server Owner
+              <User className="w-4 h-4 mr-2 text-cyan-400" /> Assign Server Owner
             </label>
             <SearchableDropdown
               value={owner}
@@ -299,7 +299,7 @@ export default function CreateServer() {
 
           <div className="md:col-span-2 relative z-10">
             <label className="block text-sm font-medium text-zinc-300 mb-3 flex items-center">
-              <Box className="w-4 h-4 mr-2 text-indigo-400" /> Server Software
+              <Box className="w-4 h-4 mr-2 text-cyan-400" /> Server Software
             </label>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
               {SOFTWARE_TYPES.map((soft) => {
@@ -351,12 +351,12 @@ export default function CreateServer() {
              {loading && (
                <div className="mb-6 p-4 border border-zinc-800 bg-black/20 rounded-xl">
                  <div className="flex justify-between items-center mb-2">
-                   <span className="text-sm font-medium text-indigo-400">Downloading {version} and creating container...</span>
-                   <span className="text-sm font-mono text-indigo-400/80">{Math.round(createProgress)}%</span>
+                   <span className="text-sm font-medium text-cyan-400">Downloading {version} and creating container...</span>
+                   <span className="text-sm font-mono text-cyan-400/80">{Math.round(createProgress)}%</span>
                  </div>
                  <div className="w-full bg-zinc-800/50 rounded-full h-2.5 overflow-hidden">
                    <div 
-                     className="bg-indigo-500 h-2.5 rounded-full transition-all duration-300 ease-out" 
+                     className="bg-cyan-500 h-2.5 rounded-full transition-all duration-300 ease-out" 
                      style={{ width: `${createProgress}%` }}
                    ></div>
                  </div>

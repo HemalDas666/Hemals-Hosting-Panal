@@ -174,15 +174,15 @@ export default function SettingsPage() {
     >
       <div className="mb-10">
         <h1 className="text-4xl md:text-5xl font-black tracking-tight text-white mb-2 drop-shadow-lg">Settings</h1>
-        <p className="text-indigo-400/80 font-bold uppercase tracking-widest text-sm mt-2">Configure your account and platform preferences.</p>
+        <p className="text-cyan-400/80 font-bold uppercase tracking-widest text-sm mt-2">Configure your account and platform preferences.</p>
       </div>
 
       <div className="bg-black/40 backdrop-blur-2xl border border-white/10 rounded-3xl p-6 md:p-10 mb-8 shadow-[0_0_50px_-15px_rgba(0,0,0,0.5)] ring-1 ring-white/5 relative overflow-hidden">
         {/* Subtle decorative glow */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 blur-[80px] rounded-full pointer-events-none" />
+        <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/5 blur-[80px] rounded-full pointer-events-none" />
         
         <h2 className="text-xl font-bold mb-6 flex items-center text-white relative z-10">
-          <User className="mr-3 text-indigo-400 w-5 h-5" /> Account Details
+          <User className="mr-3 text-cyan-400 w-5 h-5" /> Account Details
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10 mb-8">
           <div className="bg-black/40 backdrop-blur-xl border border-white/10 p-5 rounded-2xl shadow-[0_0_30px_-15px_rgba(0,0,0,0.5)] ring-1 ring-white/5">
@@ -229,7 +229,7 @@ export default function SettingsPage() {
                 onChange={e => setOldPassword(e.target.value)} 
                 type="password" 
                 placeholder="Current password"
-                className="w-full bg-white/[0.03] border border-white/10 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 rounded-xl px-4 py-2.5 text-white transition-all shadow-inner outline-none" 
+                className="w-full bg-white/[0.03] border border-white/10 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 rounded-xl px-4 py-2.5 text-white transition-all shadow-inner outline-none" 
               />
               <div className="flex gap-3">
                 <input 
@@ -239,12 +239,12 @@ export default function SettingsPage() {
                   onChange={e => setNewPassword(e.target.value)} 
                   type="password" 
                   placeholder="New password (min 8 chars)"
-                  className="flex-1 bg-white/[0.03] border border-white/10 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 rounded-xl px-4 py-2.5 text-white transition-all shadow-inner outline-none" 
+                  className="flex-1 bg-white/[0.03] border border-white/10 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 rounded-xl px-4 py-2.5 text-white transition-all shadow-inner outline-none" 
                 />
                 <button 
                   type="submit" 
                   disabled={isChangingPassword || user.username === "admin"}
-                  className="bg-indigo-500 hover:bg-indigo-600 disabled:opacity-50 text-white font-semibold px-6 py-2.5 rounded-xl transition-all shadow-[0_0_15px_rgba(99,102,241,0.3)] active:scale-[0.98] whitespace-nowrap"
+                  className="bg-cyan-500 hover:bg-cyan-600 disabled:opacity-50 text-white font-semibold px-6 py-2.5 rounded-xl transition-all shadow-[0_0_15px_rgba(6,182,212,0.3)] active:scale-[0.98] whitespace-nowrap"
                 >
                   {isChangingPassword ? "Updating..." : "Update"}
                 </button>
@@ -260,7 +260,7 @@ export default function SettingsPage() {
       {user.role === "admin" && (
         <div className="bg-black/40 backdrop-blur-2xl border border-white/10 rounded-3xl p-6 md:p-10 mb-8 shadow-[0_0_50px_-15px_rgba(0,0,0,0.5)] ring-1 ring-white/5 relative overflow-hidden">
           <h2 className="text-xl font-bold mb-6 flex items-center text-white relative z-10">
-            <Layout className="mr-3 text-emerald-400 w-5 h-5" /> Platform Preferences
+            <Layout className="mr-3 text-cyan-400 w-5 h-5" /> Platform Preferences
           </h2>
           <div className="flex flex-col md:flex-row flex-wrap gap-8 relative z-10">
             <form 
@@ -286,7 +286,7 @@ export default function SettingsPage() {
                   value={newPanelName} 
                   onChange={e => setNewPanelName(e.target.value)} 
                   type="text" 
-                  className="flex-1 bg-white/[0.03] border border-white/10 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 rounded-xl px-4 py-2.5 text-white transition-all shadow-inner outline-none" 
+                  className="flex-1 bg-white/[0.03] border border-white/10 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 rounded-xl px-4 py-2.5 text-white transition-all shadow-inner outline-none" 
                 />
                 <button disabled={isSavingSettings} type="submit" className="bg-white text-zinc-900 hover:bg-zinc-200 font-semibold px-6 py-2.5 rounded-xl transition-all shadow-sm active:scale-[0.98] whitespace-nowrap disabled:opacity-50">
                   {isSavingSettings ? "Saving..." : "Save"}
@@ -316,7 +316,7 @@ export default function SettingsPage() {
                       }}
                       className="sr-only peer"
                     />
-                    <div className="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-500"></div>
+                    <div className="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cyan-500"></div>
                   </div>
                   <span className="text-sm font-medium text-zinc-300">Enable Playit Tunnel</span>
                 </label>
@@ -338,7 +338,7 @@ export default function SettingsPage() {
                       }}
                       className="sr-only peer"
                     />
-                    <div className="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-500"></div>
+                    <div className="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cyan-500"></div>
                   </div>
                   <span className="text-sm font-medium text-zinc-300">Enable Onboarding Tutorial for New Users</span>
                 </label>
@@ -360,7 +360,7 @@ export default function SettingsPage() {
                       }}
                       className="sr-only peer"
                     />
-                    <div className="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-500"></div>
+                    <div className="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cyan-500"></div>
                   </div>
                   <span className="text-sm font-medium text-zinc-300">Enable Login Screen Cinematic Animation</span>
                 </label>
@@ -402,9 +402,9 @@ export default function SettingsPage() {
                   <button 
                     disabled={isUpdatingLogo}
                     onClick={() => fileInputRef.current?.click()}
-                    className="flex items-center justify-center w-full gap-2 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/20 font-semibold px-4 py-2.5 rounded-xl transition-all shadow-sm active:scale-[0.98] disabled:opacity-50"
+                    className="flex items-center justify-center w-full gap-2 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/20 font-semibold px-4 py-2.5 rounded-xl transition-all shadow-sm active:scale-[0.98] disabled:opacity-50"
                   >
-                    {isUpdatingLogo ? <div className="w-4 h-4 rounded-full border-2 border-indigo-400/50 border-t-indigo-400 animate-spin"></div> : <Upload size={18} />}
+                    {isUpdatingLogo ? <div className="w-4 h-4 rounded-full border-2 border-cyan-400/50 border-t-cyan-400 animate-spin"></div> : <Upload size={18} />}
                     {isUpdatingLogo ? "Updating..." : (panelLogo ? "Change Logo" : "Upload Logo")}
                   </button>
                   <p className="text-xs text-zinc-500 mt-2">Recommended: Square image, PNG or JPG.</p>
@@ -421,7 +421,7 @@ export default function SettingsPage() {
       {user.role === "admin" && (
         <div className="bg-black/20 backdrop-blur-xl border border-white/5 rounded-2xl p-6 md:p-8 shadow-xl relative overflow-hidden mt-8">
           <h2 className="text-xl font-bold mb-8 flex items-center text-white relative z-10">
-            <Layout className="mr-3 text-indigo-400 w-5 h-5" /> Background Configuration
+            <Layout className="mr-3 text-cyan-400 w-5 h-5" /> Background Configuration
           </h2>
           <div className="max-w-2xl relative z-10">
             <div className="flex flex-col sm:flex-row gap-8">
@@ -458,7 +458,7 @@ export default function SettingsPage() {
                 <div className="flex flex-col gap-2">
                   <button 
                     onClick={() => bgFileInputRef.current?.click()}
-                    className="w-full flex items-center justify-center gap-2 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/20 font-semibold px-4 py-3 rounded-xl transition-all shadow-sm active:scale-[0.98]"
+                    className="w-full flex items-center justify-center gap-2 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/20 font-semibold px-4 py-3 rounded-xl transition-all shadow-sm active:scale-[0.98]"
                   >
                     <Upload size={18} /> Upload Background Image
                   </button>
@@ -482,7 +482,7 @@ export default function SettingsPage() {
               </div>
 
               <div className="flex-1 flex flex-col justify-center">
-                <label className="block text-xs font-bold text-indigo-300 uppercase tracking-widest mb-2 drop-shadow-sm">Background Blur: {tempBgBlur}px</label>
+                <label className="block text-xs font-bold text-cyan-300 uppercase tracking-widest mb-2 drop-shadow-sm">Background Blur: {tempBgBlur}px</label>
                 <p className="text-xs text-zinc-500 mb-6">Adjust the blur to make the text and UI elements more readable.</p>
                 <input 
                   type="range" 
@@ -508,7 +508,7 @@ export default function SettingsPage() {
                       setIsProcessing(false);
                     }
                   }}
-                  className="w-full accent-indigo-500"
+                  className="w-full accent-cyan-500"
                 />
               </div>
             </div>
@@ -538,15 +538,15 @@ export default function SettingsPage() {
               <form onSubmit={createUser} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-zinc-400 mb-1.5">Username</label>
-                  <input required value={username} onChange={e=>setUsername(e.target.value)} type="text" className="w-full bg-white/[0.03] border border-white/10 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 rounded-xl px-4 py-2.5 text-white transition-all shadow-inner outline-none" />
+                  <input required value={username} onChange={e=>setUsername(e.target.value)} type="text" className="w-full bg-white/[0.03] border border-white/10 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 rounded-xl px-4 py-2.5 text-white transition-all shadow-inner outline-none" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-zinc-400 mb-1.5">Password</label>
-                  <input required minLength={4} value={password} onChange={e=>setPassword(e.target.value)} type="password" className="w-full bg-white/[0.03] border border-white/10 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 rounded-xl px-4 py-2.5 text-white transition-all shadow-inner outline-none" />
+                  <input required minLength={4} value={password} onChange={e=>setPassword(e.target.value)} type="password" className="w-full bg-white/[0.03] border border-white/10 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 rounded-xl px-4 py-2.5 text-white transition-all shadow-inner outline-none" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-zinc-400 mb-1.5">Role Privileges</label>
-                  <select value={role} onChange={e=>setRole(e.target.value)} className="w-full bg-white/[0.03] border border-white/10 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 rounded-xl px-4 py-2.5 text-white transition-all shadow-inner outline-none">
+                  <select value={role} onChange={e=>setRole(e.target.value)} className="w-full bg-white/[0.03] border border-white/10 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 rounded-xl px-4 py-2.5 text-white transition-all shadow-inner outline-none">
                     <option value="user" className="bg-zinc-900">Standard User</option>
                     <option value="admin" className="bg-zinc-900">Administrator</option>
                   </select>
@@ -568,7 +568,7 @@ export default function SettingsPage() {
                         <div>
                           <p className="font-medium text-white flex items-center">
                             {u.username}
-                            {u.id === user.id && <span className="ml-3 text-[10px] uppercase font-bold tracking-wider bg-indigo-500/20 text-indigo-400 px-2.5 py-0.5 rounded border border-indigo-500/20">You</span>}
+                            {u.id === user.id && <span className="ml-3 text-[10px] uppercase font-bold tracking-wider bg-cyan-500/20 text-cyan-400 px-2.5 py-0.5 rounded border border-cyan-500/20">You</span>}
                           </p>
                           <p className={`text-xs mt-1 capitalize font-medium ${u.role === 'admin' ? 'text-purple-400' : 'text-zinc-500'}`}> 
                             Role: {u.role}
@@ -583,7 +583,7 @@ export default function SettingsPage() {
                                 setEditingUserId(u.id);
                                 setAdminUserNewPassword("");
                               }
-                            }} className="px-3 py-1.5 text-xs font-medium text-indigo-400 bg-indigo-500/10 hover:bg-indigo-500/20 rounded-lg transition-colors">
+                            }} className="px-3 py-1.5 text-xs font-medium text-cyan-400 bg-cyan-500/10 hover:bg-cyan-500/20 rounded-lg transition-colors">
                               {editingUserId === u.id ? "Cancel" : "Change Password"}
                             </button>
                           )}
@@ -601,11 +601,11 @@ export default function SettingsPage() {
                             placeholder="New Password (min 8 chars)" 
                             value={adminUserNewPassword}
                             onChange={(e) => setAdminUserNewPassword(e.target.value)}
-                            className="flex-1 bg-white/[0.03] border border-white/10 focus:border-indigo-500 rounded-lg px-3 py-2 text-sm text-white outline-none"
+                            className="flex-1 bg-white/[0.03] border border-white/10 focus:border-cyan-500 rounded-lg px-3 py-2 text-sm text-white outline-none"
                           />
                           <button 
                             onClick={() => changeUserPassword(u.id)}
-                            className="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium rounded-lg transition-colors shadow-sm"
+                            className="px-4 py-2 bg-cyan-500 hover:bg-cyan-600 text-white text-sm font-medium rounded-lg transition-colors shadow-sm"
                           >
                             Save
                           </button>
@@ -623,15 +623,15 @@ export default function SettingsPage() {
       {user.role === "admin" && (
         <div className="bg-[#0a0a0c] border border-white/5 rounded-2xl p-6 md:p-8 shadow-xl mt-8">
           <h2 className="text-xl font-bold mb-4 flex items-center text-white">
-            <RefreshCw className="mr-3 text-emerald-400 w-5 h-5" /> System Update
+            <RefreshCw className="mr-3 text-cyan-400 w-5 h-5" /> System Update
           </h2>
           <p className="text-zinc-400 text-sm mb-6 max-w-2xl">
-            Trigger an automatic update of the JTG Panel. This will run git pull and rebuild the system. The panel will be unavailable for a few seconds during this process.
+            Trigger an automatic update of Hemal's Panel. This will run git pull and rebuild the system. The panel will be unavailable for a few seconds during this process.
           </p>
           <button 
             onClick={handleSystemUpdate}
             disabled={isUpdatingSystem}
-            className="px-6 py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-medium rounded-xl border border-emerald-500/20 transition-all shadow-sm flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-2.5 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 font-medium rounded-xl border border-cyan-500/20 transition-all shadow-sm flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <RefreshCw className={`w-4 h-4 mr-2 ${isUpdatingSystem ? "animate-spin" : ""}`} />
             {isUpdatingSystem ? "Updating System..." : "Update Panel"}

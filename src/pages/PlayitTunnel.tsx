@@ -84,7 +84,7 @@ export default function PlayitTunnel({ serverId }: { serverId: string }) {
       <div className="max-w-4xl mx-auto space-y-6">
         <div>
           <h1 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
-            <Globe className="w-6 h-6 text-indigo-400" />
+            <Globe className="w-6 h-6 text-cyan-400" />
             Playit Tunnel
           </h1>
           <p className="text-zinc-400">
@@ -112,7 +112,7 @@ export default function PlayitTunnel({ serverId }: { serverId: string }) {
                 <button 
                   onClick={generateTunnel}
                   disabled={isProcessing || status === "checking"}
-                  className="flex-1 md:flex-none flex items-center justify-center space-x-2 px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white font-medium rounded-lg transition-colors shadow-sm disabled:opacity-50"
+                  className="flex-1 md:flex-none flex items-center justify-center space-x-2 px-4 py-2 bg-cyan-500 hover:bg-cyan-600 text-white font-medium rounded-lg transition-colors shadow-sm disabled:opacity-50"
                 >
                   {isProcessing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4" />}
                   <span>Generate Tunnel</span>
@@ -149,18 +149,18 @@ export default function PlayitTunnel({ serverId }: { serverId: string }) {
           </div>
           
           {claimLink && (
-            <div className="mt-6 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="mt-6 p-4 bg-cyan-500/10 border border-cyan-500/20 rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <h3 className="text-emerald-400 font-semibold mb-1 flex items-center gap-2">
+                <h3 className="text-cyan-400 font-semibold mb-1 flex items-center gap-2">
                   <LinkIcon className="w-4 h-4" /> Claim Link Generated
                 </h3>
-                <p className="text-sm text-emerald-400/80">Click the link to add this agent to your Playit.gg account.</p>
+                <p className="text-sm text-cyan-400/80">Click the link to add this agent to your Playit.gg account.</p>
               </div>
               <a 
                 href={claimLink} 
                 target="_blank" 
                 rel="noreferrer"
-                className="px-4 py-2 bg-emerald-500 text-white font-medium rounded-lg text-sm hover:bg-emerald-600 transition-colors shrink-0 text-center shadow-sm"
+                className="px-4 py-2 bg-cyan-500 text-white font-medium rounded-lg text-sm hover:bg-cyan-600 transition-colors shrink-0 text-center shadow-sm"
               >
                 Claim Agent
               </a>

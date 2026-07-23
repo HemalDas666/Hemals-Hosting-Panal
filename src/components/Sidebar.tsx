@@ -33,7 +33,7 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
         {panelLogo ? (
           <img src={panelLogo} alt="Logo" className="w-8 h-8 rounded-lg object-cover shadow-[0_0_15px_rgba(255,255,255,0.1)] flex-shrink-0" />
         ) : (
-          <div className="relative flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 shadow-[0_0_15px_rgba(99,102,241,0.5)] flex-shrink-0">
+          <div className="relative flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 via-blue-500 to-purple-600 shadow-[0_0_15px_rgba(6,182,212,0.5)] flex-shrink-0 qx-gradient-shift">
             <Server className="w-4 h-4 text-white" />
           </div>
         )}
@@ -72,14 +72,14 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
       </nav>
 
       <div className="w-full px-4 mt-auto space-y-3">
-        <div className="bg-black/60 rounded-xl p-3 flex items-center gap-3 border border-white/10 hover:border-indigo-500/30 transition-all cursor-default shadow-inner relative overflow-hidden group">
-          <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-600 border border-white/20 flex items-center justify-center font-black text-sm text-white shadow-[0_0_10px_rgba(99,102,241,0.5)] relative z-10">
+        <div className="bg-black/60 rounded-xl p-3 flex items-center gap-3 border border-white/10 hover:border-purple-500/30 transition-all cursor-default shadow-inner relative overflow-hidden group">
+          <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-600 to-blue-600 border border-white/20 flex items-center justify-center font-black text-sm text-white shadow-[0_0_10px_rgba(6,182,212,0.5)] relative z-10">
             {user?.username?.[0]?.toUpperCase()}
           </div>
           <div className="overflow-hidden flex-1 relative z-10">
             <p className="font-bold text-white truncate text-sm tracking-tight drop-shadow-sm">{user?.username}</p>
-            <p className="text-[10px] text-indigo-400/80 capitalize truncate font-bold uppercase tracking-widest">{user?.role || "Admin"}</p>
+            <p className="text-[10px] text-purple-400/80 capitalize truncate font-bold uppercase tracking-widest">{user?.role || "Admin"}</p>
           </div>
         </div>
         <button onClick={logout} className="flex items-center space-x-3 w-full px-3 py-2.5 rounded-xl text-zinc-400 hover:bg-red-500/10 hover:text-red-400 transition-all group">

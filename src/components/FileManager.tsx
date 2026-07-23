@@ -240,11 +240,11 @@ export default function FileManager({ serverId }: { serverId: string }) {
             {!editingFile ? (
               <div className="relative">
                 {uploadProgress !== null ? (
-                  <div className="flex items-center justify-center w-8 h-8 bg-indigo-600/50 rounded-lg border border-indigo-500/50 text-white">
-                    <div className="w-4 h-4 rounded-full border-2 border-indigo-200 border-t-transparent animate-spin"></div>
+                  <div className="flex items-center justify-center w-8 h-8 bg-cyan-600/50 rounded-lg border border-cyan-500/50 text-white">
+                    <div className="w-4 h-4 rounded-full border-2 border-cyan-200 border-t-transparent animate-spin"></div>
                   </div>
                 ) : (
-                  <label className="flex items-center justify-center w-8 h-8 bg-indigo-600/90 hover:bg-indigo-500/90 rounded-lg text-white transition-colors cursor-pointer">
+                  <label className="flex items-center justify-center w-8 h-8 bg-cyan-600/90 hover:bg-cyan-500/90 rounded-lg text-white transition-colors cursor-pointer">
                     <input 
                       type="file" 
                       onChange={handleFileUpload} 
@@ -271,7 +271,7 @@ export default function FileManager({ serverId }: { serverId: string }) {
                 placeholder="Search files..." 
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className="w-full bg-gray-900 border border-gray-600 rounded-full py-2.5 pl-10 pr-4 text-sm text-gray-200 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all shadow-inner"
+                className="w-full bg-gray-900 border border-gray-600 rounded-full py-2.5 pl-10 pr-4 text-sm text-gray-200 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all shadow-inner"
               />
             </div>
           </div>
@@ -280,12 +280,12 @@ export default function FileManager({ serverId }: { serverId: string }) {
         {!editingFile ? (
           <div className="relative hidden sm:block">
             {uploadProgress !== null ? (
-              <div className="flex items-center space-x-2 px-4 py-2 bg-indigo-600/50 rounded-lg text-sm font-medium border border-indigo-500/50 text-white">
-                <div className="w-4 h-4 rounded-full border-2 border-indigo-200 border-t-transparent animate-spin mr-1"></div>
+              <div className="flex items-center space-x-2 px-4 py-2 bg-cyan-600/50 rounded-lg text-sm font-medium border border-cyan-500/50 text-white">
+                <div className="w-4 h-4 rounded-full border-2 border-cyan-200 border-t-transparent animate-spin mr-1"></div>
                 <span>{uploadProgress === 100 ? "Processing..." : `${uploadProgress}%`}</span>
               </div>
             ) : (
-              <label className="flex items-center space-x-2 px-4 py-2.5 bg-indigo-600/90 hover:bg-indigo-500/90 rounded-full text-sm font-medium text-white transition-colors backdrop-blur-sm shadow-lg shadow-indigo-500/20 cursor-pointer">
+              <label className="flex items-center space-x-2 px-4 py-2.5 bg-cyan-600/90 hover:bg-cyan-500/90 rounded-full text-sm font-medium text-white transition-colors backdrop-blur-sm shadow-lg shadow-cyan-500/20 cursor-pointer">
                 <input 
                   type="file" 
                   onChange={handleFileUpload} 
@@ -328,7 +328,7 @@ export default function FileManager({ serverId }: { serverId: string }) {
               {filteredFiles.length > 0 && (
                 <div className="flex items-center px-3 py-2 mb-2 border-b border-gray-700/50">
                   <button onClick={toggleSelectAll} className="text-gray-400 hover:text-white mr-4 transition-colors">
-                    {selectedFiles.size === filteredFiles.length ? <CheckSquare size={18} className="text-indigo-400" /> : <Square size={18} />}
+                    {selectedFiles.size === filteredFiles.length ? <CheckSquare size={18} className="text-cyan-400" /> : <Square size={18} />}
                   </button>
                   <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">Name</span>
                 </div>
@@ -342,10 +342,10 @@ export default function FileManager({ serverId }: { serverId: string }) {
                   <div 
                     key={f.name} 
                     onClick={(e) => toggleSelectFile(f.name, e)}
-                    className={`flex items-center justify-between p-3 rounded-xl group transition-all cursor-pointer mb-1 border ${isSelected ? 'bg-indigo-500/10 border-indigo-500/30' : 'bg-gray-800/20 border-transparent hover:bg-gray-800/60 hover:border-gray-700/50'}`}
+                    className={`flex items-center justify-between p-3 rounded-xl group transition-all cursor-pointer mb-1 border ${isSelected ? 'bg-cyan-500/10 border-cyan-500/30' : 'bg-gray-800/20 border-transparent hover:bg-gray-800/60 hover:border-gray-700/50'}`}
                   >
                     <div className="flex items-center space-x-4 flex-1 overflow-hidden">
-                      <button onClick={(e) => toggleSelectFile(f.name, e)} className={`transition-colors shrink-0 ${isSelected ? 'text-indigo-400' : 'text-gray-500 group-hover:text-gray-400'}`}>
+                      <button onClick={(e) => toggleSelectFile(f.name, e)} className={`transition-colors shrink-0 ${isSelected ? 'text-cyan-400' : 'text-gray-500 group-hover:text-gray-400'}`}>
                         {isSelected ? <CheckSquare size={18} /> : <Square size={18} />}
                       </button>
                       <div className="flex items-center space-x-3 flex-1 overflow-hidden hover:opacity-80 transition-opacity" onClick={(e) => { e.stopPropagation(); f.isDirectory ? traverse(f.name) : openFile(f.name); }}>
@@ -359,7 +359,7 @@ export default function FileManager({ serverId }: { serverId: string }) {
                             onChange={e => setNewName(e.target.value)}
                             onBlur={() => handleRename(f.name)}
                             onKeyDown={e => e.key === 'Enter' && handleRename(f.name)}
-                            className="bg-gray-900/80 border border-gray-600 rounded px-2 py-1 text-sm text-white focus:outline-none focus:border-indigo-500/50 w-full"
+                            className="bg-gray-900/80 border border-gray-600 rounded px-2 py-1 text-sm text-white focus:outline-none focus:border-cyan-500/50 w-full"
                           />
                         ) : (
                           <span className="font-medium text-gray-200 text-sm truncate">{f.name}</span>
@@ -396,9 +396,9 @@ export default function FileManager({ serverId }: { serverId: string }) {
                     <Edit2 size={16} />
                   </button>
                   {(Array.from(selectedFiles)[0] as string).endsWith('.zip') && (
-                    <button onClick={handleUnzipSelected} disabled={isUnzipping} className="p-2 text-gray-400 hover:text-indigo-400 hover:bg-gray-700/50 rounded-lg transition-colors disabled:opacity-50" title="Unzip">
+                    <button onClick={handleUnzipSelected} disabled={isUnzipping} className="p-2 text-gray-400 hover:text-cyan-400 hover:bg-gray-700/50 rounded-lg transition-colors disabled:opacity-50" title="Unzip">
                       {isUnzipping ? (
-                        <div className="w-4 h-4 rounded-full border-2 border-indigo-500/50 border-t-indigo-500 animate-spin"></div>
+                        <div className="w-4 h-4 rounded-full border-2 border-cyan-500/50 border-t-cyan-500 animate-spin"></div>
                       ) : (
                         <Archive size={16} />
                       )}

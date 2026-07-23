@@ -46,7 +46,7 @@ export default function PlayerManager({ serverId, players }: { serverId: string,
               <div className="grid grid-cols-4 gap-1.5 w-full mt-1">
                 <button 
                   onClick={() => handleAction(player.name, 'op', `op ${player.name}`)}
-                  className="qx-chamfer px-2 py-1.5 bg-emerald-400/[0.06] hover:bg-emerald-400/15 text-emerald-400 border border-emerald-400/10 hover:border-emerald-400/30 text-[10px] font-bold uppercase tracking-wider flex justify-center items-center transition-colors"
+                  className="qx-chamfer px-2 py-1.5 bg-cyan-400/[0.06] hover:bg-cyan-400/15 text-cyan-400 border border-cyan-400/10 hover:border-cyan-400/30 text-[10px] font-bold uppercase tracking-wider flex justify-center items-center transition-colors"
                   title="Make OP"
                 >
                   {loadingAction?.player === player.name && loadingAction?.action === 'op' ? <Check size={12} className="mr-1" /> : <Shield size={12} className="mr-1" />}

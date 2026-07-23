@@ -16,7 +16,7 @@ router.use("/admin/api-keys", apiKeyRoutes);
 router.get("/settings", async (req, res) => {
   const settings = await readJSON("settings.json") || {};
   res.json({ 
-    panelName: settings.panelName || "JTG Panel",
+    panelName: settings.panelName || "Hemal's Panel",
     panelLogo: settings.panelLogo || "",
     panelBackgroundImage: settings.panelBackgroundImage || "",
     panelBackgroundBlur: settings.panelBackgroundBlur !== undefined ? settings.panelBackgroundBlur : 10,

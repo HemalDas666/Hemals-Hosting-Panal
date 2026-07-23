@@ -85,7 +85,7 @@ export default function SubUsersManager({ serverId }: SubUsersManagerProps) {
   if (isLoading) {
     return (
       <div className="flex-1 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -113,7 +113,7 @@ export default function SubUsersManager({ serverId }: SubUsersManagerProps) {
               setSelectedPermissions([]);
               setShowAddModal(true);
             }}
-            className="flex items-center space-x-2 px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white font-medium rounded-xl transition-all shadow-lg shadow-indigo-500/20"
+            className="flex items-center space-x-2 px-4 py-2 bg-cyan-500 hover:bg-cyan-600 text-white font-medium rounded-xl transition-all shadow-lg shadow-cyan-500/20"
           >
             <UserPlus size={18} />
             <span>Add User</span>
@@ -133,8 +133,8 @@ export default function SubUsersManager({ serverId }: SubUsersManagerProps) {
             {subUsers.map((su) => (
               <div key={su.userId} className="bg-black/40 backdrop-blur-xl border border-white/10 p-5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 group">
                 <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-indigo-500/10 rounded-xl flex items-center justify-center border border-indigo-500/20">
-                    <Shield className="text-indigo-400" size={24} />
+                  <div className="w-12 h-12 bg-cyan-500/10 rounded-xl flex items-center justify-center border border-cyan-500/20">
+                    <Shield className="text-cyan-400" size={24} />
                   </div>
                   <div>
                     <h4 className="text-white font-medium text-lg">{getUsername(su.userId)}</h4>
@@ -193,7 +193,7 @@ export default function SubUsersManager({ serverId }: SubUsersManagerProps) {
                     <select 
                       value={selectedUser} 
                       onChange={(e) => setSelectedUser(e.target.value)}
-                      className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/50 transition-colors"
+                      className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500/50 transition-colors"
                     >
                       <option value="" disabled>Choose a user...</option>
                       {unassignedUsers.map(u => (
@@ -211,7 +211,7 @@ export default function SubUsersManager({ serverId }: SubUsersManagerProps) {
                     <label className="block text-sm font-medium text-zinc-400">Permissions</label>
                     <button 
                       onClick={() => setSelectedPermissions(ALL_PERMISSIONS.map(p => p.id))}
-                      className="text-xs text-indigo-400 hover:text-indigo-300 font-medium"
+                      className="text-xs text-cyan-400 hover:text-cyan-300 font-medium"
                     >
                       Select All
                     </button>
@@ -225,17 +225,17 @@ export default function SubUsersManager({ serverId }: SubUsersManagerProps) {
                           key={perm.id} 
                           onClick={() => togglePermission(perm.id)}
                           className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-all ${
-                            isSelected ? 'bg-indigo-500/10 border-indigo-500/30' : 'bg-black/20 border-white/5 hover:bg-black/40 hover:border-white/10'
+                            isSelected ? 'bg-cyan-500/10 border-cyan-500/30' : 'bg-black/20 border-white/5 hover:bg-black/40 hover:border-white/10'
                           }`}
                         >
                           <div>
-                            <div className={`font-medium ${isSelected ? 'text-indigo-300' : 'text-zinc-300'}`}>
+                            <div className={`font-medium ${isSelected ? 'text-cyan-300' : 'text-zinc-300'}`}>
                               {perm.label}
                             </div>
                             <div className="text-xs text-zinc-500 mt-0.5">{perm.group}</div>
                           </div>
                           {isSelected ? (
-                            <CheckSquare className="text-indigo-400" size={20} />
+                            <CheckSquare className="text-cyan-400" size={20} />
                           ) : (
                             <Square className="text-zinc-600" size={20} />
                           )}
@@ -256,7 +256,7 @@ export default function SubUsersManager({ serverId }: SubUsersManagerProps) {
                 <button 
                   onClick={handleSave}
                   disabled={(!editingUser && !selectedUser) || selectedPermissions.length === 0}
-                  className="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white font-medium rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                  className="px-4 py-2 bg-cyan-500 hover:bg-cyan-600 text-white font-medium rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
                 >
                   <Save size={18} />
                   <span>Save</span>

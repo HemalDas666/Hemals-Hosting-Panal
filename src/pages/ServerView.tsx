@@ -79,7 +79,7 @@ export default function ServerView() {
       <motion.div
         animate={{ scale: [1, 1.2, 1], rotate: [0, 180, 360] }}
         transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-        className="w-12 h-12 border-2 border-indigo-500 border-t-transparent rounded-full"
+        className="w-12 h-12 border-2 border-cyan-500 border-t-transparent rounded-full"
       />
     </div>
   );
@@ -174,8 +174,8 @@ export default function ServerView() {
              </div>
              <div className="grid grid-cols-2 gap-2">
                 {server.status !== 'online' ? (
-                  <button disabled={isProcessing} onClick={() => { handleAction('start'); setSidebarOpen(false); }} className="col-span-2 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 font-semibold rounded-lg transition-all border border-emerald-500/20 flex items-center justify-center text-xs shadow-sm disabled:opacity-50">
-                    {isProcessing ? <div className="w-3.5 h-3.5 border-2 border-emerald-500/50 border-t-emerald-500 rounded-full animate-spin mr-1.5" /> : <Play className="w-3.5 h-3.5 mr-1.5" />} Start
+                  <button disabled={isProcessing} onClick={() => { handleAction('start'); setSidebarOpen(false); }} className="col-span-2 py-1.5 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-500 font-semibold rounded-lg transition-all border border-cyan-500/20 flex items-center justify-center text-xs shadow-sm disabled:opacity-50">
+                    {isProcessing ? <div className="w-3.5 h-3.5 border-2 border-cyan-500/50 border-t-cyan-500 rounded-full animate-spin mr-1.5" /> : <Play className="w-3.5 h-3.5 mr-1.5" />} Start
                   </button>
                 ) : (
                   <button disabled={isProcessing} onClick={() => { handleAction('stop'); setSidebarOpen(false); }} className="col-span-2 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-500 font-semibold rounded-lg transition-all border border-red-500/20 flex items-center justify-center text-xs shadow-sm disabled:opacity-50">
@@ -199,9 +199,9 @@ export default function ServerView() {
                 key={tab.name}
                 to={tab.path}
                 onClick={() => setSidebarOpen(false)}
-                className={`flex items-center space-x-3 px-3 py-2.5 text-sm font-medium transition-all rounded-lg ${isActive ? 'bg-indigo-500/20 text-indigo-300 shadow-sm border border-indigo-500/30' : 'text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.05] border border-transparent'}`}
+                className={`flex items-center space-x-3 px-3 py-2.5 text-sm font-medium transition-all rounded-lg ${isActive ? 'bg-cyan-500/20 text-cyan-300 shadow-sm border border-cyan-500/30' : 'text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.05] border border-transparent'}`}
               >
-                <div className={`${isActive ? 'text-indigo-400' : 'text-zinc-500'} transition-colors`}>
+                <div className={`${isActive ? 'text-cyan-400' : 'text-zinc-500'} transition-colors`}>
                   {React.cloneElement(tab.icon, { className: "w-4 h-4" })}
                 </div>
                 <span>{tab.name}</span>
@@ -273,8 +273,8 @@ export default function ServerView() {
                 
              <div className="flex items-center space-x-1 sm:space-x-2 shrink-0 ml-auto md:ml-1">
                 {server.status !== 'online' ? (
-                  <button disabled={isProcessing} onClick={() => handleAction('start')} className="p-1.5 sm:px-3 sm:py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 font-semibold rounded-lg transition-all border border-emerald-500/20 flex items-center justify-center text-xs shadow-sm disabled:opacity-50">
-                    {isProcessing ? <div className="w-3.5 h-3.5 border-2 border-emerald-500/50 border-t-emerald-500 rounded-full animate-spin sm:mr-1.5" /> : <Play className="w-3.5 h-3.5 sm:mr-1.5" />} <span className="hidden sm:block">Start</span>
+                  <button disabled={isProcessing} onClick={() => handleAction('start')} className="p-1.5 sm:px-3 sm:py-1.5 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-500 font-semibold rounded-lg transition-all border border-cyan-500/20 flex items-center justify-center text-xs shadow-sm disabled:opacity-50">
+                    {isProcessing ? <div className="w-3.5 h-3.5 border-2 border-cyan-500/50 border-t-cyan-500 rounded-full animate-spin sm:mr-1.5" /> : <Play className="w-3.5 h-3.5 sm:mr-1.5" />} <span className="hidden sm:block">Start</span>
                   </button>
                 ) : (
                   <button disabled={isProcessing} onClick={() => handleAction('stop')} className="p-1.5 sm:px-3 sm:py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-500 font-semibold rounded-lg transition-all border border-red-500/20 flex items-center justify-center text-xs shadow-sm disabled:opacity-50">

@@ -69,14 +69,14 @@ export default function ApiKeysManager() {
     <div className="bg-[#0a0a0c] border border-white/5 rounded-2xl p-6 md:p-8 shadow-xl mt-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <h2 className="text-xl font-bold flex items-center text-white">
-          <Key className="mr-3 text-indigo-400 w-5 h-5" /> API Keys
+          <Key className="mr-3 text-cyan-400 w-5 h-5" /> API Keys
         </h2>
         <button 
           onClick={() => {
             setNewKeyString(null);
             setShowAddModal(true);
           }}
-          className="flex items-center space-x-2 px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white font-medium rounded-xl transition-all shadow-sm"
+          className="flex items-center space-x-2 px-4 py-2 bg-cyan-500 hover:bg-cyan-600 text-white font-medium rounded-xl transition-all shadow-sm"
         >
           <Plus size={18} />
           <span>Generate Key</span>
@@ -84,8 +84,8 @@ export default function ApiKeysManager() {
       </div>
 
       {newKeyString && !showAddModal && (
-        <div className="mb-6 bg-indigo-500/10 border border-indigo-500/30 rounded-xl p-4">
-          <h3 className="text-indigo-400 font-bold mb-2">New API Key Generated!</h3>
+        <div className="mb-6 bg-cyan-500/10 border border-cyan-500/30 rounded-xl p-4">
+          <h3 className="text-cyan-400 font-bold mb-2">New API Key Generated!</h3>
           <p className="text-zinc-300 text-sm mb-3">Please copy this key now. You will not be able to see it again.</p>
           <div className="flex items-center gap-2">
             <code className="flex-1 bg-black/40 text-white px-3 py-2 rounded-lg font-mono text-sm break-all">
@@ -93,7 +93,7 @@ export default function ApiKeysManager() {
             </code>
             <button 
               onClick={() => copyToClipboard(newKeyString)}
-              className="p-2 bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-400 rounded-lg transition-colors shrink-0"
+              className="p-2 bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400 rounded-lg transition-colors shrink-0"
             >
               {copiedKey ? <Check size={18} /> : <Copy size={18} />}
             </button>
@@ -158,7 +158,7 @@ export default function ApiKeysManager() {
                     value={newKeyLabel}
                     onChange={(e) => setNewKeyLabel(e.target.value)}
                     placeholder="e.g. CI/CD Pipeline"
-                    className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500/50 transition-colors"
+                    className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500/50 transition-colors"
                   />
                 </div>
                 
@@ -173,7 +173,7 @@ export default function ApiKeysManager() {
                   <button 
                     type="submit"
                     disabled={isProcessing}
-                    className="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white font-medium rounded-xl transition-colors disabled:opacity-50"
+                    className="px-4 py-2 bg-cyan-500 hover:bg-cyan-600 text-white font-medium rounded-xl transition-colors disabled:opacity-50"
                   >
                     {isProcessing ? "Generating..." : "Generate"}
                   </button>

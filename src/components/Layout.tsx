@@ -13,9 +13,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   if (isServerView) {
     return (
-      <div className="flex h-[100dvh] w-full bg-transparent text-zinc-100 font-sans overflow-hidden selection:bg-indigo-500/30">
+      <div className="flex h-[100dvh] w-full bg-transparent text-zinc-100 font-sans overflow-hidden selection:bg-cyan-500/30">
         <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden relative">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[400px] bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[400px] bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-purple-500/10 blur-[120px] rounded-full pointer-events-none qx-glow-pulse" />
           <main className="flex-1 w-full h-full relative z-10 overflow-hidden">
             {children}
           </main>
@@ -25,7 +25,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className={`flex h-[100dvh] w-full bg-transparent text-zinc-100 font-sans overflow-hidden selection:bg-indigo-500/30`}>
+    <div className={`flex h-[100dvh] w-full bg-transparent text-zinc-100 font-sans overflow-hidden selection:bg-cyan-500/30`}>
       {/* Mobile Sidebar Overlay */}
       {mobileOpen && (
         <div 
@@ -41,7 +41,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
       <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden relative">
         {/* Subtle background glow effect */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[400px] bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[400px] bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-purple-500/10 blur-[120px] rounded-full pointer-events-none qx-glow-pulse" />
 
         {/* Mobile Header (only shown on mobile screens) */}
         <div className="md:hidden flex items-center justify-between p-4 bg-transparent backdrop-blur-md border-b border-white/5 flex-shrink-0 relative z-10">
@@ -49,7 +49,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             {panelLogo ? (
               <img src={panelLogo} alt="Logo" className="w-6 h-6 rounded object-cover" />
             ) : (
-              <div className="w-6 h-6 rounded bg-gradient-to-br from-indigo-500 to-purple-600 shadow-[0_0_10px_rgba(99,102,241,0.5)]" />
+              <div className="w-6 h-6 rounded bg-gradient-to-br from-cyan-500 to-blue-600 shadow-[0_0_10px_rgba(6,182,212,0.5)]" />
             )}
             <h1 className="text-lg font-bold tracking-tight text-white truncate">{panelName}</h1>
           </div>

@@ -188,7 +188,7 @@ export default function ServerSettings({ serverId, server }: { serverId: string,
                     value={selectedType}
                     onChange={e => setSelectedType(e.target.value)}
                     disabled={isChangingVersion}
-                    className="w-full bg-[#0a0a0c] border border-white/10 focus:border-indigo-500 rounded-xl px-4 py-3 text-white transition-all outline-none"
+                    className="w-full bg-[#0a0a0c] border border-white/10 focus:border-cyan-500 rounded-xl px-4 py-3 text-white transition-all outline-none"
                   >
                     <option value="PAPER">Paper (Performance Minecraft)</option>
                     <option value="VELOCITY">Velocity (Proxy)</option>
@@ -240,7 +240,7 @@ export default function ServerSettings({ serverId, server }: { serverId: string,
             </div>
 
             <div className="bg-black/40 backdrop-blur-xl border border-white/10 p-6 md:p-8 rounded-3xl shadow-[0_0_40px_-15px_rgba(0,0,0,0.5)] ring-1 ring-white/5 relative z-20 group hover:bg-black/60 transition-colors mb-8">
-              <h3 className="text-indigo-400 font-bold mb-2 flex items-center">
+              <h3 className="text-cyan-400 font-bold mb-2 flex items-center">
                 <Globe className="w-5 h-5 mr-2" /> Server IP Alias
               </h3>
               <p className="text-zinc-400 text-sm mb-4">
@@ -253,13 +253,13 @@ export default function ServerSettings({ serverId, server }: { serverId: string,
                     value={ipAlias} 
                     onChange={e => setIpAlias(e.target.value)} 
                     placeholder="e.g. play.example.com"
-                    className="w-full bg-[#0a0a0c] border border-white/10 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 rounded-xl px-4 py-2 text-white transition-all shadow-inner outline-none font-mono"
+                    className="w-full bg-[#0a0a0c] border border-white/10 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 rounded-xl px-4 py-2 text-white transition-all shadow-inner outline-none font-mono"
                   />
                 </div>
                 <button 
                   onClick={handleUpdateIpAlias}
                   disabled={isSavingAlias || ipAlias === (server.ipAlias || "")}
-                  className="px-6 py-2 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 font-medium rounded-xl border border-indigo-500/20 transition-all disabled:opacity-50 flex items-center"
+                  className="px-6 py-2 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 font-medium rounded-xl border border-cyan-500/20 transition-all disabled:opacity-50 flex items-center"
                 >
                   <Save className="w-4 h-4 mr-2" /> Save
                 </button>
@@ -270,7 +270,7 @@ export default function ServerSettings({ serverId, server }: { serverId: string,
               <>
 
                 <div className="bg-black/40 backdrop-blur-xl border border-white/10 p-6 md:p-8 rounded-3xl shadow-[0_0_40px_-15px_rgba(0,0,0,0.5)] ring-1 ring-white/5 relative z-10 group hover:bg-black/60 transition-colors">
-                  <h3 className="text-indigo-400 font-bold mb-2 flex items-center">
+                  <h3 className="text-cyan-400 font-bold mb-2 flex items-center">
                     <User className="w-5 h-5 mr-2" /> Server Ownership
                   </h3>
                   <p className="text-zinc-400 text-sm mb-4">
@@ -290,7 +290,7 @@ export default function ServerSettings({ serverId, server }: { serverId: string,
                     <button 
                       onClick={handleUpdateOwner}
                       disabled={isSaving || owner === server.owner}
-                      className="px-6 py-2 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 font-medium rounded-xl border border-indigo-500/20 transition-all disabled:opacity-50 flex items-center"
+                      className="px-6 py-2 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 font-medium rounded-xl border border-cyan-500/20 transition-all disabled:opacity-50 flex items-center"
                     >
                       <Save className="w-4 h-4 mr-2" /> Save
                     </button>

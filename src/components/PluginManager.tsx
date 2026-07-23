@@ -139,7 +139,7 @@ export default function PluginManager({ serverId }: { serverId: string }) {
       case 'modrinth': return <Box className="w-3 h-3 text-green-400" />;
       case 'spigot': return <Server className="w-3 h-3 text-orange-400" />;
       case 'hangar': return <Cpu className="w-3 h-3 text-blue-400" />;
-      default: return <Puzzle className="w-3 h-3 text-indigo-400" />;
+      default: return <Puzzle className="w-3 h-3 text-cyan-400" />;
     }
   };
 
@@ -159,7 +159,7 @@ export default function PluginManager({ serverId }: { serverId: string }) {
         <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
           <div>
             <h2 className="text-2xl md:text-3xl font-black text-white tracking-tight drop-shadow-md mb-1">Plugin Manager</h2>
-            <p className="text-[11px] font-bold text-indigo-400/80 uppercase tracking-widest mt-1">Search and install plugins from Modrinth, Spigot, and Paper Hangar.</p>
+            <p className="text-[11px] font-bold text-cyan-400/80 uppercase tracking-widest mt-1">Search and install plugins from Modrinth, Spigot, and Paper Hangar.</p>
           </div>
         </div>
 
@@ -173,12 +173,12 @@ export default function PluginManager({ serverId }: { serverId: string }) {
                   placeholder="Search for plugins..."
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  className="w-full bg-white/[0.02] border border-white/10 rounded-lg py-2 pl-9 pr-4 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-indigo-500 transition-colors"
+                  className="w-full bg-white/[0.02] border border-white/10 rounded-lg py-2 pl-9 pr-4 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-cyan-500 transition-colors"
                 />
               </div>
               <button 
                 type="submit"
-                className="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg text-sm font-medium transition-colors whitespace-nowrap shrink-0"
+                className="px-4 py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg text-sm font-medium transition-colors whitespace-nowrap shrink-0"
               >
                 Search
               </button>
@@ -190,7 +190,7 @@ export default function PluginManager({ serverId }: { serverId: string }) {
                   key={src}
                   type="button"
                   onClick={() => setActiveSource(src as any)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap flex items-center gap-1.5 ${activeSource === src ? 'bg-indigo-500 text-white' : 'bg-white/5 text-zinc-400 hover:bg-white/10 hover:text-white'}`}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap flex items-center gap-1.5 ${activeSource === src ? 'bg-cyan-500 text-white' : 'bg-white/5 text-zinc-400 hover:bg-white/10 hover:text-white'}`}
                 >
                   {src === 'all' ? <Puzzle className="w-3.5 h-3.5" /> : getSourceIcon(src)}
                   {src === 'all' ? 'All Sources' : getSourceName(src)}
@@ -202,7 +202,7 @@ export default function PluginManager({ serverId }: { serverId: string }) {
           <div className="divide-y divide-white/5">
             {loading ? (
               <div className="p-8 text-center text-zinc-500 flex flex-col items-center">
-                <RefreshCw className="w-6 h-6 animate-spin mb-3 text-indigo-500/50" />
+                <RefreshCw className="w-6 h-6 animate-spin mb-3 text-cyan-500/50" />
                 Searching repositories...
               </div>
             ) : plugins.length === 0 ? (
@@ -246,7 +246,7 @@ export default function PluginManager({ serverId }: { serverId: string }) {
                   <button
                     onClick={() => handleInstall(plugin)}
                     disabled={isInstalling !== null}
-                    className="w-full md:w-auto px-4 py-2 bg-white/5 hover:bg-indigo-500/10 border border-white/10 hover:border-indigo-500/30 text-zinc-300 hover:text-indigo-400 rounded-lg text-sm font-medium transition-all flex items-center justify-center shrink-0 disabled:opacity-50"
+                    className="w-full md:w-auto px-4 py-2 bg-white/5 hover:bg-cyan-500/10 border border-white/10 hover:border-cyan-500/30 text-zinc-300 hover:text-cyan-400 rounded-lg text-sm font-medium transition-all flex items-center justify-center shrink-0 disabled:opacity-50"
                   >
                     {isInstalling === plugin.id ? (
                       <><RefreshCw className="w-4 h-4 mr-2 animate-spin" /> Installing...</>

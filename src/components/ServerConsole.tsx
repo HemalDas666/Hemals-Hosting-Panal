@@ -84,7 +84,7 @@ const FILTERS: { key: LogFilter; label: string }[] = [
 const STYLES = `
 @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
 
-::selection { background: rgba(52,211,153,0.25); }
+::selection { background: rgba(6,182,212,0.25); }
 
 .qx-display { font-family: 'Chakra Petch', system-ui, sans-serif; }
 .qx-mono    { font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', monospace; }
@@ -117,8 +117,8 @@ const STYLES = `
 
 .qx-grid-bg {
   background-image:
-    linear-gradient(rgba(52,211,153,.028) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(52,211,153,.028) 1px, transparent 1px);
+    linear-gradient(rgba(6,182,212,.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6,182,212,.028) 1px, transparent 1px);
   background-size: 48px 48px;
   animation: qx-drift 16s linear infinite;
 }
@@ -133,8 +133,8 @@ const STYLES = `
 
 .qx-scroll::-webkit-scrollbar { width: 5px; height: 5px; }
 .qx-scroll::-webkit-scrollbar-track { background: transparent; }
-.qx-scroll::-webkit-scrollbar-thumb { background: rgba(52,211,153,.18); border-radius: 99px; }
-.qx-scroll::-webkit-scrollbar-thumb:hover { background: rgba(52,211,153,.38); }
+.qx-scroll::-webkit-scrollbar-thumb { background: rgba(6,182,212,.18); border-radius: 99px; }
+.qx-scroll::-webkit-scrollbar-thumb:hover { background: rgba(6,182,212,.38); }
 
 .qx-run {
   position: relative;
@@ -145,21 +145,21 @@ const STYLES = `
 .qx-run::before {
   content: '';
   position: absolute; inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(52,211,153,.14), transparent);
+  background: linear-gradient(90deg, transparent, rgba(6,182,212,.14), transparent);
   background-size: 200% 100%;
   animation: qx-shimmer 2.8s linear infinite;
   opacity: 0;
   transition: opacity .3s;
 }
 .qx-run:hover::before { opacity: 1; }
-.qx-run:hover { box-shadow: 0 4px 22px -4px rgba(52,211,153,.4); }
+.qx-run:hover { box-shadow: 0 4px 22px -4px rgba(6,182,212,.4); }
 .qx-run:active { transform: scale(.96); }
 
 .qx-chamfer { clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px); }
 
 .qx-input-shell:focus-within {
-  border-color: rgba(52,211,153,.45);
-  box-shadow: 0 0 0 1px rgba(52,211,153,.12), 0 0 26px -6px rgba(52,211,153,.28), inset 0 0 14px -8px rgba(52,211,153,.15);
+  border-color: rgba(6,182,212,.45);
+  box-shadow: 0 0 0 1px rgba(6,182,212,.12), 0 0 26px -6px rgba(6,182,212,.28), inset 0 0 14px -8px rgba(6,182,212,.15);
 }
 
 .qx-telemetry-row { transition: background .25s ease; }
@@ -183,7 +183,7 @@ const levelOf = (raw: string): LogLevel => {
    CORNER BRACKETS — rack-mount hardware detail
 ═══════════════════════════════════════════════════════ */
 
-function Corners({ tone = "border-emerald-400/25" }: { tone?: string }) {
+function Corners({ tone = "border-cyan-400/25" }: { tone?: string }) {
   const base = "pointer-events-none absolute w-3.5 h-3.5 z-10";
   return (
     <>
@@ -392,21 +392,21 @@ function ConnPill({ live }: { live: boolean }) {
       <span className="relative flex h-2 w-2">
         {live && (
           <span
-            className="absolute inset-0 rounded-full bg-emerald-400"
+            className="absolute inset-0 rounded-full bg-cyan-400"
             style={{ animation: "qx-ping 1.6s cubic-bezier(0,0,0.2,1) infinite" }}
           />
         )}
         <span
           className={`relative rounded-full h-2 w-2 transition-colors duration-500 ${
             live
-              ? "bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.9)]"
+              ? "bg-cyan-400 shadow-[0_0_6px_rgba(6,182,212,0.9)]"
               : "bg-red-400 shadow-[0_0_6px_rgba(248,113,113,0.9)]"
           }`}
         />
       </span>
       <span
         className={`qx-display text-[9px] font-bold uppercase tracking-[0.18em] transition-colors duration-500 ${
-          live ? "text-emerald-400" : "text-red-400"
+          live ? "text-cyan-400" : "text-red-400"
         }`}
       >
         {live ? "Live" : "Offline"}
@@ -663,8 +663,8 @@ export default function ServerConsole({ serverId, server }: ServerConsoleProps) 
 
     if (level === "error") { text = "text-rose-400 font-medium"; rail = "bg-rose-500/70"; }
     else if (level === "warn") { text = "text-amber-300/90"; rail = "bg-amber-400/70"; }
-    else if (log.startsWith(">")) { text = "text-emerald-300 font-semibold"; rail = "bg-emerald-400/70"; }
-    else if (log.startsWith("[System")) { text = "text-emerald-300/75 italic"; rail = "bg-emerald-400/60"; }
+    else if (log.startsWith(">")) { text = "text-cyan-300 font-semibold"; rail = "bg-cyan-400/70"; }
+    else if (log.startsWith("[System")) { text = "text-cyan-300/75 italic"; rail = "bg-cyan-400/60"; }
     else if (log.includes("INFO")) { text = "text-sky-200/85"; rail = "bg-sky-500/50"; }
 
     return (
@@ -719,7 +719,7 @@ export default function ServerConsole({ serverId, server }: ServerConsoleProps) 
                 </h2>
                 <span className="flex items-center gap-1.5 qx-mono text-[9px] text-slate-500">
                   <span
-                    className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"
+                    className="w-1.5 h-1.5 rounded-full bg-cyan-400 inline-block"
                     style={{ animation: "qx-rec 2s ease-in-out infinite" }}
                   />
                   poll {STATS_POLL_MS / 1000}s
@@ -728,36 +728,36 @@ export default function ServerConsole({ serverId, server }: ServerConsoleProps) 
 
               {/* CPU */}
               <div className="qx-telemetry-row flex items-center gap-4 px-4 py-3.5">
-                <Dial pct={cpuPct} color="#34d399" glow="rgba(52,211,153,0.55)" icon={<Cpu size={15} />} armed={ready} />
+                <Dial pct={cpuPct} color="#06b6d4" glow="rgba(6,182,212,0.55)" icon={<Cpu size={15} />} armed={ready} />
                 <div className="flex-1 min-w-0">
                   <p className="qx-display text-[9px] font-semibold uppercase tracking-[0.24em] text-slate-500 mb-1">
                     CPU Load
                   </p>
-                  <p className="qx-mono text-[22px] font-bold leading-none text-emerald-300">
+                  <p className="qx-mono text-[22px] font-bold leading-none text-cyan-300">
                     <AnimNum value={stats.cpu} />
-                    <span className="text-[11px] text-emerald-300/50 ml-0.5">%</span>
+                    <span className="text-[11px] text-cyan-300/50 ml-0.5">%</span>
                   </p>
                   <p className="qx-mono text-[9px] text-slate-600 mt-1">cap {stats.limitCpu}%</p>
                 </div>
-                <Spark data={cpuHist} color="#34d399" max={stats.limitCpu || 100} />
+                <Spark data={cpuHist} color="#06b6d4" max={stats.limitCpu || 100} />
               </div>
 
               <div className="mx-4 border-t border-white/[0.05]" />
 
               {/* RAM */}
               <div className="qx-telemetry-row flex items-center gap-4 px-4 py-3.5">
-                <Dial pct={ramPct} color="#4ade80" glow="rgba(74,222,128,0.55)" icon={<MemoryStick size={15} />} armed={ready} />
+                <Dial pct={ramPct} color="#06b6d4" glow="rgba(6,182,212,0.55)" icon={<MemoryStick size={15} />} armed={ready} />
                 <div className="flex-1 min-w-0">
                   <p className="qx-display text-[9px] font-semibold uppercase tracking-[0.24em] text-slate-500 mb-1">
                     Memory
                   </p>
-                  <p className="qx-mono text-[22px] font-bold leading-none text-emerald-300">
+                  <p className="qx-mono text-[22px] font-bold leading-none text-cyan-300">
                     <AnimNum value={Math.floor(stats.ram)} decimals={0} />
-                    <span className="text-[11px] text-emerald-300/50 ml-1">MB</span>
+                    <span className="text-[11px] text-cyan-300/50 ml-1">MB</span>
                   </p>
                   <p className="qx-mono text-[9px] text-slate-600 mt-1">cap {stats.limitRam} MB</p>
                 </div>
-                <Spark data={ramHist} color="#4ade80" max={stats.limitRam || 1024} />
+                <Spark data={ramHist} color="#06b6d4" max={stats.limitRam || 1024} />
               </div>
 
               <div className="mx-4 border-t border-white/[0.05]" />
@@ -789,8 +789,8 @@ export default function ServerConsole({ serverId, server }: ServerConsoleProps) 
               style={{ animationDelay: "300ms" }}
             >
               
-              <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-emerald-400/40 to-transparent" />
-              <span className="absolute top-2.5 right-3 z-10 qx-mono text-[9px] px-2 py-0.5 rounded-sm bg-emerald-400/10 text-emerald-300 border border-emerald-400/20 tabular-nums">
+              <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent" />
+              <span className="absolute top-2.5 right-3 z-10 qx-mono text-[9px] px-2 py-0.5 rounded-sm bg-cyan-400/10 text-cyan-300 border border-cyan-400/20 tabular-nums">
                 {players.length} online
               </span>
               <PlayerManager serverId={serverId} players={players} />
@@ -822,7 +822,7 @@ export default function ServerConsole({ serverId, server }: ServerConsoleProps) 
               </div>
 
               <div className="flex items-center gap-2.5 min-w-0">
-                <XTerm size={13} className="text-emerald-400/80 shrink-0" />
+                <XTerm size={13} className="text-cyan-400/80 shrink-0" />
                 <div className="min-w-0 text-center">
                   <h1 className="qx-display text-[11px] font-bold tracking-[0.3em] text-slate-200 uppercase truncate">
                     System Console
@@ -855,13 +855,13 @@ export default function ServerConsole({ serverId, server }: ServerConsoleProps) 
             >
               {logs.length === 0 && (
                 <div className="flex items-center gap-2 text-white/25 py-2">
-                  <span className="text-emerald-400/70">❯</span>
+                  <span className="text-cyan-400/70">❯</span>
                   <span>Awaiting connection</span>
                   <span className="flex gap-[3px] ml-1">
                     {[0, 1, 2].map((i) => (
                       <span
                         key={i}
-                        className="w-[4px] h-[4px] rounded-full bg-emerald-400/60 inline-block"
+                        className="w-[4px] h-[4px] rounded-full bg-cyan-400/60 inline-block"
                         style={{
                           animation: "qx-dot-bounce 1.4s ease-in-out infinite",
                           animationDelay: `${i * 0.18}s`,
@@ -884,7 +884,7 @@ export default function ServerConsole({ serverId, server }: ServerConsoleProps) 
                   className="qx-log-line flex items-start py-[3px] px-2 -mx-2 rounded-sm hover:bg-white/[0.03] transition-colors duration-150 group"
                   style={{ animationDelay: `${Math.min(i * 10, 200)}ms` }}
                 >
-                  <span className="text-white/[0.12] group-hover:text-emerald-300/50 mr-3 select-none shrink-0 w-9 text-right text-[10px] leading-[1.75] transition-colors duration-200 tabular-nums">
+                  <span className="text-white/[0.12] group-hover:text-cyan-300/50 mr-3 select-none shrink-0 w-9 text-right text-[10px] leading-[1.75] transition-colors duration-200 tabular-nums">
                     {i + 1}
                   </span>
                   {renderLine(l)}
@@ -895,7 +895,7 @@ export default function ServerConsole({ serverId, server }: ServerConsoleProps) 
                 <div className="flex items-center py-[3px] px-2 -mx-2">
                   <span className="w-9 mr-3 shrink-0" />
                   <span
-                    className="text-emerald-400/50 text-xs select-none"
+                    className="text-cyan-400/50 text-xs select-none"
                     style={{ animation: "qx-blink 1.1s step-end infinite" }}
                   >
                     ▋
@@ -908,7 +908,7 @@ export default function ServerConsole({ serverId, server }: ServerConsoleProps) 
             {!atBottom && logs.length > 0 && (
               <button
                 onClick={jumpToBottom}
-                className="qx-tail-in absolute bottom-32 right-5 z-20 flex items-center gap-1.5 qx-display text-[9px] font-bold uppercase tracking-[0.14em] px-3 py-1.5 bg-black/60 backdrop-blur-md text-emerald-300 border border-emerald-400/30 rounded-sm shadow-[0_4px_20px_-4px_rgba(52,211,153,0.4)] hover:bg-emerald-400/10 transition-colors"
+                className="qx-tail-in absolute bottom-32 right-5 z-20 flex items-center gap-1.5 qx-display text-[9px] font-bold uppercase tracking-[0.14em] px-3 py-1.5 bg-black/60 backdrop-blur-md text-cyan-300 border border-cyan-400/30 rounded-sm shadow-[0_4px_20px_-4px_rgba(6,182,212,0.4)] hover:bg-cyan-400/10 transition-colors"
               >
                 <ChevronDown size={11} className="animate-bounce" />
                 Tail
@@ -930,7 +930,7 @@ export default function ServerConsole({ serverId, server }: ServerConsoleProps) 
                   className={`qx-mono text-[10px] px-2.5 py-1 rounded-sm border whitespace-nowrap transition-all duration-200 hover:-translate-y-px active:translate-y-0 ${
                     q.danger
                       ? "text-rose-400/80 border-rose-500/20 hover:border-rose-400/50 hover:bg-rose-500/10 hover:text-rose-300"
-                      : "text-slate-400 border-white/[0.08] hover:border-emerald-400/40 hover:bg-emerald-400/[0.07] hover:text-emerald-300"
+                      : "text-slate-400 border-white/[0.08] hover:border-cyan-400/40 hover:bg-cyan-400/[0.07] hover:text-cyan-300"
                   }`}
                 >
                   {q.label}
@@ -947,7 +947,7 @@ export default function ServerConsole({ serverId, server }: ServerConsoleProps) 
               className="px-3 md:px-4 py-3 flex gap-2.5 relative z-10 bg-black/30 backdrop-blur-md"
             >
               <div className="qx-input-shell flex-1 flex items-center rounded-md px-4 border border-white/[0.08] bg-white/[0.03] transition-all duration-300">
-                <span className="text-emerald-400/80 qx-mono text-xs mr-3 select-none font-semibold whitespace-nowrap">
+                <span className="text-cyan-400/80 qx-mono text-xs mr-3 select-none font-semibold whitespace-nowrap">
                   admin@node:~$
                 </span>
                 <input
@@ -956,7 +956,7 @@ export default function ServerConsole({ serverId, server }: ServerConsoleProps) 
                   value={command}
                   onChange={(e) => setCommand(e.target.value)}
                   onKeyDown={onInputKey}
-                  className="flex-1 bg-transparent py-3 text-emerald-50/90 focus:outline-none qx-mono text-xs placeholder:text-white/15 caret-emerald-400 min-w-0"
+                  className="flex-1 bg-transparent py-3 text-cyan-50/90 focus:outline-none qx-mono text-xs placeholder:text-white/15 caret-cyan-400 min-w-0"
                   placeholder="Type a command…"
                   spellCheck={false}
                   autoComplete="off"
@@ -972,7 +972,7 @@ export default function ServerConsole({ serverId, server }: ServerConsoleProps) 
               <button
                 type="submit"
                 disabled={!command.trim()}
-                className="qx-run qx-display px-6 md:px-7 py-3 text-[11px] font-bold uppercase tracking-[0.16em] text-emerald-200 bg-emerald-400/[0.12] border border-emerald-400/30 disabled:opacity-30 disabled:pointer-events-none"
+                className="qx-run qx-display px-6 md:px-7 py-3 text-[11px] font-bold uppercase tracking-[0.16em] text-cyan-200 bg-cyan-400/[0.12] border border-cyan-400/30 disabled:opacity-30 disabled:pointer-events-none"
               >
                 Execute
               </button>

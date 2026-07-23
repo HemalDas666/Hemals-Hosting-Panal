@@ -47,7 +47,7 @@ export default function ServerList() {
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
         <div>
           <h1 className="text-4xl md:text-5xl font-black tracking-tight text-white mb-2 drop-shadow-lg">Instances</h1>
-          <p className="text-indigo-400/80 font-bold uppercase tracking-widest text-sm mt-2">Manage and monitor your server fleet.</p>
+          <p className="text-purple-400/80 font-bold uppercase tracking-widest text-sm mt-2">Manage and monitor your server fleet.</p>
         </div>
         {user?.role === "admin" && (
           <Link to="/servers/create" className="px-5 py-2.5 bg-white text-black font-semibold rounded-xl hover:bg-zinc-200 transition-colors shadow-lg shadow-white/10 text-sm whitespace-nowrap inline-flex items-center self-start md:self-auto">
@@ -62,17 +62,17 @@ export default function ServerList() {
           <motion.div variants={itemAnim} key={server.id} className="bg-black/40 backdrop-blur-xl rounded-3xl border border-white/10 p-5 md:p-6 flex flex-col group hover:bg-black/60 transition-all shadow-[0_0_40px_-15px_rgba(0,0,0,0.5)] ring-1 ring-white/5 relative overflow-hidden">
             {/* Subtle top glow based on status */}
             <div className={`absolute top-0 left-0 right-0 h-[2px] opacity-70 ${server.status === 'online' ? 'bg-gradient-to-r from-transparent via-emerald-500 to-transparent shadow-[0_0_15px_rgba(16,185,129,0.5)]' : 'bg-gradient-to-r from-transparent via-zinc-500 to-transparent'}`} />
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/0 to-transparent opacity-0 group-hover:opacity-10 transition-opacity" />
+            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/0 to-transparent opacity-0 group-hover:opacity-10 transition-opacity" />
             
             <Link to={`/servers/${server.id}`} className="block flex-1 z-10 relative">
               <div className="flex justify-between items-start mb-6">
                 <div className="flex items-center space-x-4">
-                  <div className="w-14 h-14 rounded-2xl bg-black/60 border border-white/10 flex items-center justify-center group-hover:border-indigo-500/40 group-hover:bg-indigo-500/20 transition-all shadow-inner relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                    <Server className="w-7 h-7 text-zinc-400 group-hover:text-indigo-400 transition-colors relative z-10" />
+                  <div className="w-14 h-14 rounded-2xl bg-black/60 border border-white/10 flex items-center justify-center group-hover:border-cyan-500/40 group-hover:bg-cyan-500/20 transition-all shadow-inner relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <Server className="w-7 h-7 text-zinc-400 group-hover:text-cyan-400 transition-colors relative z-10" />
                   </div>
                   <div>
-                    <h2 className="font-bold tracking-tight text-white text-xl group-hover:text-indigo-300 transition-colors drop-shadow-sm">{server.name}</h2>
+                    <h2 className="font-bold tracking-tight text-white text-xl group-hover:text-cyan-300 transition-colors drop-shadow-sm">{server.name}</h2>
                     <div className="flex items-center mt-1.5 space-x-2">
                        <span className="flex h-2.5 w-2.5 relative">
                           {server.status === 'online' && <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>}
@@ -86,11 +86,11 @@ export default function ServerList() {
               
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4 py-4 border-y border-white/10 my-4 text-sm mt-auto bg-black/20 rounded-xl px-4">
                 <div>
-                  <p className="text-indigo-400/80 text-[10px] md:text-[11px] mb-1 font-bold uppercase tracking-[0.15em] drop-shadow-sm">CPU Limit</p>
+                  <p className="text-purple-400/80 text-[10px] md:text-[11px] mb-1 font-bold uppercase tracking-[0.15em] drop-shadow-sm">CPU Limit</p>
                   <p className="font-mono text-white font-bold text-xs md:text-sm">{server.cpu || 100} <span className="text-zinc-500 opacity-70">%</span></p>
                 </div>
                 <div>
-                  <p className="text-emerald-400/80 text-[10px] md:text-[11px] mb-1 font-bold uppercase tracking-[0.15em] drop-shadow-sm">RAM Usage</p>
+                  <p className="text-cyan-400/80 text-[10px] md:text-[11px] mb-1 font-bold uppercase tracking-[0.15em] drop-shadow-sm">RAM Usage</p>
                   <div className="font-mono text-white font-bold text-xs md:text-sm">
                     <ServerLiveStats serverId={server.id} limitRam={server.ram} status={server.status} />
                   </div>
