@@ -108,7 +108,7 @@ install_panel() {
     fi
 
     echo -e "${CYAN}[+] Cloning repository...${NC}"
-    git clone https://github.com/HemalDas666/Hemals_Host_Panal.git
+    git clone https://github.com/HemalDas666/Hemals-Hosting-Panal.git
     
     cd Hemals_Host_Panal || { echo -e "${RED}[!] Failed to enter the directory!${NC}"; return; }
     

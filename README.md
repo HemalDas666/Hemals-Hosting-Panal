@@ -9,15 +9,15 @@ A web-based game server management panel with file manager, terminal access, and
 Run this one-liner on your VPS/server:
 
 ```bash
-bash <(curl -s https://raw.githubusercontent.com/HemalDas666/Hemals_Host_Panal/main/install.sh)
+bash <(curl -s https://raw.githubusercontent.com/HemalDas666/Hemals-Hosting-Panal/main/install.sh)
 ```
 
 ## Manual Installation
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/HemalDas666/Hemals_Host_Panal.git
-   cd Hemals_Host_Panal
+git clone https://github.com/HemalDas666/Hemals-Hosting-Panal.git
+cd Hemals-Hosting-Panal
    ```
 
 2. Install dependencies:
